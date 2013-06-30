@@ -1,0 +1,183 @@
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<workflow name="job-workflow">
+
+    <!--
+    states:
+        idle        - new job
+        assigned    - job assigned on vehicle
+        confirmed   - job should be send to driver
+        accepted    - driver accept job
+        rejected    - driver reject job
+        started     - driver start job
+        finished    - driver finish job
+        failed      - driver can't finish job
+    -->
+
+    <defaults>
+        <on-error>
+            <goto>node://workflow-error</goto>
+        </on-error>
+    </defaults>
+
+    <!--should be only one node START-->
+    <start>
+        <action>class://org.openjst.commons.workflow.task.job.IdleTask</action>
+    </start>
+
+    <task id="assign">
+        <actions>
+            <action>class://org.openjst.commons.workflow.task.job.AssignTask</action>
+        </actions>
+        <on-success>
+            <timers>
+                <start>node://confirm-timer</start>
+            </timers>
+        </on-success>
+    </task>
+
+    <!--10 minutes before auto CONFIRM-->
+    <timer id="confirm-timer">
+        <type>single</type>
+        <interval>600</interval>
+        <actions>
+            <action>class://org.openjst.commons.workflow.task.job.ConfirmTimeoutTask</action>
+        </actions>
+        <on-success>
+            <goto>node://confirm</goto>
+        </on-success>
+    </timer>
+
+    <task id="confirm">
+        <actions>
+            <action>class://org.openjst.commons.workflow.task.job.ConfirmTask</action>
+        </actions>
+        <on-success>
+            <timers>
+                <stop>node://confirm-timer</stop>
+                <start>node://reject-timer</start>
+            </timers>
+        </on-success>
+    </task>
+
+    <!--15 minutes before auto REJECT-->
+    <timer id="reject-timer">
+        <type>single</type>
+        <timeout>900</timeout>
+        <actions>
+            <action>class://org.openjst.commons.workflow.task.job.RejectTimeoutTask</action>
+        </actions>
+        <on-success>
+            <goto>task://reject</goto>
+        </on-success>
+    </timer>
+
+    <task id="reject">
+        <actions>
+            <action>class://org.openjst.commons.workflow.task.job.RejectTask</action>
+        </actions>
+        <on-success>
+            <goto>workflow://end</goto>
+            <timers>
+                <stop>node://reject-timer</stop>
+            </timers>
+        </on-success>
+    </task>
+
+    <task id="accept">
+        <actions>
+            <action>class://org.openjst.commons.workflow.task.job.AcceptTask</action>
+        </actions>
+        <on-success>
+            <timers>
+                <stop>node://reject-timer</stop>
+            </timers>
+        </on-success>
+    </task>
+
+    <task id="start">
+        <actions>
+            <action>class://org.openjst.commons.workflow.task.job.StartTask</action>
+        </actions>
+    </task>
+
+    <task id="finish">
+        <actions>
+            <action>class://org.openjst.commons.workflow.task.job.FinishTask</action>
+        </actions>
+        <on-success>
+            <goto>workflow://end</goto>
+        </on-success>
+    </task>
+
+    <task id="fail">
+        <actions>
+            <action>class://org.openjst.commons.workflow.task.job.FailTask</action>
+        </actions>
+        <on-success>
+            <goto>workflow://end</goto>
+        </on-success>
+    </task>
+
+    <task id="workflow-error">
+        <actions>
+            <action>class://org.openjst.commons.workflow.error.job.WorkflowError</action>
+        </actions>
+        <on-error/>
+        <on-success/>
+    </task>
+
+    <event id="event-change-state-of-job">
+        <actions>
+            <action>class://org.openjst.commons.workflow.event.job.ChangeStateEvent</action>
+        </actions>
+        <on-success>
+            <switch property="state">
+                <case value="assign">
+                    <goto>task://assign</goto>
+                </case>
+                <case value="confirm">
+                    <goto>task://confirm</goto>
+                </case>
+                <case value="accept">
+                    <goto>task://accept</goto>
+                </case>
+                <case value="reject">
+                    <goto>task://reject</goto>
+                </case>
+                <case value="start">
+                    <goto>task://start</goto>
+                </case>
+                <case value="finish">
+                    <goto>task://finish</goto>
+                </case>
+                <case value="fail">
+                    <goto>task://fail</goto>
+                </case>
+            </switch>
+        </on-success>
+    </event>
+
+    <!--should be only one node END-->
+    <end>
+        <actions>
+            <action>class://org.openjst.commons.workflow.task.job.EndTask</action>
+        </actions>
+    </end>
+
+</workflow>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>client</artifactId>
+        <groupId>org.openjst.client</groupId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>client-android</artifactId>
+    <groupId>org.openjst.client.android</groupId>
+    <packaging>pom</packaging>
+
+    <name>Mobile: Android</name>
+
+    <modules>
+        <module>commons</module>
+        <module>generic-client</module>
+        <module>theme-test</module>
+    </modules>
+
+    <properties>
+        <environment>development</environment>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.openjst.protocol</groupId>
+                <artifactId>protocol-basic-client</artifactId>
+                <version>0.1-SNAPSHOT</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.android</groupId>
+                <artifactId>android</artifactId>
+                <version>2.2.1</version>
+                <scope>provided</scope>
+            </dependency>
+            <!--<dependency>-->
+            <!--<groupId>android.support</groupId>-->
+            <!--<artifactId>compatibility-v4</artifactId>-->
+            <!--<version>r11</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+            <!--<groupId>org.roboguice</groupId>-->
+            <!--<artifactId>roboguice</artifactId>-->
+            <!--<version>2.0</version>-->
+            <!--</dependency>-->
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jarsigner-plugin</artifactId>
+                    <version>1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                    <artifactId>android-maven-plugin</artifactId>
+                    <version>3.4.1</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <sdk>
+                            <platform>8</platform>
+                        </sdk>
+                        <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

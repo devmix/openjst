@@ -1,0 +1,36 @@
+/*
+ * Copyright (C) 2013 OpenJST Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.openjst.server.mobile.cdi.beans;
+
+import org.openjst.server.commons.cdi.beans.GlobalSession;
+import org.openjst.server.mobile.model.User;
+import org.openjst.server.mobile.mq.model.SessionModel;
+
+/**
+ * @author Sergey Grachev
+ */
+public interface MobileSession extends GlobalSession {
+
+    void initialization(User user);
+
+    SessionModel getSession();
+
+    long getUserId();
+
+    long getAccountId();
+}

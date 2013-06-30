@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+            android:key="settings_server_account"
+            android:title="@string/account"
+            android:defaultValue="system"/>
+
+    <PreferenceScreen
+            android:key="settings_server"
+            android:title="@string/server"
+            android:persistent="false">
+        <EditTextPreference
+                android:key="settings_server_host"
+                android:title="@string/host"
+                android:inputType="textWebEditText"
+                android:defaultValue="10.0.2.2"/>
+        <EditTextPreference
+                android:key="settings_server_port"
+                android:title="@string/port"
+                android:inputType="numberDecimal"
+                android:defaultValue="5558"/>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+            android:title="@string/locale"
+            android:key="settings_locale"
+            android:persistent="false">
+        <ListPreference
+                android:key="settings_locale_code"
+                android:title="@string/language"
+                android:inputType="textWebEditText"
+                android:defaultValue="en"
+                android:entryValues="@array/array_country_codes"/>
+    </PreferenceScreen>
+
+    <CheckBoxPreference
+            android:key="settings_update_check"
+            android:title="@string/check_updates"
+            android:defaultValue="true"/>
+</PreferenceScreen>

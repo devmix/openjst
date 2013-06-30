@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inspections version="1.0" is_locked="false">
+    <option name="myName" value="OpenJST"/>
+    <option name="myLocal" value="false"/>
+    <inspection_tool class="FieldMayBeFinal" enabled="true" level="WARNING" enabled_by_default="true"/>
+    <inspection_tool class="LocalCanBeFinal" enabled="true" level="WARNING" enabled_by_default="true">
+        <option name="REPORT_VARIABLES" value="true"/>
+        <option name="REPORT_PARAMETERS" value="true"/>
+    </inspection_tool>
+    <inspection_tool class="SerializableHasSerialVersionUIDField" enabled="true" level="WARNING"
+                     enabled_by_default="true">
+        <option name="ignoreAnonymousInnerClasses" value="false"/>
+        <option name="superClassString" value=""/>
+    </inspection_tool>
+    <inspection_tool class="UnnecessaryFinalOnLocalVariableOrParameter" enabled="true" level="WARNING"
+                     enabled_by_default="true">
+        <option name="onlyWarnOnAbstractMethods" value="true"/>
+        <option name="reportLocalVariables" value="false"/>
+    </inspection_tool>
+    <inspection_tool class="groupsTestNG" enabled="true" level="WARNING" enabled_by_default="true">
+        <option name="groups">
+            <value>
+                <list size="2">
+                    <item index="0" class="java.lang.String" itemvalue="manual"/>
+                    <item index="1" class="java.lang.String" itemvalue="unit"/>
+                </list>
+            </value>
+        </option>
+    </inspection_tool>
+</inspections>
+

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <style name="OpenJST.DarkTheme.Widget.ListView.Group.Text" parent="android:TextAppearance.Small">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme.Widget.ListView.Child.Property.Text" parent="android:TextAppearance.Small">
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:gravity">left</item>
+        <item name="android:layout_marginRight">2dp</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme.Widget.ListView.Child.Value.Text" parent="android:TextAppearance.Small">
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:layout_gravity">right</item>
+        <item name="android:gravity">right</item>
+        <item name="android:layout_marginLeft">2dp</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme.Widget.ListView.Child.Value.VerticalText" parent="android:TextAppearance.Small">
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:gravity">fill_horizontal</item>
+        <item name="android:layout_marginLeft">8dp</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme.Widget.ListView.Group" parent="android:Widget.ListView">
+        <item name="android:background">@drawable/dark_theme_list_view_group_bg</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme.Widget.ListView.Child" parent="android:Widget.ListView">
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+    </style>
+
+    <!--standard components-->
+
+    <style name="OpenJST.DarkTheme.Widget.ListView" parent="android:Widget.ListView">
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:divider">@drawable/dark_theme_list_view_divider</item>
+        <item name="android:dividerHeight">0.5dp</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme.Widget.ExpandableListView" parent="android:Widget.ExpandableListView">
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:divider">@drawable/dark_theme_list_view_divider</item>
+        <item name="android:dividerHeight">0.5dp</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme.Widget.Button" parent="android:Widget.Button">
+        <item name="android:background">@drawable/dark_theme_button_bg</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme.Widget.EditText" parent="android:Widget.EditText">
+        <item name="android:background">@drawable/dark_theme_edit_text_bg</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+    </style>
+
+    <!--<style name="OpenJST.DarkTheme.TextAppearance.Widget.TabWidget" parent="android:TextAppearance.Widget.TabWidget">-->
+    <!--<item name="android:textColor">@drawable/dark_theme_tab_fg</item>-->
+    <!--</style>-->
+
+    <style name="OpenJST.DarkTheme.Widget.TabWidget" parent="android:Widget.TabWidget">
+        <!--<item name="android:background">@drawable/dark_theme_tab_bg</item>-->
+        <!--<item name="android:textAppearance">@style/OpenJST.DarkTheme.TextAppearance.Widget.TabWidget</item>-->
+        <item name="android:divider">@drawable/img_dark_theme_tab_divider</item>
+        <!--<item name="android:dividerHeight">5dp</item>-->
+    </style>
+
+    <style name="OpenJST.DarkTheme.Window.BackgroundStyle" parent="android:ButtonBar">
+        <item name="android:background">@drawable/dark_theme_window_title_bg</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme.Window.TitleStyle" parent="android:ButtonBar">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme" parent="android:Theme.Black">
+        <item name="android:windowBackground">@drawable/dark_theme_window_bg</item>
+        <item name="android:buttonStyle">@style/OpenJST.DarkTheme.Widget.Button</item>
+        <item name="android:editTextStyle">@style/OpenJST.DarkTheme.Widget.EditText</item>
+        <item name="android:tabWidgetStyle">@style/OpenJST.DarkTheme.Widget.TabWidget</item>
+        <item name="android:windowTitleBackgroundStyle">@style/OpenJST.DarkTheme.Window.BackgroundStyle</item>
+        <item name="android:windowTitleStyle">@style/OpenJST.DarkTheme.Window.TitleStyle</item>
+        <item name="android:listViewStyle">@style/OpenJST.DarkTheme.Widget.ListView</item>
+        <item name="android:expandableListViewStyle">@style/OpenJST.DarkTheme.Widget.ExpandableListView</item>
+    </style>
+
+    <style name="OpenJST.DarkTheme.NoTitle" parent="OpenJST.DarkTheme">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>
+

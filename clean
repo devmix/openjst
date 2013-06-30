@@ -1,0 +1,3 @@
+#!/bin/sh
+
+mvn clean -Pprotocol,client-android,server-mobile

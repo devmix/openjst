@@ -1,0 +1,117 @@
+title,key,plugin,priority,status
+Anon Inner Length,com.puppycrawl.tools.checkstyle.checks.sizes.AnonInnerLengthCheck,checkstyle,MAJOR,ACTIVE
+Avoid Array Loops,AvoidArrayLoops,pmd,MAJOR,ACTIVE
+Avoid Assert As Identifier,AvoidAssertAsIdentifier,pmd,MAJOR,ACTIVE
+Avoid Calling Finalize,AvoidCallingFinalize,pmd,MAJOR,ACTIVE
+Avoid Catching NPE,AvoidCatchingNPE,pmd,MAJOR,ACTIVE
+Avoid Catching Throwable,AvoidCatchingThrowable,pmd,CRITICAL,ACTIVE
+Avoid commented-out lines of code,CommentedOutCodeLine,squid,MAJOR,ACTIVE
+Avoid cycle between java packages,CycleBetweenPackages,squid,MAJOR,ACTIVE
+Avoid Decimal Literals In Big Decimal Constructor,AvoidDecimalLiteralsInBigDecimalConstructor,pmd,MAJOR,ACTIVE
+Avoid Duplicate Literals,AvoidDuplicateLiterals,pmd,MAJOR,ACTIVE
+Avoid Enum As Identifier,AvoidEnumAsIdentifier,pmd,MAJOR,ACTIVE
+Avoid Instanceof Checks In Catch Clause,AvoidInstanceofChecksInCatchClause,pmd,MINOR,ACTIVE
+Avoid Print Stack Trace,AvoidPrintStackTrace,pmd,MAJOR,ACTIVE
+Avoid Rethrowing Exception,AvoidRethrowingException,pmd,MAJOR,ACTIVE
+Avoid Throwing Null Pointer Exception,AvoidThrowingNullPointerException,pmd,MAJOR,ACTIVE
+Avoid Throwing Raw Exception Types,AvoidThrowingRawExceptionTypes,pmd,MAJOR,ACTIVE
+Big Integer Instantiation,BigIntegerInstantiation,pmd,MAJOR,ACTIVE
+Boolean Expression Complexity,com.puppycrawl.tools.checkstyle.checks.metrics.BooleanExpressionComplexityCheck,checkstyle,MAJOR,ACTIVE
+Boolean Instantiation,BooleanInstantiation,pmd,MAJOR,ACTIVE
+Broken Null Check,BrokenNullCheck,pmd,CRITICAL,ACTIVE
+Class Cast Exception With To Array,ClassCastExceptionWithToArray,pmd,MAJOR,ACTIVE
+Clone method must implement Cloneable,CloneMethodMustImplementCloneable,pmd,MAJOR,ACTIVE
+Clone Throws Clone Not Supported Exception,CloneThrowsCloneNotSupportedException,pmd,MAJOR,ACTIVE
+Close Resource,CloseResource,pmd,MAJOR,ACTIVE
+Collapsible If Statements,CollapsibleIfStatements,pmd,MINOR,ACTIVE
+Compare Objects With Equals,CompareObjectsWithEquals,pmd,MAJOR,ACTIVE
+Constant Name,com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck,checkstyle,MINOR,ACTIVE
+Constructor Calls Overridable Method,ConstructorCallsOverridableMethod,pmd,MAJOR,ACTIVE
+Cyclomatic Complexity,com.puppycrawl.tools.checkstyle.checks.metrics.CyclomaticComplexityCheck,checkstyle,MAJOR,ACTIVE
+Default Comes Last,com.puppycrawl.tools.checkstyle.checks.coding.DefaultComesLastCheck,checkstyle,MAJOR,ACTIVE
+Dont Import Java Lang,DontImportJavaLang,pmd,MINOR,ACTIVE
+Dont Import Sun,DontImportSun,pmd,MINOR,ACTIVE
+Double Checked Locking,com.puppycrawl.tools.checkstyle.checks.coding.DoubleCheckedLockingCheck,checkstyle,MAJOR,ACTIVE
+Empty Finalizer,EmptyFinalizer,pmd,MAJOR,ACTIVE
+Empty Finally Block,EmptyFinallyBlock,pmd,CRITICAL,ACTIVE
+Empty If Stmt,EmptyIfStmt,pmd,CRITICAL,ACTIVE
+Empty Statement,com.puppycrawl.tools.checkstyle.checks.coding.EmptyStatementCheck,checkstyle,MINOR,ACTIVE
+Empty Static Initializer,EmptyStaticInitializer,pmd,MAJOR,ACTIVE
+Empty Switch Statements,EmptySwitchStatements,pmd,MAJOR,ACTIVE
+Empty Synchronized Block,EmptySynchronizedBlock,pmd,CRITICAL,ACTIVE
+Empty Try Block,EmptyTryBlock,pmd,MAJOR,ACTIVE
+Empty While Stmt,EmptyWhileStmt,pmd,CRITICAL,ACTIVE
+Equals Hash Code,com.puppycrawl.tools.checkstyle.checks.coding.EqualsHashCodeCheck,checkstyle,CRITICAL,ACTIVE
+Equals Null,EqualsNull,pmd,CRITICAL,ACTIVE
+Exception As Flow Control,ExceptionAsFlowControl,pmd,MAJOR,ACTIVE
+Final Class,com.puppycrawl.tools.checkstyle.checks.design.FinalClassCheck,checkstyle,MAJOR,ACTIVE
+Final Field Could Be Static,FinalFieldCouldBeStatic,pmd,MINOR,ACTIVE
+Finalize Does Not Call Super Finalize,FinalizeDoesNotCallSuperFinalize,pmd,MAJOR,ACTIVE
+Finalize Overloaded,FinalizeOverloaded,pmd,MAJOR,ACTIVE
+For Loops Must Use Braces,ForLoopsMustUseBraces,pmd,MAJOR,ACTIVE
+Hidden Field,com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck,checkstyle,MAJOR,ACTIVE
+Hide Utility Class Constructor,com.puppycrawl.tools.checkstyle.checks.design.HideUtilityClassConstructorCheck,checkstyle,MAJOR,ACTIVE
+Idempotent Operations,IdempotentOperations,pmd,MAJOR,ACTIVE
+If Else Stmts Must Use Braces,IfElseStmtsMustUseBraces,pmd,MAJOR,ACTIVE
+If Stmts Must Use Braces,IfStmtsMustUseBraces,pmd,MAJOR,ACTIVE
+Illegal Throws,com.puppycrawl.tools.checkstyle.checks.coding.IllegalThrowsCheck,checkstyle,MAJOR,ACTIVE
+Inefficient String Buffering,InefficientStringBuffering,pmd,MAJOR,ACTIVE
+Inner Assignment,com.puppycrawl.tools.checkstyle.checks.coding.InnerAssignmentCheck,checkstyle,MAJOR,ACTIVE
+Instantiation To Get Class,InstantiationToGetClass,pmd,MAJOR,ACTIVE
+Integer Instantiation,IntegerInstantiation,pmd,MAJOR,ACTIVE
+Local Final Variable Name,com.puppycrawl.tools.checkstyle.checks.naming.LocalFinalVariableNameCheck,checkstyle,MAJOR,ACTIVE
+Local Variable Name,com.puppycrawl.tools.checkstyle.checks.naming.LocalVariableNameCheck,checkstyle,MAJOR,ACTIVE
+Loose coupling,LooseCoupling,pmd,MAJOR,ACTIVE
+Member name,com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck,checkstyle,MAJOR,ACTIVE
+Method Name,com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck,checkstyle,MAJOR,ACTIVE
+Missing Static Method In Non Instantiatable Class,MissingStaticMethodInNonInstantiatableClass,pmd,MAJOR,ACTIVE
+Modifier Order,com.puppycrawl.tools.checkstyle.checks.modifier.ModifierOrderCheck,checkstyle,MINOR,ACTIVE
+Naming - Avoid dollar signs,AvoidDollarSigns,pmd,MINOR,ACTIVE
+Naming - Class naming conventions,ClassNamingConventions,pmd,MAJOR,ACTIVE
+Naming - Method with same name as enclosing class,MethodWithSameNameAsEnclosingClass,pmd,MAJOR,ACTIVE
+Naming - Suspicious constant field name,SuspiciousConstantFieldName,pmd,MAJOR,ACTIVE
+Naming - Suspicious equals method name,SuspiciousEqualsMethodName,pmd,CRITICAL,ACTIVE
+Naming - Suspicious Hashcode method name,SuspiciousHashcodeMethodName,pmd,MAJOR,ACTIVE
+Ncss Method Count,NcssMethodCount,pmd,MAJOR,ACTIVE
+Ncss Type Count,NcssTypeCount,pmd,MAJOR,ACTIVE
+Package name,com.puppycrawl.tools.checkstyle.checks.naming.PackageNameCheck,checkstyle,MAJOR,ACTIVE
+Parameter Assignment,com.puppycrawl.tools.checkstyle.checks.coding.ParameterAssignmentCheck,checkstyle,MAJOR,ACTIVE
+Parameter Name,com.puppycrawl.tools.checkstyle.checks.naming.ParameterNameCheck,checkstyle,MAJOR,ACTIVE
+Preserve Stack Trace,PreserveStackTrace,pmd,MAJOR,ACTIVE
+Redundant Modifier,com.puppycrawl.tools.checkstyle.checks.modifier.RedundantModifierCheck,checkstyle,MINOR,ACTIVE
+Redundant Throws,com.puppycrawl.tools.checkstyle.checks.coding.RedundantThrowsCheck,checkstyle,MINOR,ACTIVE
+Replace Enumeration With Iterator,ReplaceEnumerationWithIterator,pmd,MAJOR,ACTIVE
+Replace Hashtable With Map,ReplaceHashtableWithMap,pmd,MAJOR,ACTIVE
+Replace Vector With List,ReplaceVectorWithList,pmd,MAJOR,ACTIVE
+Security - Array is stored directly,ArrayIsStoredDirectly,pmd,CRITICAL,ACTIVE
+Signature Declare Throws Exception,SignatureDeclareThrowsException,pmd,MAJOR,ACTIVE
+Simplify Boolean Expression,com.puppycrawl.tools.checkstyle.checks.coding.SimplifyBooleanExpressionCheck,checkstyle,MAJOR,ACTIVE
+Simplify Boolean Return,com.puppycrawl.tools.checkstyle.checks.coding.SimplifyBooleanReturnCheck,checkstyle,MAJOR,ACTIVE
+Simplify Conditional,SimplifyConditional,pmd,MAJOR,ACTIVE
+Singular Field,SingularField,pmd,MINOR,ACTIVE
+Static Variable Name,com.puppycrawl.tools.checkstyle.checks.naming.StaticVariableNameCheck,checkstyle,MAJOR,ACTIVE
+String Buffer Instantiation With Char,StringBufferInstantiationWithChar,pmd,MAJOR,ACTIVE
+String Instantiation,StringInstantiation,pmd,MAJOR,ACTIVE
+String Literal Equality,com.puppycrawl.tools.checkstyle.checks.coding.StringLiteralEqualityCheck,checkstyle,MAJOR,ACTIVE
+String To String,StringToString,pmd,MAJOR,ACTIVE
+System Println,SystemPrintln,pmd,MAJOR,ACTIVE
+Unconditional If Statement,UnconditionalIfStatement,pmd,CRITICAL,ACTIVE
+Unnecessary Case Change,UnnecessaryCaseChange,pmd,MINOR,ACTIVE
+Unnecessary Local Before Return,UnnecessaryLocalBeforeReturn,pmd,MAJOR,ACTIVE
+Unused formal parameter,UnusedFormalParameter,pmd,MAJOR,ACTIVE
+Unused Imports,com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck,checkstyle,INFO,ACTIVE
+Unused local variable,UnusedLocalVariable,pmd,MAJOR,ACTIVE
+Unused Modifier,UnusedModifier,pmd,INFO,ACTIVE
+Unused Null Check In Equals,UnusedNullCheckInEquals,pmd,MAJOR,ACTIVE
+Unused Private Field,UnusedPrivateField,pmd,MAJOR,ACTIVE
+Unused private method,UnusedPrivateMethod,pmd,MAJOR,ACTIVE
+Use Array List Instead Of Vector,UseArrayListInsteadOfVector,pmd,MAJOR,ACTIVE
+Use Arrays As List,UseArraysAsList,pmd,MAJOR,ACTIVE
+Use Correct Exception Logging,UseCorrectExceptionLogging,pmd,MAJOR,ACTIVE
+Use Index Of Char,UseIndexOfChar,pmd,MAJOR,ACTIVE
+Use String Buffer Length,UseStringBufferLength,pmd,MINOR,ACTIVE
+Useless Operation On Immutable,UselessOperationOnImmutable,pmd,CRITICAL,ACTIVE
+Useless Overriding Method,UselessOverridingMethod,pmd,MAJOR,ACTIVE
+Useless String Value Of,UselessStringValueOf,pmd,MINOR,ACTIVE
+Visibility Modifier,com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck,checkstyle,MAJOR,ACTIVE
+While Loops Must Use Braces,WhileLoopsMustUseBraces,pmd,MAJOR,ACTIVE

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>server-mobile</artifactId>
+        <groupId>org.openjst.server</groupId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>server-mobile-ear</artifactId>
+    <packaging>ear</packaging>
+
+    <name>Server: Mobile - EAR</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openjst.server</groupId>
+            <artifactId>server-mobile-model</artifactId>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst.server</groupId>
+            <artifactId>server-mobile-ejb</artifactId>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst.server</groupId>
+            <artifactId>server-mobile-war</artifactId>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst.protocol</groupId>
+            <artifactId>protocol-basic-server</artifactId>
+            <type>jar</type>
+        </dependency>
+
+        <!--Commons-->
+
+        <dependency>
+            <groupId>org.openjst.server</groupId>
+            <artifactId>server-commons-ejb</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
+
+        <!--Apache Commons-->
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <!--other-->
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>server-mobile</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <displayName>Server: Mobile</displayName>
+                    <applicationName>server-mobile</applicationName>
+                    <modules>
+                        <webModule>
+                            <groupId>org.openjst.server</groupId>
+                            <artifactId>server-mobile-war</artifactId>
+                            <contextRoot>/mobile</contextRoot>
+                        </webModule>
+                    </modules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

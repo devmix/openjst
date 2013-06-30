@@ -1,0 +1,116 @@
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <security-role>
+        <role-name>ADMIN</role-name>
+    </security-role>
+
+    <security-role>
+        <role-name>USER</role-name>
+    </security-role>
+
+    <!--RESTRICTED ACCESS-->
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Private UI</web-resource-name>
+            <url-pattern>/*</url-pattern>
+            <!--<url-pattern>/rest/*</url-pattern>-->
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>ADMIN</role-name>
+            <role-name>USER</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <!--FREE ACCESS-->
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Public UI</web-resource-name>
+            <url-pattern>/ui/js/application.js</url-pattern>
+            <url-pattern>/ui/js/manifest.js</url-pattern>
+            <url-pattern>/ui/assets/*</url-pattern>
+            <url-pattern>/ui/css/*</url-pattern>
+            <url-pattern>/ui/lib/*</url-pattern>
+            <url-pattern>/rest/ui/assets/*</url-pattern>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Public JAX-RS API</web-resource-name>
+            <url-pattern>/api/*</url-pattern>
+            <!--<http-method>DELETE</http-method>-->
+            <!--<http-method>PUT</http-method>-->
+            <!--<http-method>HEAD</http-method>-->
+            <!--<http-method>OPTIONS</http-method>-->
+            <!--<http-method>TRACE</http-method>-->
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <user-data-constraint>
+            <!--TODO SSL -->
+            <!--<transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>FormAuthentication</realm-name>
+        <form-login-config>
+            <form-login-page>/sing-in</form-login-page>
+            <!--TODO error page-->
+            <form-error-page>/sing-in</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <!--PAGES-->
+
+    <servlet>
+        <servlet-name>pages.sing-in</servlet-name>
+        <jsp-file>/ui/jsp/sing-in.jsp</jsp-file>
+    </servlet>
+    <servlet>
+        <servlet-name>pages.index</servlet-name>
+        <jsp-file>/ui/jsp/index.jsp</jsp-file>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>pages.sing-in</servlet-name>
+        <url-pattern>/sing-in/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>pages.index</servlet-name>
+        <url-pattern>/index.jsp</url-pattern>
+    </servlet-mapping>
+
+</web-app>

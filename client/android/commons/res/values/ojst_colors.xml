@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <color name="dark_theme_light_bg">#ff646464</color>
+    <color name="dark_theme_medium_bg">#ff404040</color>
+    <color name="dark_theme_dark_bg">#ff383838</color>
+
+    <color name="dark_theme_dark_border">#ff5e5e5e</color>
+
+    <color name="dark_theme_light_bg_alpha_9f">#9f646464</color>
+    <color name="dark_theme_medium_bg_alpha_9f">#9f404040</color>
+    <color name="dark_theme_dark_bg_alpha_9f">#9f383838</color>
+
+    <color name="dark_theme_dark_bg_alpha_5f">#5f383838</color>
+</resources>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="client_id">Client ID</string>
+    <string name="secret_key">Пароль</string>
+    <string name="logo">Логотип</string>
+    <string name="remember_me">Запомнить меня</string>
+    <string name="register_new_account">Регистрация</string>
+    <string name="error_empty_login">Логин не введен</string>
+    <string name="settings">Настройки</string>
+    <string name="exit">Выход</string>
+    <string name="server">Сервер</string>
+    <string name="host">Адрес</string>
+    <string name="port">Порт</string>
+    <string name="language">Язык</string>
+    <string name="locale">Локализация</string>
+    <string name="check_updates">Проверять обновления</string>
+    <string name="account">Аккаунт</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="password">Пароль</string>
+    <string name="email">E-Mail</string>
+    <string name="register_new_client">Register new client</string>
+    <string name="schedule_today">График на сегодня</string>
+    <string name="status">Статус</string>
+    <string name="login">Войти</string>
+    <string name="logout">Выйти</string>
+    <string name="online">В сети</string>
+    <string name="offline">Не в сети</string>
+    <string name="connecting">Соединение…</string>
+    <string name="notification_new_version">New version %s</string>
+    <string name="notification_click_to_start_upgrade_to_new_version">Click to start the upgrade to the new version %s
+    </string>
+    <string name="units_information_byte">Б</string>
+    <string name="units_information_kib">КиБ</string>
+    <string name="units_information_mib">МиБ</string>
+    <string name="units_information_gib">ГиБ</string>
+    <string name="units_information_tib">ТиБ</string>
+    <string name="units_information_pib">ПиБ</string>
+    <string name="units_information_eib">ЭиБ</string>
+    <string name="current_version">Current version</string>
+    <string name="version">Version</string>
+    <string name="code">Code</string>
+    <string name="published">Published</string>
+    <string name="description">Description</string>
+    <string name="available_new_version">Available new version</string>
+</resources>

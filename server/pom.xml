@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.openjst</groupId>
+        <artifactId>openjst</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.openjst.server</groupId>
+    <artifactId>server</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Server</name>
+
+    <modules>
+        <module>commons</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>server-mobile</id>
+            <modules>
+                <module>mobile</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>server-portal</id>
+            <modules>
+                <module>portal</module>
+            </modules>
+        </profile>
+    </profiles>
+
+    <properties>
+        <jboss.bom.version>1.0.3.Final</jboss.bom.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!--OpenJST Commons-->
+
+            <dependency>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>server-commons-model</artifactId>
+                <version>0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>server-commons-ejb</artifactId>
+                <version>0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>server-commons-war</artifactId>
+                <version>0.1-SNAPSHOT</version>
+            </dependency>
+
+            <!--OpenJST: Mobile Server-->
+
+            <dependency>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>server-mobile-model</artifactId>
+                <version>0.1-SNAPSHOT</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>server-mobile-ejb</artifactId>
+                <version>0.1-SNAPSHOT</version>
+                <type>ejb</type>
+            </dependency>
+            <dependency>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>server-mobile-war</artifactId>
+                <version>0.1-SNAPSHOT</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>server-mobile-ear</artifactId>
+                <version>0.1-SNAPSHOT</version>
+                <type>ear</type>
+            </dependency>
+
+            <!--OpenJST: Portal Server-->
+
+            <dependency>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>server-portal-model</artifactId>
+                <version>0.1-SNAPSHOT</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>server-portal-ejb</artifactId>
+                <version>0.1-SNAPSHOT</version>
+                <type>ejb</type>
+            </dependency>
+            <dependency>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>server-portal-web</artifactId>
+                <version>0.1-SNAPSHOT</version>
+                <type>war</type>
+            </dependency>
+
+            <!-- Protocols -->
+
+            <dependency>
+                <groupId>org.openjst.protocol</groupId>
+                <artifactId>protocol-basic-server</artifactId>
+                <version>0.1-SNAPSHOT</version>
+            </dependency>
+
+            <!--JBoss-->
+
+            <dependency>
+                <groupId>org.jboss.spec</groupId>
+                <artifactId>jboss-javaee-6.0</artifactId>
+                <version>3.0.1.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- JBoss distributes a complete set of Java EE 6 APIs including
+               a Bill of Materials (BOM). A BOM specifies the versions of a "stack" (or
+               a collection) of artifacts. We use this here so that we always get the correct
+               versions of artifacts. Here we use the jboss-javaee-6.0-with-tools stack
+               (you can read this as the JBoss stack of the Java EE 6 APIs, with some extras
+               tools for your project, such as Arquillian for testing) and the jboss-javaee-6.0-with-hibernate
+               stack you can read this as the JBoss stack of the Java EE 6 APIs, with extras
+               from the Hibernate family of projects) -->
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-tools</artifactId>
+                <version>${jboss.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+                <version>${jboss.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- JSR-303 (Bean Validation) Implementation -->
+            <!-- Provides portable constraints such as @Email -->
+            <!-- Hibernate Validator is shipped in JBoss AS 7 -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>4.1.0.Final</version>
+                <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jboss.as.plugins</groupId>
+                    <artifactId>jboss-as-maven-plugin</artifactId>
+                    <version>7.1.1.Final</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-ear-plugin</artifactId>
+                    <version>2.8</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <version>6</version>
+                        <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <version>2.3</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <ejbVersion>3.1</ejbVersion>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

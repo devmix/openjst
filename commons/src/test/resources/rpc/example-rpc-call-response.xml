@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <struct>
+                    <member>
+                        <name>foo</name>
+                        <value>
+                            <i4>11</i4>
+                        </value>
+                    </member>
+                    <member>
+                        <name>bar</name>
+                        <value>
+                            <i4>12</i4>
+                        </value>
+                    </member>
+                    <member>
+                        <name>struct</name>
+                        <value>
+                            <struct>
+                                <member>
+                                    <name>foo2</name>
+                                    <value>
+                                        <i4>111</i4>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>bar2</name>
+                                    <value>
+                                        <i4>112</i4>
+                                    </value>
+                                </member>
+                            </struct>
+                        </value>
+                    </member>
+                    <member>
+                        <name>array</name>
+                        <value>
+                            <array>
+                                <data>
+                                    <value>
+                                        <i4>1</i4>
+                                    </value>
+                                    <value>
+                                        <int>2</int>
+                                    </value>
+                                    <value>
+                                        <string>text</string>
+                                    </value>
+                                    <value>
+                                        <double>12.3</double>
+                                    </value>
+                                    <value>
+                                        <boolean>true</boolean>
+                                    </value>
+                                    <value>
+                                        <dateTime.iso8601>19980717T14:08:55</dateTime.iso8601>
+                                    </value>
+                                    <value>
+                                        <base64>eW91IGNhbid0IHJlYWQgdGhpcyE=</base64>
+                                    </value>
+                                    <value>
+                                        <nil/>
+                                    </value>
+                                    <value>
+                                        <array>
+                                            <data>
+                                                <value>
+                                                    <i4>1</i4>
+                                                </value>
+                                                <value>
+                                                    <int>2</int>
+                                                </value>
+                                                <value>
+                                                    <string>text</string>
+                                                </value>
+                                                <value>
+                                                    <double>12.3</double>
+                                                </value>
+                                                <value>
+                                                    <boolean>true</boolean>
+                                                </value>
+                                                <value>
+                                                    <dateTime.iso8601>19980717T14:08:55</dateTime.iso8601>
+                                                </value>
+                                                <value>
+                                                    <base64>eW91IGNhbid0IHJlYWQgdGhpcyE=</base64>
+                                                </value>
+                                                <value>
+                                                    <nil/>
+                                                </value>
+                                            </data>
+                                        </array>
+                                    </value>
+                                </data>
+                            </array>
+                        </value>
+                    </member>
+                </struct>
+            </value>
+        </param>
+    </params>
+</methodResponse>

@@ -1,0 +1,78 @@
+/*
+ * Copyright (C) 2013 OpenJST Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @author Sergey Grachev
+ */
+
+.yui3-widgetsbreadcrumbs {
+    border-top: 1px solid #D4D4D4;
+    border-bottom: 1px solid #D4D4D4;
+    border-right: 1px solid #D4D4D4;
+
+    background-color: #F0F0F0;
+    background-image: linear-gradient(to bottom, #FFFFFF, #F2F2F2);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
+
+    overflow: hidden;
+    padding-left: 4px;
+
+    height: 29px;
+
+    text-shadow: 0 1px 1px #FAFAFA, 0 -1px 1px #ECECEC;
+}
+
+.yui3-widgetsbreadcrumbs > div.tab {
+    display: inline;
+    float: right;
+    border-left: 1px solid #D4D4D4;
+    text-align: center;
+    height: 100%;
+}
+
+.yui3-widgetsbreadcrumbs > div.title {
+    float: left;
+    border-left: 0;
+    font-weight: 700;
+    display: inline;
+    padding: 5px 6px 4px 6px;
+    color: #777777;
+}
+
+.yui3-widgetsbreadcrumbs > div.tab > a {
+    background-image: linear-gradient(to bottom, #FFFFFF, #F2F2F2);
+    padding: 5px 6px 4px 6px;
+    display: block;
+
+    text-decoration: none;
+
+    color: #aaaaaa;
+    cursor: pointer;
+
+    min-width: 50px;
+}
+
+.yui3-widgetsbreadcrumbs > div.tab > a:hover {
+    background-image: linear-gradient(to bottom, #FFFFFF, #FAFAFA);
+    color: #555555;
+
+}
+
+.yui3-widgetsbreadcrumbs > div.tab > a:active {
+    background-color: #F0F0F0;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
+}

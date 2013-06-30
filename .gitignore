@@ -1,0 +1,8 @@
+.metadata
+.idea
+*.iml
+target
+.gitignore~
+pom.xml.versionsBackup
+manifest.js
+temp

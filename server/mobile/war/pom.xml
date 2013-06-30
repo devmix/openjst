@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>server-mobile</artifactId>
+        <groupId>org.openjst.server</groupId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>server-mobile-war</artifactId>
+    <packaging>war</packaging>
+
+    <name>Server: Mobile - WAR</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>extract-ui-resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <useCache>true</useCache>
+                    <overlays>
+                        <overlay>
+                            <groupId>org.openjst.server</groupId>
+                            <artifactId>server-commons-war</artifactId>
+                            <excludes>
+                                <exclude>webapp/ui/js/manifest.js</exclude>
+                            </excludes>
+                        </overlay>
+                    </overlays>
+                    <archive>
+                        <manifestEntries>
+                            <Dependencies>org.infinispan export</Dependencies>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.openjst.server</groupId>
+                <artifactId>webui-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>manifest</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <projectName>OpenJST</projectName>
+                            <projectManifestObject>OJST</projectManifestObject>
+                            <projectNamespace>OJST.modules</projectNamespace>
+                            <resourcesPathCss>
+                                ${project.build.directory}/${project.build.finalName}/ui/css
+                            </resourcesPathCss>
+                            <resourcesPathJs>
+                                ${project.build.directory}/${project.build.finalName}/ui/js
+                            </resourcesPathJs>
+                            <manifestFile>
+                                ${project.build.directory}/${project.build.finalName}/ui/js/manifest.js
+                            </manifestFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compress-and-validate</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <skipCompress>false</skipCompress>
+                            <allowNotValid>false</allowNotValid>
+                            <sourcePath>
+                                ${project.build.directory}/${project.build.finalName}
+                            </sourcePath>
+                            <includes>
+                                <include>ui/js/**</include>
+                                <include>ui/css/**</include>
+                            </includes>
+                            <excludes>
+                                <exclude>ui/js/manifest.js</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <!-- OpenJST -->
+
+        <dependency>
+            <groupId>org.openjst</groupId>
+            <artifactId>commons</artifactId>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst.server</groupId>
+            <artifactId>server-mobile-model</artifactId>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst.server</groupId>
+            <artifactId>server-mobile-ejb</artifactId>
+            <type>ejb</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst.server</groupId>
+            <artifactId>server-commons-ejb</artifactId>
+            <type>ejb</type>
+            <version>0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst.server</groupId>
+            <artifactId>server-commons-war</artifactId>
+            <type>war</type>
+            <version>0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JBoss -->
+
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jsapi</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Infinispan -->
+
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-cdi</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Apache Commons -->
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--other-->
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
