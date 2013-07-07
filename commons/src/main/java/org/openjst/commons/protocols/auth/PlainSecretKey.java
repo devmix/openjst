@@ -54,4 +54,9 @@ final class PlainSecretKey implements SecretKey {
     public int hashCode() {
         return key != null ? Arrays.hashCode(key) : 0;
     }
+
+    @Override
+    public String toString() {
+        return "PlainSecretKey{" + Integer.toHexString(hashCode()) + '}';
+    }
 }

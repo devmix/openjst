@@ -17,16 +17,18 @@
 
 package org.openjst.protocols.basic.pdu;
 
-import java.io.IOException;
+import org.openjst.commons.io.buffer.DataBufferException;
 
 /**
  * @author Sergey Grachev
  */
 public interface PDU {
 
-    byte[] encode();
-
-    void decode(byte[] data) throws IOException;
+    long getPacketId();
 
     short getType();
+
+    byte[] encode() throws DataBufferException;
+
+    void decode(byte[] data) throws DataBufferException;
 }

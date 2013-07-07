@@ -22,14 +22,13 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.replay.ReplayingDecoder;
 import org.openjst.commons.checksum.CRC16;
+import org.openjst.protocols.basic.constants.ProtocolBasicConstants;
 import org.openjst.protocols.basic.exceptions.CorruptedPacketException;
 import org.openjst.protocols.basic.exceptions.UnsupportedProtocolVersionException;
 import org.openjst.protocols.basic.pdu.PDU;
-import org.openjst.protocols.basic.pdu.packets.AbstractPacket;
 import org.openjst.protocols.basic.pdu.packets.PacketsFactory;
 
 public class ProtocolDecoder extends ReplayingDecoder<DecoderState> {
-    public static final byte VERSION = 0;
 
     private PDUHeader packet;
 
@@ -38,7 +37,7 @@ public class ProtocolDecoder extends ReplayingDecoder<DecoderState> {
     }
 
     @Override
-    protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer, DecoderState state) throws Exception {
+    protected Object decode(final ChannelHandlerContext ctx, final Channel channel, final ChannelBuffer buffer, final DecoderState state) throws Exception {
         switch (state) {
             case VERSION:
                 packet.setVersion((byte) buffer.readUnsignedByte());
@@ -61,6 +60,9 @@ public class ProtocolDecoder extends ReplayingDecoder<DecoderState> {
             case DATA:
                 final byte[] data;
                 if (packet.getLength() > 0) {
+                    if (buffer.readableBytes() < packet.getLength()) {
+                        throw new IndexOutOfBoundsException();
+                    }
                     data = new byte[packet.getLength()];
                     buffer.readBytes(data, 0, data.length);
                 } else {
@@ -82,11 +84,11 @@ public class ProtocolDecoder extends ReplayingDecoder<DecoderState> {
     }
 
     private static PDU decode(final PDUHeader header, final byte[] data) throws UnsupportedProtocolVersionException, CorruptedPacketException {
-        if (header.getVersion() != VERSION) {
+        if (header.getVersion() != ProtocolBasicConstants.VERSION) {
             throw new UnsupportedProtocolVersionException(header.getVersion());
         }
 
-        final AbstractPacket packet = PacketsFactory.newOfType((byte) header.getType());
+        final PDU packet = PacketsFactory.newOfType((byte) header.getType());
 
         if (data != null) {
             if (CRC16.checksum(data) != header.getCRC16()) {

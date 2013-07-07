@@ -22,8 +22,6 @@ package org.openjst.commons.rpc;
  */
 public interface RPCResponse extends RPCMessage {
 
-    String getId();
-
     RPCParameters getParameters();
 
     int getErrorCode();

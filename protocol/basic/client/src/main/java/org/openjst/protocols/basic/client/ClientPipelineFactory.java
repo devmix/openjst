@@ -21,12 +21,12 @@ import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.handler.codec.compression.ZlibDecoder;
-import org.jboss.netty.handler.codec.compression.ZlibEncoder;
 import org.jboss.netty.handler.codec.compression.ZlibWrapper;
 import org.openjst.protocols.basic.client.handlers.ClientHandler;
 import org.openjst.protocols.basic.client.handlers.ClientSessionHandler;
 import org.openjst.protocols.basic.decoder.ProtocolDecoder;
 import org.openjst.protocols.basic.encoder.ProtocolEncoder;
+import org.openjst.protocols.basic.handlers.ZlibEncoderFast;
 
 public class ClientPipelineFactory implements ChannelPipelineFactory {
     private final ClientHandler handler;
@@ -38,10 +38,10 @@ public class ClientPipelineFactory implements ChannelPipelineFactory {
     }
 
     public ChannelPipeline getPipeline() throws Exception {
-        ChannelPipeline pipeline = Channels.pipeline();
+        final ChannelPipeline pipeline = Channels.pipeline();
 
-        pipeline.addLast("deflater", new ZlibEncoder(ZlibWrapper.GZIP));
         pipeline.addLast("inflater", new ZlibDecoder(ZlibWrapper.GZIP));
+        pipeline.addLast("deflater", new ZlibEncoderFast(ZlibWrapper.GZIP));
 
         pipeline.addLast("decoder", new ProtocolDecoder());
         pipeline.addLast("encoder", new ProtocolEncoder());

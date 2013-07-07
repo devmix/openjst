@@ -28,10 +28,10 @@ import static org.fest.assertions.Assertions.assertThat;
 @Test
 public class PacketFactoryTest {
     public void test() {
-        assertThat(PacketsFactory.newOfType(Packets.TYPE_AUTH_BASIC)).isInstanceOf(AuthRequestBasicPacket.class);
-        assertThat(PacketsFactory.newOfType(Packets.TYPE_AUTH_RESPONSE)).isInstanceOf(AuthResponsePacket.class);
+        assertThat(PacketsFactory.newOfType(Packets.TYPE_AUTHENTICATION_CLIENT)).isInstanceOf(AuthClientRequestPacket.class);
+        assertThat(PacketsFactory.newOfType(Packets.TYPE_AUTHENTICATION_SERVER)).isInstanceOf(AuthServerRequestPacket.class);
+        assertThat(PacketsFactory.newOfType(Packets.TYPE_AUTHENTICATION_RESPONSE)).isInstanceOf(AuthResponsePacket.class);
         assertThat(PacketsFactory.newOfType(Packets.TYPE_DATETIME_SYNC)).isInstanceOf(DateTimeSyncPacket.class);
-        assertThat(PacketsFactory.newOfType(Packets.TYPE_PRESENCE_STATE)).isInstanceOf(PresenceStatePacket.class);
-        assertThat(PacketsFactory.newOfType(Packets.TYPE_RPC_METHOD)).isInstanceOf(RPCPacket.class);
+        assertThat(PacketsFactory.newOfType(Packets.TYPE_RPC)).isInstanceOf(RPCPacket.class);
     }
 }

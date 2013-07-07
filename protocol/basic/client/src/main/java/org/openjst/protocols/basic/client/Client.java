@@ -25,21 +25,29 @@ import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.handler.execution.OrderedMemoryAwareThreadPoolExecutor;
+import org.jetbrains.annotations.Nullable;
+import org.openjst.commons.protocols.auth.SecretKey;
+import org.openjst.commons.rpc.RPCMessageFormat;
+import org.openjst.protocols.basic.client.context.ClientContext;
 import org.openjst.protocols.basic.client.handlers.ClientHandler;
 import org.openjst.protocols.basic.client.handlers.ClientSessionHandler;
-import org.openjst.protocols.basic.client.session.ClientSessionStorage;
+import org.openjst.protocols.basic.context.SendFuture;
 import org.openjst.protocols.basic.exceptions.ClientNotConnectedException;
 import org.openjst.protocols.basic.pdu.PDU;
+import org.openjst.protocols.basic.pdu.beans.Parameter;
 import org.openjst.protocols.basic.pdu.packets.AbstractAuthPacket;
+import org.openjst.protocols.basic.pdu.packets.PacketsFactory;
 
 import java.net.InetSocketAddress;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class Client {
+
     private final String host;
     private final int port;
     private final ClientEventsProducer eventsProducer;
-    private final ClientSessionStorage clientSessionStorage;
+    private final ClientContext clientContext;
     private final ChannelGroup channelGroup = new DefaultChannelGroup(this + "-channelGroup");
 
     private Channel channel;
@@ -50,7 +58,7 @@ public class Client {
         this.port = port;
 
         eventsProducer = new ClientEventsProducer();
-        clientSessionStorage = new ClientSessionStorage();
+        clientContext = new ClientContext();
     }
 
     public void addListener(final ClientEventsListener listener) {
@@ -61,19 +69,55 @@ public class Client {
         eventsProducer.removeListener(listener);
     }
 
-    public void sendPacket(final PDU packet) throws ClientNotConnectedException {
+    private SendFuture sendPacket(final PDU packet) throws ClientNotConnectedException {
         if (!isConnected()) {
             throw new ClientNotConnectedException();
         }
-
-        channel.write(packet);
+        return clientContext.createSendFuture(channel.write(packet), packet);
     }
 
     public boolean isConnected() {
         return channel != null && channel.isConnected();
     }
 
-    public synchronized boolean connect(final AbstractAuthPacket authRequest) {
+    public synchronized boolean connect(final String accountId, final String clientId, @Nullable final SecretKey secretKey,
+                                        @Nullable final Set<Parameter> parameters) {
+        return connect(PacketsFactory.newAuthClientRequestPacket(clientContext.nextPacketId(), accountId, clientId, secretKey, parameters));
+    }
+
+    public synchronized boolean connect(final SecretKey apiKey, @Nullable final Set<Parameter> parameters) {
+        return connect(PacketsFactory.newAuthServerRequestPacket(clientContext.nextPacketId(), apiKey, parameters));
+    }
+
+    public SendFuture sendRPC(final String clientId, final RPCMessageFormat format, final byte[] data) throws ClientNotConnectedException {
+        return sendPacket(PacketsFactory.newRPCPacket(clientContext.nextPacketId(), System.currentTimeMillis(), clientId, format, data));
+    }
+
+    public SendFuture sendRPC(final RPCMessageFormat format, final byte[] data) throws ClientNotConnectedException {
+        return sendPacket(PacketsFactory.newRPCPacket(clientContext.nextPacketId(), System.currentTimeMillis(), null, format, data));
+    }
+
+    public synchronized void disconnect() {
+        channelGroup.close().awaitUninterruptibly();
+
+        if (this.bootstrap != null) {
+            this.bootstrap.releaseExternalResources();
+            this.bootstrap = null;
+        }
+
+        eventsProducer.stop();
+        clientContext.reset();
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    private boolean connect(final AbstractAuthPacket authRequest) {
         disconnect();
 
         /*
@@ -101,8 +145,8 @@ public class Client {
         bootstrap.setOption("receiveBufferSize", 1048576);
         bootstrap.setOption("connectTimeoutMillis", 100);
         bootstrap.setPipelineFactory(new ClientPipelineFactory(
-                new ClientHandler(eventsProducer, clientSessionStorage),
-                new ClientSessionHandler(eventsProducer, clientSessionStorage, channelGroup, authRequest)
+                new ClientHandler(eventsProducer, clientContext),
+                new ClientSessionHandler(eventsProducer, clientContext, channelGroup, authRequest)
         ));
 
         final ChannelFuture future = bootstrap.connect(new InetSocketAddress(host, port));
@@ -113,25 +157,8 @@ public class Client {
 
         channelGroup.add(channel = future.getChannel());
 
+        eventsProducer.start();
+
         return channel.isConnected();
-    }
-
-    public synchronized void disconnect() {
-        channelGroup.close().awaitUninterruptibly();
-
-        if (this.bootstrap != null) {
-            this.bootstrap.releaseExternalResources();
-            this.bootstrap = null;
-        }
-
-        clientSessionStorage.resetSession();
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public int getPort() {
-        return port;
     }
 }

@@ -18,10 +18,9 @@
 package org.openjst.protocols.basic.pdu.packets;
 
 import org.fest.assertions.Assertions;
+import org.openjst.commons.io.buffer.DataBufferException;
 import org.openjst.commons.rpc.RPCMessageFormat;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -31,10 +30,11 @@ import static org.fest.assertions.Assertions.assertThat;
 public final class RPCPacketTest {
 
     @Test(groups = "unit")
-    public void testEncodeDecode() throws IOException {
+    public void testEncodeDecode() throws DataBufferException {
         final RPCPacket packet = PacketsFactory.newRPCPacket(
                 (long) (Math.random() * Long.MAX_VALUE),
                 (long) (Math.random() * Long.MAX_VALUE),
+                "client" + Math.random(),
                 RPCMessageFormat.XML,
                 new byte[]{(byte) Math.random(), (byte) Math.random()});
 
@@ -44,7 +44,8 @@ public final class RPCPacketTest {
         packet2.decode(body);
 
         assertThat(packet2.getType()).isEqualTo(packet.getType());
-        assertThat(packet2.getUUID()).isEqualTo(packet.getUUID());
+        assertThat(packet2.getPacketId()).isEqualTo(packet.getPacketId());
+        assertThat(packet2.getClientId()).isEqualTo(packet.getClientId());
         assertThat(packet2.getTimestamp()).isEqualTo(packet.getTimestamp());
         Assertions.assertThat(packet2.getFormat()).isEqualTo(packet.getFormat());
         assertThat(packet2.getData()).isEqualTo(packet.getData());

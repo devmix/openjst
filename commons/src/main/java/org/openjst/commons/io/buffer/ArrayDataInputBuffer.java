@@ -17,6 +17,7 @@
 
 package org.openjst.commons.io.buffer;
 
+import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.utils.Constants;
 import org.openjst.commons.utils.IOUtils;
 
@@ -105,10 +106,11 @@ public class ArrayDataInputBuffer implements DataInputBuffer {
         return result;
     }
 
+    @Nullable
     public String readUtf8() throws DataBufferException {
         final int length = readInt32();
         if (length == 0) {
-            return Constants.stringsEmpty();
+            return null;
         }
 
         ensureInAvailable(length);

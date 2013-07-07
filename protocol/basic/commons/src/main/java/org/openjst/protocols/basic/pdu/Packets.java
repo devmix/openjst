@@ -24,10 +24,11 @@ public final class Packets {
 
     public static final byte TYPE_DATETIME_SYNC = 1;
     public static final byte TYPE_PING = 2;
-    public static final byte TYPE_AUTH_BASIC = 3;
-    public static final byte TYPE_AUTH_RESPONSE = 6;
-    public static final byte TYPE_PRESENCE_STATE = 7;
-    public static final byte TYPE_RPC_METHOD = 8;
+    public static final byte TYPE_AUTHENTICATION_CLIENT = 3;
+    public static final byte TYPE_AUTHENTICATION_SERVER = 4;
+    public static final byte TYPE_AUTHENTICATION_RESPONSE = 5;
+    public static final byte TYPE_RPC = 6;
+    public static final byte TYPE_DELIVERY_RESPONSE = 7;
 
     private Packets() {
     }

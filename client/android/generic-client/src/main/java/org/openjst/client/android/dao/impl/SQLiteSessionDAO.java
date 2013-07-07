@@ -34,7 +34,7 @@ import org.openjst.commons.database.model.QueryOrderBy;
 import org.openjst.commons.database.model.Table;
 import org.openjst.commons.database.model.sqlite.SQLiteModelFactory;
 import org.openjst.commons.dto.ApplicationVersion;
-import org.openjst.protocols.basic.pdu.packets.RPCPacket;
+import org.openjst.commons.rpc.RPCMessageFormat;
 
 import static org.openjst.commons.database.model.QueryWhere.and;
 import static org.openjst.commons.database.model.QueryWhere.eq;
@@ -151,39 +151,39 @@ public final class SQLiteSessionDAO extends SQLiteOpenHelper implements SessionD
         return getReadableDatabase().isOpen();
     }
 
-    public void outPersist(final RPCPacket packet) {
+    public void outPersist(final String uuid, final RPCMessageFormat format, final byte[] data) {
         final ContentValues values = new ContentValues();
         values.put(COLUMN_ACCOUNT_ID, session.getAccountId());
         values.put(COLUMN_CLIENT_ID, session.getClientId());
         values.put(COLUMN_TIMESTAMP, System.currentTimeMillis());
-        values.put(COLUMN_UUID, packet.getUUID());
-        values.put(COLUMN_FORMAT, packet.getFormat().toString());
-        values.put(COLUMN_DATA, packet.getData());
-        values.put(COLUMN_SIZE, packet.getData().length);
+        values.put(COLUMN_UUID, uuid);
+        values.put(COLUMN_FORMAT, format.name());
+        values.put(COLUMN_DATA, data);
+        values.put(COLUMN_SIZE, data.length);
         values.put(COLUMN_STATUS, PacketStatus.IDLE.toString());
         getWritableDatabase().insert(TABLE_PROTOCOL_RPC_OUT, null, values);
     }
 
-    public void outStatus(final long uuid, final PacketStatus sent) {
+    public void outStatus(final String uuid, final PacketStatus sent) {
         final ContentValues values = new ContentValues(1);
         values.put(COLUMN_STATUS, PacketStatus.IDLE.toString());
         getWritableDatabase().update(TABLE_PROTOCOL_RPC_OUT, values, COLUMN_UUID + "=?", new String[]{String.valueOf(uuid)});
     }
 
-    public void inPersist(final RPCPacket packet) {
+    public void inPersist(final String uuid, final RPCMessageFormat format, final byte[] data) {
         final ContentValues values = new ContentValues();
         values.put(COLUMN_ACCOUNT_ID, session.getAccountId());
         values.put(COLUMN_CLIENT_ID, session.getClientId());
         values.put(COLUMN_TIMESTAMP, System.currentTimeMillis());
-        values.put(COLUMN_UUID, packet.getUUID());
-        values.put(COLUMN_FORMAT, packet.getFormat().toString());
-        values.put(COLUMN_DATA, packet.getData());
-        values.put(COLUMN_SIZE, packet.getData().length);
+        values.put(COLUMN_UUID, uuid);
+        values.put(COLUMN_FORMAT, format.name());
+        values.put(COLUMN_DATA, data);
+        values.put(COLUMN_SIZE, data.length);
         values.put(COLUMN_STATUS, PacketStatus.RECEIVED.toString());
         getWritableDatabase().insert(TABLE_PROTOCOL_RPC_IN, null, values);
     }
 
-    public void inResponse(final long uuid) {
+    public void inResponse(final String uuid) {
         // TODO
     }
 
@@ -247,7 +247,7 @@ public final class SQLiteSessionDAO extends SQLiteOpenHelper implements SessionD
         return result;
     }
 
-    public void inStatus(final long uuid, final PacketStatus status) {
+    public void inStatus(final String uuid, final PacketStatus status) {
         // TODO
     }
 }

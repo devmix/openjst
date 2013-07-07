@@ -22,13 +22,21 @@ import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.logging.InternalLogger;
 import org.jboss.netty.logging.InternalLoggerFactory;
 import org.openjst.protocols.basic.client.ClientEventsProducer;
-import org.openjst.protocols.basic.client.session.ClientSession;
-import org.openjst.protocols.basic.client.session.ClientSessionStorage;
-import org.openjst.protocols.basic.messages.ProtocolErrorCodes;
+import org.openjst.protocols.basic.client.context.ClientContext;
+import org.openjst.protocols.basic.constants.ProtocolResponseStatus;
+import org.openjst.protocols.basic.events.AuthenticationFailEvent;
+import org.openjst.protocols.basic.events.ConnectEvent;
+import org.openjst.protocols.basic.events.DisconnectEvent;
 import org.openjst.protocols.basic.pdu.PDU;
 import org.openjst.protocols.basic.pdu.Packets;
 import org.openjst.protocols.basic.pdu.packets.AbstractAuthPacket;
+import org.openjst.protocols.basic.pdu.packets.AuthClientRequestPacket;
 import org.openjst.protocols.basic.pdu.packets.AuthResponsePacket;
+import org.openjst.protocols.basic.pdu.packets.AuthServerRequestPacket;
+import org.openjst.protocols.basic.session.ClientSession;
+import org.openjst.protocols.basic.session.ServerSession;
+import org.openjst.protocols.basic.session.Session;
+import org.openjst.protocols.basic.utils.LogUtils;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -39,14 +47,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Sergey Grachev
  */
-public class ClientSessionHandler extends SimpleChannelHandler {
+public final class ClientSessionHandler extends SimpleChannelHandler {
+
     private static final InternalLogger LOG =
             InternalLoggerFactory.getInstance(ClientSessionHandler.class.getName());
 
     private static final long TIMEOUT = 30 * 1000; // 30 sec
 
     private final ClientEventsProducer eventsProducer;
-    private ClientSessionStorage clientSessionStorage;
+    private final ClientContext clientContext;
     private final AtomicBoolean authComplete;
     private final AtomicBoolean authFailed;
     private final Object authMutex = new Object();
@@ -55,10 +64,10 @@ public class ClientSessionHandler extends SimpleChannelHandler {
     private final ChannelGroup channelGroup;
     private final AbstractAuthPacket authRequest;
 
-    public ClientSessionHandler(final ClientEventsProducer eventsProducer, final ClientSessionStorage clientSessionStorage,
+    public ClientSessionHandler(final ClientEventsProducer eventsProducer, final ClientContext clientContext,
                                 final ChannelGroup channelGroup, final AbstractAuthPacket authRequest) {
         this.eventsProducer = eventsProducer;
-        this.clientSessionStorage = clientSessionStorage;
+        this.clientContext = clientContext;
         this.channelGroup = channelGroup;
         this.authRequest = authRequest;
         authComplete = new AtomicBoolean(false);
@@ -77,45 +86,32 @@ public class ClientSessionHandler extends SimpleChannelHandler {
             }
 
             final Object msg = e.getMessage();
-            if (!(e.getMessage() instanceof PDU) || ((PDU) msg).getType() != Packets.TYPE_AUTH_RESPONSE) {
-                this.fireAuthFailed(ctx, ProtocolErrorCodes.AUTH_UNEXPECTED_PACKET, "Unauthorized access, waiting for auth response"
-                        + "\n\tChannel ID: " + e.getChannel().getId() + ", Remote IP: " + e.getRemoteAddress()
-                        + "\n\tPacket: " + msg.toString());
+            if (!(e.getMessage() instanceof PDU) || ((PDU) msg).getType() != Packets.TYPE_AUTHENTICATION_RESPONSE) {
+                this.errorResponse(ctx, ProtocolResponseStatus.AUTH_UNEXPECTED_PACKET, msg.toString());
                 return;
             }
 
             final AuthResponsePacket packet = (AuthResponsePacket) msg;
 
-            if (packet.getRequestId() != authRequest.getRequestId()) {
-                this.fireAuthFailed(ctx, ProtocolErrorCodes.AUTH_INCORRECT_HANDSHAKE, "Server request ID not match to client request ID."
-                        + "\n\tChannel ID: " + e.getChannel().getId() + ", Remote IP: " + e.getRemoteAddress()
-                        + "\n\tClient ID: " + authRequest.getRequestId() + ", Packet: " + packet.toString());
+            if (packet.getPacketId() != authRequest.getPacketId()) {
+                this.errorResponse(ctx, ProtocolResponseStatus.AUTH_INCORRECT_HANDSHAKE,
+                        "Expected: " + authRequest.getPacketId() + ", Packet: " + packet.toString());
                 return;
             }
 
-            if (packet.getErrorCode() != ProtocolErrorCodes.OK) {
-                this.fireAuthFailed(ctx, packet.getErrorCode(), "Server return error."
-                        + "\n\tChannel ID: " + e.getChannel().getId() + ", Remote IP: " + e.getRemoteAddress()
-                        + "\n\tPacket: " + packet.toString());
+            if (packet.getResponseStatus() != ProtocolResponseStatus.OK) {
+                this.errorResponse(ctx, packet.getResponseStatus(), packet.toString());
                 return;
             }
 
-            System.out.println("Authentication success");
-
-            for (final MessageEvent message : this.bufferedMessages) {
-                ctx.sendDownstream(message);
-            }
-
-            ctx.getPipeline().remove(this);
-
-            this.fireAuthSucceeded(ctx, packet);
+            this.onAuthenticationSuccess(ctx, packet);
         }
     }
 
     @Override
     public void channelConnected(final ChannelHandlerContext ctx, final ChannelStateEvent e) throws Exception {
-        System.out.println("Connected to " + e.getChannel().getRemoteAddress());
-        System.out.println("Channel ID: " + e.getChannel().getId());
+        LOG.info("Connected"
+                + "\n\tChannel ID: " + e.getChannel().getId() + ", Remote IP: " + e.getChannel().getRemoteAddress());
 
         final ChannelFuture f = Channels.future(ctx.getChannel());
         f.addListener(new ChannelFutureListener() {
@@ -140,7 +136,7 @@ public class ClientSessionHandler extends SimpleChannelHandler {
                             }
 
                             if (!authComplete.get()) {
-                                fireAuthFailed(ctx, ProtocolErrorCodes.AUTH_TIMEOUT, "Connection authentication timer: authentication completed");
+                                errorResponse(ctx, ProtocolResponseStatus.AUTH_TIMEOUT, null);
                             }
                         }
                     }
@@ -163,46 +159,72 @@ public class ClientSessionHandler extends SimpleChannelHandler {
         return false;
     }
 
-    private void fireAuthSucceeded(final ChannelHandlerContext ctx, final AuthResponsePacket packet) {
+    private void onAuthenticationSuccess(final ChannelHandlerContext ctx, final AuthResponsePacket packet) {
         this.authComplete.set(true);
         this.authFailed.set(false);
         this.latch.countDown();
 
-        clientSessionStorage.setSession(new ClientSession(packet.getAccountId(), packet.getClientId()));
-        eventsProducer.onConnect(clientSessionStorage.getSession());
+        final Session session;
+        switch (authRequest.getType()) {
+            case Packets.TYPE_AUTHENTICATION_CLIENT: {
+                session = new ClientSession((AuthClientRequestPacket) authRequest);
+                break;
+            }
+            case Packets.TYPE_AUTHENTICATION_SERVER: {
+                session = new ServerSession((AuthServerRequestPacket) authRequest);
+                break;
+            }
+            default:
+                errorResponse(ctx, ProtocolResponseStatus.AUTH_UNSUPPORTED, authRequest.toString());
+                return;
+        }
+        this.clientContext.setSession(session);
+        this.clientContext.setChannel(ctx.getChannel());
+
+        eventsProducer.queue(new ConnectEvent(this.clientContext.getSession()));
+
+        for (final MessageEvent message : this.bufferedMessages) {
+            ctx.sendDownstream(message);
+        }
+
+        ctx.getPipeline().remove(this);
     }
 
-    private void fireAuthFailed(final ChannelHandlerContext ctx, final int errorCode, final String message) {
+    private void errorResponse(final ChannelHandlerContext ctx, final int status, final String data) {
+        final Channel channel = ctx.getChannel();
+
+        LOG.error(LogUtils.statusAsStringBuilder(status)
+                .append("\n\tChannel ID: ").append(channel.getId()).append(", Remote IP: ").append(channel.getRemoteAddress())
+                .append("\n\tData: ").append(data).toString());
+
         this.authComplete.set(true);
         this.authFailed.set(true);
         this.latch.countDown();
         ctx.getChannel().close();
 
-        eventsProducer.onAuthorizationFail(errorCode, authRequest);
-
-        LOG.error(message);
+        eventsProducer.queue(new AuthenticationFailEvent(status, authRequest));
     }
 
     @Override
     public void channelClosed(final ChannelHandlerContext ctx, final ChannelStateEvent e) throws Exception {
-        eventsProducer.onDisconnect(clientSessionStorage.getSession());
+        eventsProducer.queue(new DisconnectEvent(clientContext.getSession()));
 
         if (!this.authComplete.get()) {
-            this.fireAuthFailed(ctx, ProtocolErrorCodes.AUTH_INTERRUPTED, "");
+            this.errorResponse(ctx, ProtocolResponseStatus.AUTH_INTERRUPTED, "");
         }
 
         super.channelClosed(ctx, e);
 
-        clientSessionStorage.resetSession();
+        clientContext.reset();
     }
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final ExceptionEvent e) {
-        LOG.error("ClientSessionHandler exceptions:" + e.toString());
+        LOG.error("ClientSessionHandler", e.getCause());
         if (e.getChannel().isConnected()) {
             e.getChannel().close();
         } else {
-            this.fireAuthFailed(ctx, ProtocolErrorCodes.AUTH_INTERNAL_ERROR, "Session handler exceptions:" + e.toString());
+            this.errorResponse(ctx, ProtocolResponseStatus.AUTH_INTERNAL_ERROR, e.toString());
         }
     }
 

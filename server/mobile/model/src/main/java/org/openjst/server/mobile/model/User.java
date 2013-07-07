@@ -25,6 +25,7 @@ import org.openjst.server.commons.model.types.RoleType;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Arrays;
 
 /**
  * @author Sergey Grachev
@@ -170,6 +171,6 @@ public class User extends AbstractIdEntity {
     }
 
     public void setPasswordSalt(final byte[] passwordSalt) {
-        this.passwordSalt = passwordSalt;
+        this.passwordSalt = Arrays.copyOf(passwordSalt, passwordSalt.length);
     }
 }

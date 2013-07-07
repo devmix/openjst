@@ -31,12 +31,13 @@ import org.openjst.client.android.dao.SessionDAO;
 import org.openjst.client.android.managers.RPCManager;
 import org.openjst.client.android.service.ServerConnectionService;
 import org.openjst.commons.dto.ApplicationVersion;
+import org.openjst.commons.dto.tuples.Pair;
+import org.openjst.commons.dto.tuples.Triple;
+import org.openjst.commons.dto.tuples.Tuples;
 import org.openjst.commons.rpc.*;
 import org.openjst.commons.rpc.exceptions.RPCException;
 import org.openjst.commons.rpc.objects.RPCObjectsFactory;
 import org.openjst.protocols.basic.exceptions.ClientNotConnectedException;
-import org.openjst.protocols.basic.pdu.packets.PacketsFactory;
-import org.openjst.protocols.basic.pdu.packets.RPCPacket;
 import vendor.java.util.concurrent.BlockingDeque;
 import vendor.java.util.concurrent.LinkedBlockingDeque;
 
@@ -54,11 +55,11 @@ public class DefaultRPCManager implements RPCManager {
 
     private final RPCContext rpcContext = RPC.newInstance();
     private final AtomicLong requestId = new AtomicLong(0);
-    private final BlockingDeque<RPCPacket> produceQueue = new LinkedBlockingDeque<RPCPacket>();
-    private final BlockingDeque<RPCPacket> consumeQueue = new LinkedBlockingDeque<RPCPacket>();
+    private final BlockingDeque<Triple<String, RPCMessageFormat, byte[]>> produceQueue = new LinkedBlockingDeque<Triple<String, RPCMessageFormat, byte[]>>();
+    private final BlockingDeque<Pair<RPCMessageFormat, byte[]>> consumeQueue = new LinkedBlockingDeque<Pair<RPCMessageFormat, byte[]>>();
     private final AsyncTask<Void, Void, Void> produceTask;
     private final AsyncTask<Void, Void, Void> consumeTask;
-    private final Map<Long, String> requestIds = new HashMap<Long, String>();
+    private final Map<String, String> requestIds = new HashMap<String, String>();
     private final Application application;
 
     private ServerConnectionService connection;
@@ -90,16 +91,16 @@ public class DefaultRPCManager implements RPCManager {
                             continue;
                         }
 
-                        final RPCPacket packet = produceQueue.take();
+                        final Triple<String, RPCMessageFormat, byte[]> msg = produceQueue.take();
                         try {
-                            connection.sendPacket(packet);
-                            sessionDAO.outStatus(packet.getUUID(), SessionDAO.PacketStatus.SENT);
+                            connection.send(msg.second(), msg.third());
+                            sessionDAO.outStatus(msg.first(), SessionDAO.PacketStatus.SENT);
                         } catch (ClientNotConnectedException e) {
-                            produceQueue.addFirst(packet); // try later
+                            produceQueue.addFirst(msg); // try later
                         } catch (Exception e) {
                             logsDAO.errorSendRPC(connection.getServerHost(), connection.getServerPort(),
                                     connection.getAccountId(), connection.getClientId(), e.getMessage());
-                            sessionDAO.outStatus(packet.getUUID(), SessionDAO.PacketStatus.ERROR);
+                            sessionDAO.outStatus(msg.first(), SessionDAO.PacketStatus.ERROR);
                         }
                     } catch (InterruptedException e) {
                         break;
@@ -116,9 +117,9 @@ public class DefaultRPCManager implements RPCManager {
                 final Thread thread = Thread.currentThread();
                 while (!thread.isInterrupted() && thread.isAlive()) {
                     try {
-                        final RPCPacket packet = consumeQueue.take();
+                        final Pair<RPCMessageFormat, byte[]> msg = consumeQueue.take();
                         try {
-                            incoming(packet);
+                            incoming(msg);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -156,21 +157,21 @@ public class DefaultRPCManager implements RPCManager {
                 ApplicationUpdateActivity.class, version);
     }
 
-    public void consume(final RPCPacket packet) {
-        consumeQueue.add(packet);
+    public void consume(final RPCMessageFormat format, final byte[] data) {
+        consumeQueue.add(Tuples.newPair(format, data));
     }
 
     private void outgoing(final String methodName, final RPCParameters parameters) throws RPCException {
 //        try {
 
-        final long id = requestId.incrementAndGet();
-        final RPCRequest request = RPCObjectsFactory.newRequest(String.valueOf(id), Constants.RPC.OBJECT_MOBILE, methodName, parameters);
+        final String id = String.valueOf(requestId.incrementAndGet());
+        final RPCRequest request = RPCObjectsFactory.newRequest(id, Constants.RPC.OBJECT_MOBILE, methodName, parameters);
         final byte[] data = RPC_MESSAGE_FORMAT.newFormatter(true).write(request);
-        final RPCPacket packet = PacketsFactory.newRPCPacket(id, System.currentTimeMillis(), RPC_MESSAGE_FORMAT, data);
+        final Triple<String, RPCMessageFormat, byte[]> msg = Tuples.newTriple(String.valueOf(id), RPC_MESSAGE_FORMAT, data);
 
-        sessionDAO.outPersist(packet);
+        sessionDAO.outPersist(msg.first(), msg.second(), msg.third());
         requestIds.put(id, methodName);
-        produceQueue.add(packet);
+        produceQueue.add(msg);
 
 //        } catch (RPCException e) {
 //            logsDAO.errorSendRPC(connection.getServerHost(), connection.getServerPort(),
@@ -178,23 +179,23 @@ public class DefaultRPCManager implements RPCManager {
 //        }
     }
 
-    private void incoming(final RPCPacket packet) {
-        sessionDAO.inPersist(packet);
+    private void incoming(final Pair<RPCMessageFormat, byte[]> msg) {
 
         try {
-            final RPCMessage message = packet.getFormat().newFormatter(true).read(packet.getData());
+            final RPCMessage message = msg.first().newFormatter(true).read(msg.second());
+            sessionDAO.inPersist(message.getId(), msg.first(), msg.second());
             if (message instanceof RPCRequest) {
 
-                sessionDAO.inStatus(packet.getUUID(), SessionDAO.PacketStatus.RECEIVED);
+                sessionDAO.inStatus(message.getId(), SessionDAO.PacketStatus.RECEIVED);
                 final RPCRequest request = (RPCRequest) message;
                 rpcContext.invoke(request.getObject(), request.getMethod(), request.getParameters());
 
             } else if (message instanceof RPCResponse) {
 
-                sessionDAO.inResponse(packet.getUUID());
+                sessionDAO.inResponse(message.getId());
 
                 final RPCResponse response = (RPCResponse) message;
-                final String requestMethodName = requestIds.get(packet.getUUID());
+                final String requestMethodName = requestIds.get(message.getId());
                 if (requestMethodName != null) {
                     rpcContext.invoke(Constants.RPC.OBJECT_MOBILE, requestMethodName + "Response", response.getParameters());
                 }

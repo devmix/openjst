@@ -45,7 +45,7 @@ public final class RPCUtils {
     public static Pair<String, String> parseMethod(final String value) {
         final String name = value.trim();
         if (!RPCUtils.checkMethodName(name)) {
-            throw null;
+            return null;
         }
         final String[] methodParts = name.split("\\.");
         if (methodParts.length > 1) {

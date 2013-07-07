@@ -32,8 +32,13 @@
     <name>Server: Mobile - Model</name>
 
     <dependencies>
+
         <!--OpenJST-->
 
+        <dependency>
+            <groupId>org.openjst</groupId>
+            <artifactId>commons</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.openjst.server</groupId>
             <artifactId>server-commons-model</artifactId>

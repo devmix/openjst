@@ -17,18 +17,18 @@
 
 package org.openjst.protocols.basic.pdu.packets;
 
+import org.openjst.commons.io.buffer.DataBufferException;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Sergey Grachev
  */
-@Test
 public class DateTimeSyncPacketTest {
-    public void encodeDecode() throws IOException {
+
+    @Test(groups = "unit")
+    public void encodeDecode() throws DataBufferException {
         final DateTimeSyncPacket packet = PacketsFactory.newDateTimeSyncPacket(
                 (long) (Math.random() * Long.MAX_VALUE),
                 (byte) (Math.random() * Byte.MAX_VALUE));

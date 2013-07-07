@@ -23,12 +23,13 @@ import org.openjst.commons.rpc.RPCMessageFormat;
 import org.openjst.protocols.basic.pdu.Packets;
 import org.openjst.protocols.basic.pdu.beans.Parameter;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sergey Grachev
  */
 public final class PacketsFactory {
+
     private PacketsFactory() {
     }
 
@@ -38,45 +39,53 @@ public final class PacketsFactory {
                 return new DateTimeSyncPacket();
             case Packets.TYPE_PING:
                 return new PingPacket();
-            case Packets.TYPE_AUTH_BASIC:
-                return new AuthRequestBasicPacket();
-            case Packets.TYPE_AUTH_RESPONSE:
+            case Packets.TYPE_AUTHENTICATION_CLIENT:
+                return new AuthClientRequestPacket();
+            case Packets.TYPE_AUTHENTICATION_SERVER:
+                return new AuthServerRequestPacket();
+            case Packets.TYPE_AUTHENTICATION_RESPONSE:
                 return new AuthResponsePacket();
-            case Packets.TYPE_PRESENCE_STATE:
-                return new PresenceStatePacket();
-            case Packets.TYPE_RPC_METHOD:
+            case Packets.TYPE_RPC:
                 return new RPCPacket();
+            case Packets.TYPE_DELIVERY_RESPONSE:
+                return new DeliveryResponsePacket();
             default:
                 throw new IllegalArgumentException("Unknown type of packet");
         }
     }
 
-    public static AuthRequestBasicPacket newAuthRequestBasicPacket(final long requestId,
-                                                                   final String accountId, final String clientId,
-                                                                   @Nullable final SecretKey secretKey,
-                                                                   @Nullable final List<Parameter> parameters) {
-        return new AuthRequestBasicPacket(requestId, accountId, clientId, secretKey, parameters);
+    public static AuthClientRequestPacket newAuthClientRequestPacket(
+            final long packetId, final String accountId, final String clientId, @Nullable final SecretKey secretKey,
+            @Nullable final Set<Parameter> parameters
+    ) {
+        return new AuthClientRequestPacket(packetId, accountId, clientId, secretKey, parameters);
     }
 
-    public static RPCPacket newRPCPacket(final long uuid, final long timestamp, final RPCMessageFormat format, final byte[] data) {
-        return new RPCPacket(uuid, timestamp, format, data);
+    public static AuthServerRequestPacket newAuthServerRequestPacket(
+            final long packetId, @Nullable final SecretKey secretKey, @Nullable final Set<Parameter> parameters
+    ) {
+        return new AuthServerRequestPacket(packetId, secretKey, parameters);
+    }
+
+    public static RPCPacket newRPCPacket(
+            final long packetId, final long timestamp, final String clientId, final RPCMessageFormat format, final byte[] data
+    ) {
+        return new RPCPacket(packetId, timestamp, clientId, format, data, true);
     }
 
     public static DateTimeSyncPacket newDateTimeSyncPacket(final long timestamp, final byte timeZoneOffset) {
         return new DateTimeSyncPacket(timestamp, timeZoneOffset);
     }
 
-    public static AuthResponsePacket newAuthResponsePacket(final long requestId, final String accountId, final String clientId,
-                                                           final int errorCode, @Nullable final List<Parameter> parameters) {
-        return new AuthResponsePacket(requestId, accountId, clientId, errorCode, parameters);
+    public static AuthResponsePacket newAuthResponsePacket(final long packetId, final int status, @Nullable final Set<Parameter> parameters) {
+        return new AuthResponsePacket(packetId, status, parameters);
     }
 
-    public static AuthResponsePacket newAuthResponsePacket(final long requestId, final String accountId, final String clientId,
-                                                           final int errorCode) {
-        return new AuthResponsePacket(requestId, accountId, clientId, errorCode);
+    public static AuthResponsePacket newAuthResponsePacket(final long packetId, final int status) {
+        return new AuthResponsePacket(packetId, status);
     }
 
-    public static PresenceStatePacket newPresenceStatePacket(final long uuid, final long timestamp, final byte state, final String data) {
-        return new PresenceStatePacket(uuid, timestamp, state, data);
+    public static DeliveryResponsePacket newResponsePacket(final long packetId, final int status) {
+        return new DeliveryResponsePacket(packetId, status);
     }
 }

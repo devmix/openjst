@@ -17,18 +17,19 @@
 
 package org.openjst.protocols.basic.server;
 
-import org.jetbrains.annotations.Nullable;
+import org.openjst.protocols.basic.events.ForwardAuthenticationResponseEvent;
+import org.openjst.protocols.basic.events.ForwardRPCEvent;
 import org.openjst.protocols.basic.events.ProtocolEventsListener;
-import org.openjst.protocols.basic.pdu.packets.AuthRequestBasicPacket;
-import org.openjst.protocols.basic.pdu.packets.PresenceStatePacket;
-import org.openjst.protocols.basic.server.session.ServerSession;
+import org.openjst.protocols.basic.events.ServerAuthenticationEvent;
 
 /**
  * @author Sergey Grachev
  */
 public interface ServerEventsListener extends ProtocolEventsListener {
-    void onPresenceState(PresenceStatePacket packet);
 
-    @Nullable
-    ServerSession onTryAuthenticate(AuthRequestBasicPacket packet);
+    boolean onAuthenticate(ServerAuthenticationEvent event);
+
+    void onForwardAuthenticationResponse(ForwardAuthenticationResponseEvent event);
+
+    void onForwardRPC(ForwardRPCEvent event);
 }

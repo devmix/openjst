@@ -17,29 +17,28 @@
 
 package org.openjst.protocols.basic.pdu.packets;
 
+import org.openjst.commons.io.buffer.DataBufferException;
 import org.openjst.protocols.basic.pdu.beans.Parameter;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Sergey Grachev
  */
-@Test
 public class AuthResponsePacketTest {
-    public void encodeDecode() throws IOException {
-        final List<Parameter> parameters = new ArrayList<Parameter>();
-        parameters.add(new Parameter<Integer, String>(1, "1"));
-        parameters.add(new Parameter<Byte, Byte>((byte) 1, (byte) 2));
+
+    @Test(groups = "unit")
+    public void encodeDecode() throws DataBufferException {
+        final Set<Parameter> parameters = new HashSet<Parameter>();
+        parameters.add(Parameter.newParameter(1, "1"));
+        parameters.add(Parameter.newParameter((byte) 1, (byte) 2));
 
         final AuthResponsePacket packet = PacketsFactory.newAuthResponsePacket(
                 (long) (Math.random() * Long.MAX_VALUE),
-                "account" + (short) (Math.random() * Short.MAX_VALUE),
-                "client" + (int) (Math.random() * Short.MAX_VALUE),
                 (int) (Math.random() * Short.MAX_VALUE),
                 parameters);
 
@@ -49,12 +48,10 @@ public class AuthResponsePacketTest {
         packet2.decode(body);
 
         assertThat(packet.getType()).isEqualTo(packet2.getType());
-        assertThat(packet.getRequestId()).isEqualTo(packet2.getRequestId());
-        assertThat(packet.getAccountId()).isEqualTo(packet2.getAccountId());
-        assertThat(packet.getClientId()).isEqualTo(packet2.getClientId());
-        assertThat(packet.getErrorCode()).isEqualTo(packet2.getErrorCode());
+        assertThat(packet.getPacketId()).isEqualTo(packet2.getPacketId());
+        assertThat(packet.getResponseStatus()).isEqualTo(packet2.getResponseStatus());
 
-        final List<Parameter> parameters2 = packet2.getParameters();
+        final Set<Parameter> parameters2 = packet2.getParameters();
         assertThat(parameters2).isNotNull();
         //noinspection ConstantConditions
         assertThat(parameters2.size()).isEqualTo(parameters.size());

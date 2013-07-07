@@ -17,8 +17,8 @@
 
 package org.openjst.client.android.managers;
 
+import org.openjst.commons.rpc.RPCMessageFormat;
 import org.openjst.commons.rpc.exceptions.RPCException;
-import org.openjst.protocols.basic.pdu.packets.RPCPacket;
 
 /**
  * @author Sergey Grachev
@@ -27,5 +27,5 @@ public interface RPCManager {
 
     void checkUpdate() throws RPCException;
 
-    void consume(RPCPacket packet);
+    void consume(RPCMessageFormat format, byte[] data);
 }

@@ -17,6 +17,8 @@
 
 package org.openjst.protocols.basic.client;
 
+import org.openjst.protocols.basic.events.AuthenticationFailEvent;
+import org.openjst.protocols.basic.events.ClientAuthenticationEvent;
 import org.openjst.protocols.basic.events.ProtocolEventsListener;
 
 /**
@@ -24,4 +26,7 @@ import org.openjst.protocols.basic.events.ProtocolEventsListener;
  */
 public interface ClientEventsListener extends ProtocolEventsListener {
 
+    boolean onAuthenticate(ClientAuthenticationEvent event);
+
+    void onAuthenticationFail(AuthenticationFailEvent event);
 }

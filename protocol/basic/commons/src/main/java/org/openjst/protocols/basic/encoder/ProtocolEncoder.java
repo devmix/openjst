@@ -23,27 +23,27 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 import org.openjst.commons.checksum.CRC16;
+import org.openjst.commons.io.buffer.DataBufferException;
+import org.openjst.protocols.basic.constants.ProtocolBasicConstants;
 import org.openjst.protocols.basic.pdu.PDU;
-import org.openjst.protocols.basic.pdu.packets.AbstractPacket;
 
 public class ProtocolEncoder extends OneToOneEncoder {
     public static final byte[] RESERVED = new byte[]{0, 0, 0, 0, 0};
-    public static final byte VERSION = 0;
 
     @Override
-    protected Object encode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {
+    protected Object encode(final ChannelHandlerContext ctx, final Channel channel, final Object msg) throws Exception {
         if (msg instanceof PDU) {
-            return encodePacket((AbstractPacket) msg);
+            return encodePacket((PDU) msg);
         } else {
             return msg;
         }
     }
 
-    public static ChannelBuffer encodePacket(final PDU packet) {
+    public static ChannelBuffer encodePacket(final PDU packet) throws DataBufferException {
         final byte[] msgBody = packet.encode();
 
         final ChannelBuffer buffer = ChannelBuffers.buffer(16 + msgBody.length);
-        buffer.writeByte(VERSION);
+        buffer.writeByte(ProtocolBasicConstants.VERSION);
         buffer.writeShort(0);
         buffer.writeShort(packet.getType());
         buffer.writeInt(msgBody.length);

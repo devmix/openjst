@@ -20,16 +20,18 @@ package org.openjst.protocols.basic.pdu.packets;
 /**
  * @author Sergey Grachev
  */
-public abstract class AbstractAuditedPacket extends AbstractPacket {
+abstract class AbstractAuditedPacket extends AbstractPacket {
 
-    protected long uuid;
     protected long timestamp;
-
-    public long getUUID() {
-        return uuid;
-    }
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractAuditedPacket{" +
+                "timestamp=" + timestamp +
+                "} " + super.toString();
     }
 }

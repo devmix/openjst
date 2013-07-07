@@ -22,8 +22,6 @@ package org.openjst.commons.rpc;
  */
 public interface RPCRequest extends RPCMessage {
 
-    String getId();
-
     String getObject();
 
     String getMethod();

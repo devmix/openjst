@@ -122,7 +122,7 @@ public class ArrayDataBuffer implements DataBuffer {
     public String readUtf8() throws DataBufferException {
         final int length = readInt32();
         if (length == 0) {
-            return Constants.stringsEmpty();
+            return null;
         }
 
         ensureInAvailable(length);

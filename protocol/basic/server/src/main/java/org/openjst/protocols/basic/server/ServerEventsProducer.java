@@ -17,36 +17,59 @@
 
 package org.openjst.protocols.basic.server;
 
-import org.openjst.protocols.basic.events.ProtocolEventsProducer;
-import org.openjst.protocols.basic.pdu.packets.AuthRequestBasicPacket;
-import org.openjst.protocols.basic.pdu.packets.PresenceStatePacket;
-import org.openjst.protocols.basic.server.session.ServerSession;
+import org.jboss.netty.logging.InternalLogger;
+import org.jboss.netty.logging.InternalLoggerFactory;
+import org.openjst.protocols.basic.events.*;
 
 /**
  * @author Sergey Grachev
  */
-public class ServerEventsProducer extends ProtocolEventsProducer<ServerEventsListener> implements ServerEventsListener {
-    public void onPresenceState(final PresenceStatePacket packet) {
+public final class ServerEventsProducer extends ProtocolEventsProducer<ServerEventsListener> {
+
+    private static final InternalLogger LOG =
+            InternalLoggerFactory.getInstance(ServerEventsProducer.class.getName());
+
+    public boolean onAuthenticate(final ServerAuthenticationEvent event) {
         for (final Object listener : getListeners()) {
             try {
-                ((ServerEventsListener) listener).onPresenceState(packet);
+                if (((ServerEventsListener) listener).onAuthenticate(event)) {
+                    return true;
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("onAuthenticate", e);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected void processEvent(final Event event) {
+        if (event instanceof ForwardAuthenticationResponseEvent) {
+            fireForwardAuthenticationResponseEvent((ForwardAuthenticationResponseEvent) event);
+        } else if (event instanceof ForwardRPCEvent) {
+            fireForwardRPCEvent((ForwardRPCEvent) event);
+        } else {
+            super.processEvent(event);
+        }
+    }
+
+    private void fireForwardAuthenticationResponseEvent(final ForwardAuthenticationResponseEvent event) {
+        for (final Object listener : getListeners()) {
+            try {
+                ((ServerEventsListener) listener).onForwardAuthenticationResponse(event);
+            } catch (Exception e) {
+                LOG.error("onForwardAuthenticationResponse", e);
             }
         }
     }
 
-    public ServerSession onTryAuthenticate(final AuthRequestBasicPacket packet) {
+    private void fireForwardRPCEvent(final ForwardRPCEvent event) {
         for (final Object listener : getListeners()) {
             try {
-                final ServerSession session = ((ServerEventsListener) listener).onTryAuthenticate(packet);
-                if (session != null) {
-                    return session;
-                }
+                ((ServerEventsListener) listener).onForwardRPC(event);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("onForwardAuthenticationResponse", e);
             }
         }
-        return null;
     }
 }

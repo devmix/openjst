@@ -19,42 +19,48 @@ package org.openjst.protocols.basic.server;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelException;
 import org.jboss.netty.channel.ServerChannelFactory;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.handler.execution.OrderedMemoryAwareThreadPoolExecutor;
+import org.jboss.netty.logging.InternalLogger;
+import org.jboss.netty.logging.InternalLoggerFactory;
+import org.openjst.commons.rpc.RPCMessageFormat;
+import org.openjst.protocols.basic.context.SendFuture;
 import org.openjst.protocols.basic.exceptions.ClientNotConnectedException;
 import org.openjst.protocols.basic.pdu.PDU;
-import org.openjst.protocols.basic.server.session.ServerSessionStorage;
+import org.openjst.protocols.basic.pdu.packets.PacketsFactory;
+import org.openjst.protocols.basic.server.context.ServerContext;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class Server {
-    private static final AtomicLong SESSION_ID = new AtomicLong(0);
+
+    private static final InternalLogger LOG =
+            InternalLoggerFactory.getInstance(Server.class.getName());
 
     private final String host;
-    private final int port;
+    private final int clientsPort;
+    private final int serversPort;
     private final ServerEventsProducer eventsProducer;
     private final ServerPipelineFactory serverPipelineFactory;
-    private final ServerSessionStorage serverSessionStorage;
+    private final ServerContext serverContext;
+    private final DefaultChannelGroup channelGroup;
 
-    private DefaultChannelGroup channelGroup;
     private ServerBootstrap bootstrap;
-    private boolean started = false;
+    private boolean clientsHandlerStarted = false;
+    private boolean serversHandlerStarted = false;
 
-    public Server(final String host, final int port) {
+    public Server(final String host, final int clientsPort, final int serversPort) {
         this.host = host;
-        this.port = port;
+        this.clientsPort = clientsPort;
+        this.serversPort = serversPort;
         this.eventsProducer = new ServerEventsProducer();
         this.channelGroup = new DefaultChannelGroup(this + "-channelGroup");
-        this.serverSessionStorage = new ServerSessionStorage();
-        this.serverPipelineFactory = new ServerPipelineFactory(eventsProducer, serverSessionStorage, channelGroup);
-    }
-
-    public static long nextSessionID() {
-        return SESSION_ID.incrementAndGet();
+        this.serverContext = new ServerContext();
+        this.serverPipelineFactory = new ServerPipelineFactory(eventsProducer, serverContext, channelGroup);
     }
 
     public void addListener(final ServerEventsListener listener) {
@@ -65,27 +71,41 @@ public class Server {
         eventsProducer.removeListener(listener);
     }
 
-    public void sendPacket(final String accountId, final String clientId, final PDU packet) throws ClientNotConnectedException {
-        final Channel channel = serverSessionStorage.getChannel(accountId, clientId);
+    private SendFuture sendPacket(final Channel channel, final PDU packet) throws ClientNotConnectedException {
         if (channel == null || !channel.isConnected()) {
             throw new ClientNotConnectedException();
         }
-
-        channel.write(packet);
+        return serverContext.createSendFuture(channel.write(packet), packet);
     }
 
-    public void sendPacketSafe(final String accountId, final String userId, final PDU packet) throws ClientNotConnectedException {
-        final Channel channel = serverSessionStorage.getChannel(accountId, userId);
+    public void sendClientPacketSafe(final String accountId, final String userId, final PDU packet) throws ClientNotConnectedException {
+        final Channel channel = serverContext.getClientChannel(accountId, userId);
         if (channel != null && channel.isConnected()) {
             channel.write(packet);
         }
+    }
+
+    public SendFuture rpcInvoke(final String accountId, final RPCMessageFormat format, final byte[] data) throws ClientNotConnectedException {
+        final PDU packet = PacketsFactory.newRPCPacket(serverContext.nextPacketId(), System.currentTimeMillis(), null, format, data);
+        return sendPacket(serverContext.getServerChannel(accountId), packet);
+    }
+
+    public SendFuture rpcForwardToServer(final String accountId, final String clientId, final RPCMessageFormat format, final byte[] data) throws ClientNotConnectedException {
+        final PDU packet = PacketsFactory.newRPCPacket(serverContext.nextPacketId(), System.currentTimeMillis(), clientId, format, data);
+        return sendPacket(serverContext.getServerChannel(accountId), packet);
+    }
+
+    public SendFuture rpcForwardToClient(final String accountId, final String clientId, final RPCMessageFormat format, final byte[] data) throws ClientNotConnectedException {
+        final PDU packet = PacketsFactory.newRPCPacket(
+                serverContext.nextPacketId(), System.currentTimeMillis(), clientId, format, data);
+        return sendPacket(serverContext.getClientChannel(accountId, clientId), packet);
     }
 
     public boolean start() {
         stop();
 
         final ServerChannelFactory serverFactory = new NioServerSocketChannelFactory(
-                new OrderedMemoryAwareThreadPoolExecutor(1, 400000000, 2000000000, 60, TimeUnit.SECONDS),
+                new OrderedMemoryAwareThreadPoolExecutor(2, 400000000, 2000000000, 60, TimeUnit.SECONDS),
                 new OrderedMemoryAwareThreadPoolExecutor(4, 400000000, 2000000000, 60, TimeUnit.SECONDS),
                 4);
 
@@ -95,18 +115,49 @@ public class Server {
         bootstrap.setOption("child.keepAlive", true);
         bootstrap.setPipelineFactory(serverPipelineFactory);
 
-        final Channel channel = bootstrap.bind(new InetSocketAddress(this.host, this.port));
+        bindClientsListener();
+        bindServersListener();
 
-        started = channel.isBound();
-
-        if (!started) {
+        if (!clientsHandlerStarted && !serversHandlerStarted) {
             this.stop();
             return false;
         }
 
-        this.channelGroup.add(channel);
+        eventsProducer.start();
 
-        return started;
+        return true;
+    }
+
+    private void bindClientsListener() {
+        try {
+            final Channel clientsChannel = bootstrap.bind(new InetSocketAddress(this.host, this.clientsPort));
+            clientsHandlerStarted = clientsChannel.isBound();
+            if (clientsHandlerStarted) {
+                this.channelGroup.add(clientsChannel);
+            }
+        } catch (ChannelException ignore) {
+        }
+        if (clientsHandlerStarted) {
+            LOG.info("Bind clients listener on " + clientsPort + " port");
+        } else {
+            LOG.error("Can't bind clients listener on " + clientsPort + " port");
+        }
+    }
+
+    private void bindServersListener() {
+        try {
+            final Channel serversChannel = bootstrap.bind(new InetSocketAddress(this.host, this.serversPort));
+            serversHandlerStarted = serversChannel.isBound();
+            if (serversHandlerStarted) {
+                this.channelGroup.add(serversChannel);
+            }
+        } catch (ChannelException ignore) {
+        }
+        if (serversHandlerStarted) {
+            LOG.info("Bind servers listener on " + serversPort + " port");
+        } else {
+            LOG.error("Can't bind servers listener on " + serversPort + " port");
+        }
     }
 
     public void stop() {
@@ -117,15 +168,16 @@ public class Server {
             this.bootstrap = null;
         }
 
-        serverSessionStorage.reset();
+        eventsProducer.stop();
+        serverContext.reset();
     }
 
     public boolean isStarted() {
-        return started;
+        return clientsHandlerStarted || serversHandlerStarted;
     }
 
-    public synchronized void disconnectClient(String accountId, String userId) {
-        final Channel channel = serverSessionStorage.getChannel(accountId, userId);
+    public synchronized void disconnectClient(final String accountId, final String userId) {
+        final Channel channel = serverContext.getClientChannel(accountId, userId);
         if (channel != null) {
             channel.close().awaitUninterruptibly();
         }

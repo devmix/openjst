@@ -18,7 +18,7 @@
 package org.openjst.client.android.commons.events.types;
 
 import org.openjst.client.android.commons.events.Event;
-import org.openjst.protocols.basic.sessions.Session;
+import org.openjst.protocols.basic.session.Session;
 
 /**
  * @author Sergey Grachev

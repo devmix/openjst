@@ -19,6 +19,7 @@ package org.openjst.protocols.basic.encoder;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.openjst.commons.checksum.CRC16;
+import org.openjst.protocols.basic.constants.ProtocolBasicConstants;
 import org.openjst.protocols.basic.pdu.packets.DateTimeSyncPacket;
 import org.openjst.protocols.basic.pdu.packets.PacketsFactory;
 import org.testng.annotations.Test;
@@ -40,7 +41,7 @@ public class ProtocolEncoderTest {
         int i = 0;
         final byte[] body = packet.encode();
         final byte[] buf = buffer.array();
-        assertThat(buf[i++]).isEqualTo(ProtocolEncoder.VERSION); // version
+        assertThat(buf[i++]).isEqualTo(ProtocolBasicConstants.VERSION); // version
         assertThat(buf[i++] << 8 | buf[i++]).isEqualTo(0); // flags
         assertThat(buf[i++] << 8 | buf[i++]).isEqualTo(packet.getType()); // type
         assertThat(buf[i++] << 24 | buf[i++] << 16 | buf[i++] << 8 | buf[i++]).isEqualTo(body.length); // length

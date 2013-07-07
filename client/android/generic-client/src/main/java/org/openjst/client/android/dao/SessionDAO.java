@@ -21,22 +21,22 @@ import org.jetbrains.annotations.Nullable;
 import org.openjst.client.android.commons.database.DataAccessObject;
 import org.openjst.client.android.dto.TrafficSummary;
 import org.openjst.commons.dto.ApplicationVersion;
-import org.openjst.protocols.basic.pdu.packets.RPCPacket;
+import org.openjst.commons.rpc.RPCMessageFormat;
 
 /**
  * @author Sergey Grachev
  */
 public interface SessionDAO extends DataAccessObject {
 
-    void outPersist(RPCPacket packet);
+    void outPersist(String uuid, RPCMessageFormat format, byte[] data);
 
-    void outStatus(long uuid, PacketStatus sent);
+    void outStatus(String uuid, PacketStatus sent);
 
-    void inPersist(RPCPacket packet);
+    void inPersist(String uuid, RPCMessageFormat format, byte[] data);
 
-    void inStatus(long uuid, PacketStatus status);
+    void inStatus(String uuid, PacketStatus status);
 
-    void inResponse(long uuid);
+    void inResponse(String uuid);
 
     void persistVersion(ApplicationVersion version);
 

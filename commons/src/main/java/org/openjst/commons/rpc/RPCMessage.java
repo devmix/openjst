@@ -21,4 +21,6 @@ package org.openjst.commons.rpc;
  * @author Sergey Grachev
  */
 public interface RPCMessage {
+
+    String getId();
 }

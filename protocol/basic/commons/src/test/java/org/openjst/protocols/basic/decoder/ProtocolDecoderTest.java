@@ -21,6 +21,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.openjst.commons.checksum.CRC16;
+import org.openjst.commons.io.buffer.DataBufferException;
+import org.openjst.protocols.basic.constants.ProtocolBasicConstants;
 import org.openjst.protocols.basic.encoder.ProtocolEncoder;
 import org.openjst.protocols.basic.exceptions.CorruptedPacketException;
 import org.openjst.protocols.basic.exceptions.UnsupportedProtocolVersionException;
@@ -75,7 +77,7 @@ public class ProtocolDecoderTest {
                 (byte) (Math.random() * Byte.MAX_VALUE));
 
         final byte[] buf = encodePacket(packet);
-        buf[0] = ~ProtocolDecoder.VERSION;
+        buf[0] = ~ProtocolBasicConstants.VERSION;
         final ChannelBuffer buffer = ChannelBuffers.wrappedBuffer(buf);
         final ProtocolDecoder decoder = new ProtocolDecoder();
         try {
@@ -87,13 +89,13 @@ public class ProtocolDecoderTest {
         }
     }
 
-    private ChannelBuffer createChannelBuffer(final DateTimeSyncPacket packet) {
+    private ChannelBuffer createChannelBuffer(final DateTimeSyncPacket packet) throws DataBufferException {
         return ChannelBuffers.wrappedBuffer(encodePacket(packet));
     }
 
-    private byte[] encodePacket(final DateTimeSyncPacket packet) {
+    private byte[] encodePacket(final DateTimeSyncPacket packet) throws DataBufferException {
         final byte[] body = packet.encode();
-        byte[] buf = new byte[]{ProtocolEncoder.VERSION};
+        byte[] buf = new byte[]{ProtocolBasicConstants.VERSION};
         buf = ArrayUtils.addAll(buf, ByteArrayUtils.fromShort((short) 0)); // flags
         buf = ArrayUtils.addAll(buf, ByteArrayUtils.fromShort(packet.getType()));
         buf = ArrayUtils.addAll(buf, ByteArrayUtils.fromInt(body.length));

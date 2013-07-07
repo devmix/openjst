@@ -28,6 +28,7 @@ import org.openjst.server.mobile.Preferences;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.dao.UserDAO;
 import org.openjst.server.mobile.model.Account;
+import org.openjst.server.mobile.model.Client;
 import org.openjst.server.mobile.model.User;
 import org.openjst.server.mobile.services.MobileApplicationMXBean;
 import org.openjst.server.mobile.utils.UserUtils;
@@ -106,6 +107,16 @@ public class MobileApplicationMXBeanImpl extends AbstractMBean implements Mobile
         em.persist(user);
 
         // TODO remove
+
         preferencesManager.setBoolean(Preferences.UI.SCRIPTS_CACHE, false);
+
+        final Client client = new Client();
+        client.setAccount(account);
+        client.setAuthId("client");
+        client.setName("Client");
+        client.setPasswordSalt(SecretKeys.salt(User.DEFAULT_SALT_SIZE));
+        client.setPassword(UserUtils.encodePassword("client", SecretKeys.PBKDF2WithHmacSHA1, client.getPasswordSalt()));
+        client.setAllowServerAuthentication(true);
+        em.persist(client);
     }
 }

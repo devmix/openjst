@@ -142,6 +142,11 @@
 
             <dependency>
                 <groupId>org.openjst.protocol</groupId>
+                <artifactId>protocol-basic-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjst.protocol</groupId>
                 <artifactId>protocol-basic-server</artifactId>
                 <version>${project.version}</version>
             </dependency>

@@ -21,17 +21,22 @@ import org.jboss.netty.channel.*;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.logging.InternalLogger;
 import org.jboss.netty.logging.InternalLoggerFactory;
-import org.jetbrains.annotations.Nullable;
-import org.openjst.protocols.basic.messages.ProtocolErrorCodes;
+import org.openjst.protocols.basic.constants.ProtocolResponseStatus;
+import org.openjst.protocols.basic.events.ConnectEvent;
+import org.openjst.protocols.basic.events.ForwardAuthenticationResponseEvent;
+import org.openjst.protocols.basic.events.ServerAuthenticationEvent;
 import org.openjst.protocols.basic.pdu.PDU;
 import org.openjst.protocols.basic.pdu.Packets;
 import org.openjst.protocols.basic.pdu.packets.AbstractAuthPacket;
-import org.openjst.protocols.basic.pdu.packets.AuthRequestBasicPacket;
+import org.openjst.protocols.basic.pdu.packets.AuthClientRequestPacket;
 import org.openjst.protocols.basic.pdu.packets.AuthResponsePacket;
 import org.openjst.protocols.basic.pdu.packets.PacketsFactory;
 import org.openjst.protocols.basic.server.ServerEventsProducer;
-import org.openjst.protocols.basic.server.session.ServerSession;
-import org.openjst.protocols.basic.server.session.ServerSessionStorage;
+import org.openjst.protocols.basic.server.context.ForwardAuthenticationCallback;
+import org.openjst.protocols.basic.server.context.ServerContext;
+import org.openjst.protocols.basic.session.Session;
+import org.openjst.protocols.basic.utils.LogUtils;
+import org.openjst.protocols.basic.utils.NettyUtils;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -43,13 +48,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Sergey Grachev
  */
 public class ServerSessionsHandler extends SimpleChannelHandler {
+
     private static final InternalLogger LOG =
             InternalLoggerFactory.getInstance(ServerSessionsHandler.class.getName());
 
     private static final long TIMEOUT = 30 * 1000; // 30 sec
 
     private final ServerEventsProducer eventsProducer;
-    private final ServerSessionStorage serverSessionStorage;
+    private final ServerContext serverContext;
     private final DefaultChannelGroup channelGroup;
     private final AtomicBoolean authComplete;
     private final AtomicBoolean authFailed;
@@ -57,10 +63,10 @@ public class ServerSessionsHandler extends SimpleChannelHandler {
     private final Queue<MessageEvent> bufferedMessages = new LinkedList<MessageEvent>();
     private final CountDownLatch latch = new CountDownLatch(1);
 
-    public ServerSessionsHandler(final ServerEventsProducer eventsProducer, final ServerSessionStorage serverSessionStorage,
+    public ServerSessionsHandler(final ServerEventsProducer eventsProducer, final ServerContext serverContext,
                                  final DefaultChannelGroup channelGroup) {
         this.eventsProducer = eventsProducer;
-        this.serverSessionStorage = serverSessionStorage;
+        this.serverContext = serverContext;
         this.channelGroup = channelGroup;
         authComplete = new AtomicBoolean(false);
         authFailed = new AtomicBoolean(false);
@@ -80,42 +86,30 @@ public class ServerSessionsHandler extends SimpleChannelHandler {
             final Object msg = e.getMessage();
 
             if (!(e.getMessage() instanceof PDU)) {
-                this.fireAuthFailed(ctx, null, ProtocolErrorCodes.AUTH_UNEXPECTED_PACKET, "Unauthorized access, waiting for auth response"
-                        + "\n\tChannel ID: " + e.getChannel().getId() + ", Remote IP: " + e.getRemoteAddress()
-                        + "\n\tPacket: " + msg.toString());
+                errorResponse(ctx, null, ProtocolResponseStatus.AUTH_UNEXPECTED_PACKET, msg.toString());
                 return;
             }
 
             final PDU packet = (PDU) msg;
-
             switch (packet.getType()) {
-                case Packets.TYPE_AUTH_BASIC:
-                    authenticate((AuthRequestBasicPacket) packet, ctx);
+                case Packets.TYPE_AUTHENTICATION_CLIENT:
+                case Packets.TYPE_AUTHENTICATION_SERVER: {
+                    processAuthenticate(ctx, new ServerAuthenticationEvent((AbstractAuthPacket) packet));
                     break;
-
+                }
                 default:
-                    fireAuthFailed(ctx, null, ProtocolErrorCodes.AUTH_UNEXPECTED_PACKET, "Unauthorized access or unsupported authentication method."
-                            + "\n\tChannel ID: " + e.getChannel().getId() + ", Remote IP: " + e.getRemoteAddress()
-                            + "\n\tPacket: " + packet.toString());
+                    errorResponse(ctx, null, ProtocolResponseStatus.AUTH_UNSUPPORTED, packet.toString());
             }
-
-            for (final MessageEvent message : this.bufferedMessages) {
-                ctx.sendDownstream(message);
-            }
-
-            ctx.getPipeline().remove(this);
-
-            this.fireAuthSucceeded(ctx);
         }
     }
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final ExceptionEvent e) {
-        LOG.error("ServerSessionsHandler exceptions:" + e.toString());
+        LOG.error("ServerSessionsHandler exceptions:", e.getCause());
         if (e.getChannel().isConnected()) {
             e.getChannel().close();
         } else {
-            this.fireAuthFailed(ctx, null, ProtocolErrorCodes.AUTH_INTERNAL_ERROR, "Session handler exceptions:" + e.toString());
+            errorResponse(ctx, null, ProtocolResponseStatus.AUTH_INTERNAL_ERROR, e.toString());
         }
         e.getChannel().close();
     }
@@ -128,9 +122,8 @@ public class ServerSessionsHandler extends SimpleChannelHandler {
 
     @Override
     public void channelConnected(final ChannelHandlerContext ctx, final ChannelStateEvent e) throws Exception {
-        System.out.println("New incoming connection"
-                + "\n\tChannel ID: " + e.getChannel().getId() + ", Remote IP: " + ctx.getChannel().getRemoteAddress()
-        );
+        LOG.info("New incoming connection"
+                + "\n\tChannel ID: " + e.getChannel().getId() + ", Remote IP: " + e.getChannel().getRemoteAddress());
 
         final ChannelFuture f = Channels.future(ctx.getChannel());
         f.addListener(new ChannelFutureListener() {
@@ -155,7 +148,7 @@ public class ServerSessionsHandler extends SimpleChannelHandler {
                             }
 
                             if (!authComplete.get()) {
-                                fireAuthFailed(ctx, null, ProtocolErrorCodes.AUTH_TIMEOUT, "Connection authentication timer: authentication completed");
+                                errorResponse(ctx, null, ProtocolResponseStatus.AUTH_TIMEOUT, null);
                             }
                         }
                     }
@@ -169,7 +162,7 @@ public class ServerSessionsHandler extends SimpleChannelHandler {
     @Override
     public void channelClosed(final ChannelHandlerContext ctx, final ChannelStateEvent e) throws Exception {
         if (!this.authComplete.get()) {
-            this.fireAuthFailed(ctx, null, ProtocolErrorCodes.AUTH_INTERRUPTED, "");
+            errorResponse(ctx, null, ProtocolResponseStatus.AUTH_INTERRUPTED, "");
         }
         super.channelClosed(ctx, e);
     }
@@ -201,13 +194,83 @@ public class ServerSessionsHandler extends SimpleChannelHandler {
         return false;
     }
 
-    private void fireAuthSucceeded(final ChannelHandlerContext ctx) {
-        this.authComplete.set(true);
-        this.authFailed.set(false);
+    private void processAuthenticate(final ChannelHandlerContext ctx, final ServerAuthenticationEvent event) {
+        final AbstractAuthPacket packet = event.getPacket();
+        if (eventsProducer.onAuthenticate(event)) {
+            if (event.isRequireForwarding()) {
+                doForwarding(ctx, event, (AuthClientRequestPacket) packet);
+            } else {
+                doAuthorization(ctx, event, packet);
+            }
+        } else {
+            errorResponse(ctx, packet.getPacketId(), ProtocolResponseStatus.AUTH_FAIL, packet.toString());
+        }
     }
 
-    private void fireAuthFailed(final ChannelHandlerContext ctx, @Nullable final AbstractAuthPacket packet, final short errorCode,
-                                final String message) {
+    private void doAuthorization(final ChannelHandlerContext ctx, final ServerAuthenticationEvent event, final AbstractAuthPacket packet) {
+        this.authComplete.set(true);
+        this.authFailed.set(false);
+
+        final Channel channel = ctx.getChannel();
+        final Session session = event.getSession();
+
+        LOG.info("Authentication success"
+                + "\n\tChannel ID: " + channel.getId() + ", Remote IP: " + channel.getRemoteAddress()
+                + "\n\tSession: " + session);
+
+        serverContext.registerChannel(channel, session);
+
+        NettyUtils.writeDownstream(ctx, PacketsFactory.newAuthResponsePacket(packet.getPacketId(), ProtocolResponseStatus.OK));
+
+        eventsProducer.queue(new ConnectEvent(session));
+
+        for (final MessageEvent message : this.bufferedMessages) {
+            ctx.sendDownstream(message);
+        }
+
+        ctx.getPipeline().remove(this);
+    }
+
+    private void doForwarding(final ChannelHandlerContext ctx, final ServerAuthenticationEvent event, final AuthClientRequestPacket request) {
+        final Channel thisChannel = ctx.getChannel();
+        final Channel serverChannel = serverContext.getServerChannel(request.getAccountId());
+
+        if (serverChannel == null) {
+            errorResponse(ctx, request.getPacketId(), ProtocolResponseStatus.NO_FORWARD_SERVER, request.toString());
+            return;
+        }
+
+        final long originalPacketId = request.getPacketId();
+        request.setPacketId(serverContext.nextPacketId());
+
+        serverContext.createForwardAuthentication(serverChannel.getId(), request.getPacketId(), new ForwardAuthenticationCallback() {
+            @Override
+            public void done(final AuthResponsePacket response) {
+                if (response.getResponseStatus() == ProtocolResponseStatus.OK) {
+                    response.setPacketId(originalPacketId);
+                    doAuthorization(ctx, event, response);
+                } else {
+                    errorResponse(ctx, null, ProtocolResponseStatus.AUTH_FAIL, response.toString());
+                }
+                eventsProducer.queue(new ForwardAuthenticationResponseEvent(event.getSession(), request, response));
+            }
+        });
+
+        serverChannel.write(request);
+
+        LOG.info("Forward authentication packet to remote server"
+                + "\n\tChannel ID: " + thisChannel.getId() + ", Remote IP: " + thisChannel.getRemoteAddress()
+                + "\n\tServer channel ID: " + serverChannel.getId() + ", Server remote IP: " + serverChannel.getRemoteAddress()
+                + "\n\tPacket ID: " + request.getPacketId());
+    }
+
+    private void errorResponse(final ChannelHandlerContext ctx, final Long packetId, final short status, final String data) {
+        final Channel channel = ctx.getChannel();
+
+        LOG.error(LogUtils.statusAsStringBuilder(status)
+                .append("\n\tChannel ID: ").append(channel.getId()).append(", Remote IP: ").append(channel.getRemoteAddress())
+                .append("\n\tData: ").append(data).toString());
+
         if (this.authComplete.get()) {
             return;
         }
@@ -215,39 +278,13 @@ public class ServerSessionsHandler extends SimpleChannelHandler {
         this.authComplete.set(true);
         this.authFailed.set(true);
 
-        if (packet != null) {
-            writeDownstream(ctx, PacketsFactory.newAuthResponsePacket(
-                    packet.getRequestId(), packet.getAccountId(), packet.getClientId(), errorCode));
+        if (packetId != null) {
+            NettyUtils.writeDownstream(ctx, PacketsFactory.newAuthResponsePacket(packetId, status));
         } else {
-            writeDownstream(ctx, PacketsFactory.newAuthResponsePacket(-1, "", "", errorCode));
+            NettyUtils.writeDownstream(ctx, PacketsFactory.newAuthResponsePacket(-1, status));
         }
 
-        ctx.getChannel().close();
-
-        LOG.error(message);
-    }
-
-    private void writeDownstream(final ChannelHandlerContext ctx, final AuthResponsePacket packet) {
-        ctx.sendDownstream(new DownstreamMessageEvent(ctx.getChannel(), Channels.future(ctx.getChannel()), packet, null));
-    }
-
-    private void authenticate(final AuthRequestBasicPacket packet, final ChannelHandlerContext ctx) {
-        final Channel channel = ctx.getChannel();
-        final ServerSession session = eventsProducer.onTryAuthenticate(packet);
-        if (session != null) {
-            session.setChannelId(channel.getId());
-            serverSessionStorage.registerChannel(channel, session);
-            writeDownstream(ctx, PacketsFactory.newAuthResponsePacket(
-                    packet.getRequestId(), packet.getAccountId(), packet.getClientId(), ProtocolErrorCodes.OK));
-            eventsProducer.onConnect(session);
-            LOG.info("Authentication success"
-                    + "\n\tChannel ID: " + channel.getId() + ", Remote IP: " + channel.getRemoteAddress()
-                    + "\n\tAccount ID: " + packet.getAccountId() + ", Client ID: " + packet.getClientId());
-        } else {
-            fireAuthFailed(ctx, packet, ProtocolErrorCodes.AUTH_FAIL, "Authentication failed"
-                    + "\n\tChannel ID: " + channel.getId() + ", Remote IP: " + channel.getRemoteAddress()
-                    + "\n\tAccount ID: " + packet.getAccountId() + ", Client ID: " + packet.getClientId());
-        }
+        channel.close();
     }
 }
 

@@ -1,6 +1,6 @@
 # [OpenJST](https://github.com/devmix/openjst.git)
  
-**OpenJST** (Open Job Scheduling & Tracking) it is an open source project to which to provide highly customized system for tracking and fleet management works in real time.
+**OpenJST** (Open Job Scheduling & Tracking) it is an open source project created to provide highly customized system for tracking and fleet management works in real time.
 
 ## Requirements
  * JDK 1.6 or later
@@ -20,12 +20,15 @@ use git
 ```bash
 git clone https://github.com/devmix/openjst.git
 ```
+
+Or download from [Here](https://github.com/devmix/openjst/archive/master.zip)
  
 #### Configuring JBoss
 
-The default profile is used **standalone-full**. You need to add the following settings in **<JBoss>/standalone/configuration/standalone-full.xml**
+`standalone-full` profile is used by default. You need to add the following settings in `<JBoss>/standalone/configuration/standalone-full.xml`
 
 * JAAS
+
 ```xml
 <subsystem xmlns="urn:jboss:domain:security:1.1">
     ...
@@ -40,6 +43,7 @@ The default profile is used **standalone-full**. You need to add the following s
 </security-domains>
 ```
 * Cache
+
 ```xml
 <subsystem xmlns="urn:jboss:domain:infinispan:1.2" default-cache-container="hibernate">
     ...
@@ -53,7 +57,7 @@ The default profile is used **standalone-full**. You need to add the following s
 
 #### Configuring project
 
-At the initial stage of development as a replacement for the database used H2 Database Engine. You can change the location to save the database in **server-mobile-ds.xml** (by default **~/server-mobile**)
+At the initial stage of development as a replacement for the database used H2 Database Engine. You can change location of database in `server-mobile-ds.xml` (by default `~/server-mobile`)
 
 ### Build
 
@@ -61,7 +65,7 @@ At the initial stage of development as a replacement for the database used H2 Da
 mvn clean install -Pserver-mobile,client-android,protocol
 ```
 
-If you are running jboss, you can deploy application
+If you are running jboss, you can deploy application using this command
 
 ```bash
 mvn jboss-as:deploy -Pserver-mobile
@@ -69,7 +73,7 @@ mvn jboss-as:deploy -Pserver-mobile
 
 #### Sing in
 
-When you first start the JBoss account "system" will be created with user "system". To log in you should use ID = **system@system**, password = **system**.
+When you first start the JBoss account "system" will be created with user "system". To log in you should use ID = `system@system`, password = `system`.
  
 ## License
  

@@ -25,17 +25,23 @@ public final class Queries {
     private Queries() {
     }
 
+    //<editor-fold desc="Account">
+
     public static final class Account {
         public static final String PREFIX = "Account.";
         public static final String FIND_BY_AUTH_ID = PREFIX + "findByAuthId";
         public static final String FIND_BY_ID = PREFIX + "find";
         public static final String FIND_SYSTEM = PREFIX + "findSystem";
+        public static final String FIND_ACCOUNT_ID_BY_API_KEY = PREFIX + "findAccountIdByApiKey";
         public static final String GET_LIST_OF = PREFIX + "getListOf";
         public static final String GET_COUNT_OF = PREFIX + "getCountOf";
 
         private Account() {
         }
     }
+
+    //</editor-fold>
+    //<editor-fold desc="User">
 
     public static final class User {
         public static final String PREFIX = "User.";
@@ -52,4 +58,15 @@ public final class Queries {
         }
     }
 
+    //</editor-fold>
+    //<editor-fold desc="Client">
+
+    public static final class Client {
+        public static final String PREFIX = "Client.";
+        public static final String FIND_CACHED_SECRET_KEY_OF = PREFIX + "findCachedSecretKeyOf";
+
+        private Client() {
+        }
+    }
+    //</editor-fold>
 }

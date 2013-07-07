@@ -22,6 +22,23 @@ import org.openjst.protocols.basic.pdu.PDU;
 /**
  * @author Sergey Grachev
  */
-public abstract class AbstractPacket implements PDU {
+abstract class AbstractPacket implements PDU {
 
+    protected long packetId;
+
+    @Override
+    public long getPacketId() {
+        return packetId;
+    }
+
+    public void setPacketId(final long packetId) {
+        this.packetId = packetId;
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractPacket{" +
+                "packetId=" + packetId +
+                '}';
+    }
 }

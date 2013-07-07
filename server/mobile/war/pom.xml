@@ -94,7 +94,8 @@
                         </goals>
                         <phase>prepare-package</phase>
                         <configuration>
-                            <skipCompress>false</skipCompress>
+                            <skipCompress>true</skipCompress>
+                            <skipValidate>true</skipValidate>
                             <allowNotValid>false</allowNotValid>
                             <sourcePath>
                                 ${project.build.directory}/${project.build.finalName}

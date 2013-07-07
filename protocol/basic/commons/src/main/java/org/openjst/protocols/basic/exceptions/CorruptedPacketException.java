@@ -21,11 +21,14 @@ package org.openjst.protocols.basic.exceptions;
  * @author Sergey Grachev
  */
 public class CorruptedPacketException extends Exception {
-    public CorruptedPacketException(String message) {
+
+    private static final long serialVersionUID = 1888003119411536133L;
+
+    public CorruptedPacketException(final String message) {
         super(message);
     }
 
-    public CorruptedPacketException(String message, Throwable cause) {
+    public CorruptedPacketException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

@@ -17,19 +17,14 @@
 
 package org.openjst.protocols.basic.events;
 
-import org.openjst.protocols.basic.pdu.packets.AbstractAuthPacket;
-import org.openjst.protocols.basic.pdu.packets.RPCPacket;
-import org.openjst.protocols.basic.sessions.Session;
-
 /**
  * @author Sergey Grachev
  */
 public interface ProtocolEventsListener {
-    void onConnect(Session session);
 
-    void onAuthorizationFail(int errorCode, AbstractAuthPacket authRequest);
+    void onConnect(ConnectEvent event);
 
-    void onDisconnect(Session session);
+    void onDisconnect(DisconnectEvent event);
 
-    void onRPC(Session session, RPCPacket packet);
+    void onRPC(RPCEvent event);
 }

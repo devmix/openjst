@@ -25,71 +25,55 @@ import org.openjst.protocols.basic.pdu.Packets;
 import org.openjst.protocols.basic.pdu.beans.Parameter;
 import org.openjst.protocols.basic.utils.PacketUtils;
 
-import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sergey Grachev
  */
 public final class AuthResponsePacket extends AbstractAuthPacket {
 
-    private int errorCode;
+    private int responseStatus;
 
     AuthResponsePacket() {
     }
 
-    AuthResponsePacket(final long requestId, final String accountId, final String clientId, final int errorCode,
-                       @Nullable final List<Parameter> parameters) {
-        this.accountId = accountId;
-        this.clientId = clientId;
+    AuthResponsePacket(final long packetId, final int responseStatus, @Nullable final Set<Parameter> parameters) {
+        this.packetId = packetId;
         this.parameters = parameters;
-        this.requestId = requestId;
-        this.errorCode = errorCode;
+        this.responseStatus = responseStatus;
     }
 
-    AuthResponsePacket(final long requestId, final String accountId, final String clientId, final int errorCode) {
-        this(requestId, accountId, clientId, errorCode, null);
+    AuthResponsePacket(final long uuid, final int responseStatus) {
+        this(uuid, responseStatus, null);
     }
 
-    public byte[] encode() {
+    public byte[] encode() throws DataBufferException {
         final ArrayDataOutputBuffer buf = new ArrayDataOutputBuffer();
-        try {
-            buf.writeVLQInt64(requestId);
-            buf.writeUtf8(accountId);
-            buf.writeUtf8(clientId);
-            buf.writeVLQInt32(errorCode);
-            PacketUtils.writeParameters(buf, parameters);
-        } catch (DataBufferException ignore) {
-            ignore.printStackTrace();
-        }
+        buf.writeVLQInt64(packetId);
+        buf.writeVLQInt32(responseStatus);
+        PacketUtils.writeParameters(buf, parameters);
         return buf.toByteArray();
     }
 
-    public void decode(final byte[] data) throws IOException {
+    public void decode(final byte[] data) throws DataBufferException {
         final ArrayDataInputBuffer buf = new ArrayDataInputBuffer(data);
-        try {
-            this.requestId = buf.readVLQInt64();
-            this.accountId = buf.readUtf8();
-            this.clientId = buf.readUtf8();
-            this.errorCode = buf.readVLQInt32();
-            parameters = PacketUtils.readParameters(buf);
-        } catch (DataBufferException ignore) {
-            ignore.printStackTrace();
-        }
+        this.packetId = buf.readVLQInt64();
+        this.responseStatus = buf.readVLQInt32();
+        parameters = PacketUtils.readParameters(buf);
     }
 
     public short getType() {
-        return Packets.TYPE_AUTH_RESPONSE;
+        return Packets.TYPE_AUTHENTICATION_RESPONSE;
     }
 
-    public int getErrorCode() {
-        return errorCode;
+    public int getResponseStatus() {
+        return responseStatus;
     }
 
     @Override
     public String toString() {
         return "AuthResponsePacket{" +
-                "errorCode=" + errorCode +
+                "responseStatus=" + responseStatus +
                 "} " + super.toString();
     }
 }

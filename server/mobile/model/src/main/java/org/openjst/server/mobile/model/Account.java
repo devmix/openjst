@@ -35,6 +35,9 @@ import java.util.Collection;
         @NamedQuery(name = Queries.Account.FIND_BY_AUTH_ID,
                 query = "select e from Account e where e.authId = :authId"),
 
+        @NamedQuery(name = Queries.Account.FIND_ACCOUNT_ID_BY_API_KEY,
+                query = "select e.authId from Account e where e.apiKey = :apiKey"),
+
         @NamedQuery(name = Queries.Account.GET_LIST_OF,
                 query = "select e from Account e"),
 
@@ -52,6 +55,7 @@ public class Account extends AbstractIdEntity {
     public static final String COLUMN_AUTH_ID = "auth_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_SYSTEM = "system";
+    public static final String COLUMN_API_KEY = "api_key";
 
     @NotEmpty
     @Size(min = 1, max = 255)
@@ -66,6 +70,9 @@ public class Account extends AbstractIdEntity {
 
     @Column(name = COLUMN_SYSTEM, nullable = false)
     private boolean system = false;
+
+    @Column(name = COLUMN_API_KEY, length = 255, unique = true)
+    private String apiKey;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
     private Collection<User> users;
@@ -100,5 +107,13 @@ public class Account extends AbstractIdEntity {
 
     public void setSystem(final boolean systemAccount) {
         this.system = systemAccount;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(final String apiKey) {
+        this.apiKey = apiKey;
     }
 }

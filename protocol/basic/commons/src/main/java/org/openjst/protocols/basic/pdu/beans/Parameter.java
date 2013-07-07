@@ -24,10 +24,13 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class Parameter<K, V> {
 
-    public final K key;
-    public final V value;
+    public static final String CACHE = "#cache.allow";
+    public static final String CACHE_EXPIRE = "#cache.expire";
 
-    public Parameter(final K key, final V value) {
+    private final K key;
+    private final V value;
+
+    private Parameter(final K key, final V value) {
         if (Type.UNKNOWN.equals(Type.valueOfObject(key))) {
             throw new IllegalArgumentException("Unsupported class of key " + key);
         }
@@ -38,6 +41,31 @@ public final class Parameter<K, V> {
 
         this.key = key;
         this.value = value;
+    }
+
+    public static <K, V> Parameter<K, V> newParameter(final K key, final V value) {
+        return new Parameter<K, V>(key, value);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Parameter parameter = (Parameter) o;
+        return !(key != null ? !key.equals(parameter.key) : parameter.key != null);
+    }
+
+    @Override
+    public int hashCode() {
+        return key != null ? key.hashCode() : 0;
+    }
+
+    public K getKey() {
+        return key;
+    }
+
+    public V getValue() {
+        return value;
     }
 
     public static enum Type {

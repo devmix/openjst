@@ -23,8 +23,8 @@ import org.openjst.commons.io.buffer.ArrayDataOutputBuffer;
 import org.openjst.commons.io.buffer.DataBufferException;
 import org.openjst.protocols.basic.pdu.beans.Parameter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Sergey Grachev
@@ -33,7 +33,7 @@ public final class PacketUtils {
     private PacketUtils() {
     }
 
-    public static void writeParameters(final ArrayDataOutputBuffer out, @Nullable final List<Parameter> parameters) throws DataBufferException {
+    public static void writeParameters(final ArrayDataOutputBuffer out, @Nullable final Set<Parameter> parameters) throws DataBufferException {
         if (parameters == null || parameters.isEmpty()) {
             out.writeVLQInt32(0);
             return;
@@ -42,8 +42,8 @@ public final class PacketUtils {
         out.writeVLQInt32(parameters.size());
 
         for (final Parameter parameter : parameters) {
-            final Object key = parameter.key;
-            final Object value = parameter.value;
+            final Object key = parameter.getKey();
+            final Object value = parameter.getValue();
             if (key != null || value != null) {
                 writeObject(out, key);
                 writeObject(out, value);
@@ -52,17 +52,17 @@ public final class PacketUtils {
     }
 
     @Nullable
-    public static List<Parameter> readParameters(final ArrayDataInputBuffer in) throws DataBufferException {
+    public static Set<Parameter> readParameters(final ArrayDataInputBuffer in) throws DataBufferException {
         int count = in.readVLQInt32();
         if (count <= 0) {
             return null;
         }
 
-        final List<Parameter> parameters = new ArrayList<Parameter>(count);
+        final Set<Parameter> parameters = new HashSet<Parameter>(count);
         while (count-- > 0) {
             final Object key = readObject(in);
             final Object value = readObject(in);
-            parameters.add(new Parameter<Object, Object>(key, value));
+            parameters.add(Parameter.newParameter(key, value));
         }
 
         return parameters;

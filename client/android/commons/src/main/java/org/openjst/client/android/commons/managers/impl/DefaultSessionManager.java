@@ -20,7 +20,7 @@ package org.openjst.client.android.commons.managers.impl;
 import org.openjst.client.android.commons.inject.annotations.JSTInject;
 import org.openjst.client.android.commons.managers.SessionManager;
 import org.openjst.client.android.commons.managers.SettingsManager;
-import org.openjst.protocols.basic.sessions.Session;
+import org.openjst.protocols.basic.session.Session;
 
 /**
  * @author Sergey Grachev

@@ -19,41 +19,23 @@ package org.openjst.protocols.basic.pdu.packets;
 
 import org.openjst.protocols.basic.pdu.beans.Parameter;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sergey Grachev
  */
 public abstract class AbstractAuthPacket extends AbstractPacket {
 
-    protected String clientId;
-    protected long requestId;
-    protected String accountId;
-    protected List<Parameter> parameters;
+    protected Set<Parameter> parameters;
 
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public long getRequestId() {
-        return requestId;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public List<Parameter> getParameters() {
+    public Set<Parameter> getParameters() {
         return parameters;
     }
 
     @Override
     public String toString() {
         return "AbstractAuthPacket{" +
-                "clientId='" + clientId + '\'' +
-                ", requestId=" + requestId +
-                ", accountId='" + accountId + '\'' +
-                ", parameters=" + parameters +
-                '}';
+                "parameters=" + parameters +
+                "} " + super.toString();
     }
 }

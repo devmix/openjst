@@ -47,13 +47,9 @@ import org.openjst.commons.rpc.exceptions.RPCException;
 import org.openjst.commons.rpc.objects.RPCObjectsFactory;
 import org.openjst.protocols.basic.client.Client;
 import org.openjst.protocols.basic.client.ClientEventsListener;
-import org.openjst.protocols.basic.client.session.ClientSession;
+import org.openjst.protocols.basic.events.*;
 import org.openjst.protocols.basic.exceptions.ClientNotConnectedException;
-import org.openjst.protocols.basic.pdu.PDU;
-import org.openjst.protocols.basic.pdu.packets.AbstractAuthPacket;
-import org.openjst.protocols.basic.pdu.packets.PacketsFactory;
-import org.openjst.protocols.basic.pdu.packets.RPCPacket;
-import org.openjst.protocols.basic.sessions.Session;
+import org.openjst.protocols.basic.session.ClientSession;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -82,8 +78,9 @@ public final class ServerConnectionService extends Service {
     private final ClientEventsListener clientEventsListener;
     private final Handler handler;
     private Client client;
-    private AbstractAuthPacket auth;
     private boolean updateChecked = false;
+    private String accountId;
+    private String clientId;
 
     public ServerConnectionService() {
         ApplicationContext.addAndroidService(ServerConnectionService.class, this);
@@ -98,10 +95,28 @@ public final class ServerConnectionService extends Service {
         };
 
         this.clientEventsListener = new ClientEventsListener() {
-            public void onConnect(final Session session) {
-                sessionManager.setSession(session);
 
-                ApplicationContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(session));
+            @Override
+            public boolean onAuthenticate(final ClientAuthenticationEvent event) {
+                return false;
+            }
+
+            @Override
+            public void onAuthenticationFail(final AuthenticationFailEvent event) {
+                ApplicationContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(null));
+                handler.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(ServerConnectionService.this,
+                                "Authorization fail " + event.getStatus() + " " + event.getAuthRequest().toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onConnect(final ConnectEvent event) {
+                sessionManager.setSession(event.getSession());
+
+                ApplicationContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(event.getSession()));
 
                 if (!updateChecked) {
                     updateChecked = true;
@@ -128,8 +143,7 @@ public final class ServerConnectionService extends Service {
                 try {
                     final RPCRequest request = RPCObjectsFactory.newRequest("1", null, "method", null);
                     final byte[] data = RPCMessageFormat.XML.newFormatter(true).write(request);
-                    client.sendPacket(PacketsFactory.newRPCPacket(
-                            System.nanoTime(), System.currentTimeMillis(), RPCMessageFormat.XML, data));
+                    client.sendRPC(RPCMessageFormat.XML, data);
                 } catch (ClientNotConnectedException e) {
                     e.printStackTrace();
                 } catch (RPCException e) {
@@ -137,16 +151,8 @@ public final class ServerConnectionService extends Service {
                 }
             }
 
-            public void onAuthorizationFail(final int errorCode, final AbstractAuthPacket authRequest) {
-                ApplicationContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(null));
-                handler.post(new Runnable() {
-                    public void run() {
-                        Toast.makeText(ServerConnectionService.this, "Authorization fail " + errorCode + " " + authRequest.toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            public void onDisconnect(final Session session) {
+            @Override
+            public void onDisconnect(final DisconnectEvent event) {
                 ApplicationContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(null));
                 handler.post(new Runnable() {
                     public void run() {
@@ -163,13 +169,14 @@ public final class ServerConnectionService extends Service {
                 });
             }
 
-            public void onRPC(final Session session, final RPCPacket packet) {
+            @Override
+            public void onRPC(final RPCEvent event) {
                 handler.post(new Runnable() {
                     public void run() {
-                        Toast.makeText(ServerConnectionService.this, "RPC " + packet, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ServerConnectionService.this, "RPC " + event, Toast.LENGTH_SHORT).show();
                     }
                 });
-                rpcManager.consume(packet);
+                rpcManager.consume(event.getFormat(), event.getData());
             }
         };
     }
@@ -219,11 +226,9 @@ public final class ServerConnectionService extends Service {
         }
     }
 
-    public boolean connect(final AbstractAuthPacket auth) {
+    public boolean connect() {
         synchronized (lock) {
             disconnect();
-
-            this.auth = auth;
 
             client = new Client(
                     settings.getString(Constants.Settings.SERVER_HOST),
@@ -231,36 +236,29 @@ public final class ServerConnectionService extends Service {
 
             client.addListener(clientEventsListener);
 
+            accountId = settings.getString(Constants.Settings.LOGIN_CLIENT_ACCOUNT);
+            clientId = settings.getString(Constants.Settings.LOGIN_CLIENT_ID);
+
+            final String secretKey = settings.getString(Constants.Settings.LOGIN_CLIENT_SECRET_KEY);
             try {
-                return client.connect(auth);
-            } catch (Exception e) {
-                return false;
+                if (client.connect(accountId, clientId, secretKey != null ? SecretKeys.PLAIN.encode(secretKey) : null, null)) {
+                    return true;
+                }
+            } catch (Exception ignore) {
             }
+            return false;
         }
     }
 
     public boolean reconnect() {
         disconnect();
-
-        final String secretKey = settings.getString(Constants.Settings.LOGIN_CLIENT_SECRET_KEY);
-        final AbstractAuthPacket packet = PacketsFactory.newAuthRequestBasicPacket(
-                requestId.incrementAndGet(),
-                settings.getString(Constants.Settings.LOGIN_CLIENT_ACCOUNT),
-                settings.getString(Constants.Settings.LOGIN_CLIENT_ID),
-                secretKey != null ? SecretKeys.PLAIN.encode(secretKey) : null,
-                null);
-
-        return connect(packet);
+        return connect();
     }
 
     public boolean isConnected() {
         synchronized (lock) {
             return client != null && client.isConnected();
         }
-    }
-
-    public void sendPacket(final PDU pdu) throws ClientNotConnectedException {
-        client.sendPacket(pdu);
     }
 
     public String getServerHost() {
@@ -276,14 +274,14 @@ public final class ServerConnectionService extends Service {
     }
 
     public String getAccountId() {
-        synchronized (lock) {
-            return auth != null ? auth.getAccountId() : null;
-        }
+        return accountId;
     }
 
     public String getClientId() {
-        synchronized (lock) {
-            return auth != null ? auth.getClientId() : null;
-        }
+        return clientId;
+    }
+
+    public void send(final RPCMessageFormat format, final byte[] data) throws ClientNotConnectedException {
+        client.sendRPC(format, data);
     }
 }

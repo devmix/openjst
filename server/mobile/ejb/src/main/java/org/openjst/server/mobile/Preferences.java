@@ -17,7 +17,7 @@
 
 package org.openjst.server.mobile;
 
-import org.openjst.protocols.basic.utils.ProtocolBasicConstants;
+import org.openjst.protocols.basic.constants.ProtocolBasicConstants;
 import org.openjst.server.commons.model.types.PreferenceType;
 import org.openjst.server.commons.preferences.ServerPreference;
 
@@ -77,7 +77,10 @@ public final class Preferences {
     public enum APIBasic implements ServerPreference {
 
         HOST("api.basic.host", PreferenceType.STRING, "localhost"),
-        PORT("api.basic.port", PreferenceType.INTEGER, ProtocolBasicConstants.DEFAULT_PORT);
+        // clients to server connections
+        CLIENTS_PORT("api.basic.clients-port", PreferenceType.INTEGER, ProtocolBasicConstants.DEFAULT_CLIENTS_PORT),
+        // servers to server connections
+        SERVERS_PORT("api.basic.servers-port", PreferenceType.INTEGER, ProtocolBasicConstants.DEFAULT_SERVERS_PORT);
 
         //<editor-fold desc="implementation">
         private final String name;

@@ -19,8 +19,6 @@ package org.openjst.protocols.basic.pdu.packets;
 
 import org.openjst.protocols.basic.pdu.Packets;
 
-import java.io.IOException;
-
 /**
  * @author Sergey Grachev
  */
@@ -33,7 +31,7 @@ public final class PingPacket extends AbstractPacket {
         return null;
     }
 
-    public void decode(final byte[] data) throws IOException {
+    public void decode(final byte[] data) {
 
     }
 

@@ -60,4 +60,9 @@ final class MD5SecretKey implements SecretKey {
     public int hashCode() {
         return key != null ? Arrays.hashCode(key) : 0;
     }
+
+    @Override
+    public String toString() {
+        return "MD5SecretKey{" + Integer.toHexString(hashCode()) + '}';
+    }
 }

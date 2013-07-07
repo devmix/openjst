@@ -17,7 +17,7 @@
 
 package org.openjst.client.android.commons.managers;
 
-import org.openjst.protocols.basic.sessions.Session;
+import org.openjst.protocols.basic.session.Session;
 
 /**
  * @author Sergey Grachev

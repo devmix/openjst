@@ -240,7 +240,7 @@ public class DataOutputBufferTest {
         assertThat(b.getSize()).isEqualTo(4);
 
         b.seek(0);
-        assertThat(b.readUtf8()).isEqualTo("");
+        assertThat(b.readUtf8()).isEqualTo(null);
     }
 
     private static final class SerializedObject implements Serializable {

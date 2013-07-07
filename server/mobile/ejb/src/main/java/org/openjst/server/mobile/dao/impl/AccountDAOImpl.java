@@ -19,6 +19,7 @@ package org.openjst.server.mobile.dao.impl;
 
 import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.AbstractEJB;
+import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.mobile.dao.AccountDAO;
@@ -31,6 +32,7 @@ import javax.ejb.Stateless;
 import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Sergey Grachev
@@ -82,12 +84,27 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
         em.remove(account);
     }
 
+    @Override
+    public Map<String, ProtocolType> getPreferredServerToServerProtocols() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     @Nullable
     @Override
     public Account findSystemAccount() {
         @SuppressWarnings("unchecked")
         final List<Account> accounts = em.createNamedQuery(Queries.Account.FIND_SYSTEM).getResultList();
         return accounts.isEmpty() ? null : accounts.get(0);
+    }
+
+    @Override
+    @Nullable
+    public String findAccountIdByApiKey(final String apiKey) {
+        try {
+            return (String) em.createNamedQuery(Queries.Account.FIND_ACCOUNT_ID_BY_API_KEY).setParameter("apiKey", apiKey).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Nullable

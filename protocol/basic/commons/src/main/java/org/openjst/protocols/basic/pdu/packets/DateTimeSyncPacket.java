@@ -17,16 +17,16 @@
 
 package org.openjst.protocols.basic.pdu.packets;
 
-import org.openjst.protocols.basic.pdu.PacketInputBuffer;
-import org.openjst.protocols.basic.pdu.PacketOutputBuffer;
+import org.openjst.commons.io.buffer.ArrayDataInputBuffer;
+import org.openjst.commons.io.buffer.ArrayDataOutputBuffer;
+import org.openjst.commons.io.buffer.DataBufferException;
 import org.openjst.protocols.basic.pdu.Packets;
-
-import java.io.IOException;
 
 /**
  * @author Sergey Grachev
  */
 public final class DateTimeSyncPacket extends AbstractPacket {
+
     private long timestamp;
     private byte timeZoneOffset;
 
@@ -38,17 +38,17 @@ public final class DateTimeSyncPacket extends AbstractPacket {
         this.timeZoneOffset = timeZoneOffset;
     }
 
-    public byte[] encode() {
-        final PacketOutputBuffer buf = new PacketOutputBuffer();
-        buf.writeLong(timestamp);
-        buf.writeByte(timeZoneOffset);
+    public byte[] encode() throws DataBufferException {
+        final ArrayDataOutputBuffer buf = new ArrayDataOutputBuffer();
+        buf.writeVLQInt64(timestamp);
+        buf.writeInt8(timeZoneOffset);
         return buf.toByteArray();
     }
 
-    public void decode(final byte[] data) throws IOException {
-        final PacketInputBuffer buf = new PacketInputBuffer(data);
-        timestamp = buf.readLong();
-        timeZoneOffset = buf.readByte();
+    public void decode(final byte[] data) throws DataBufferException {
+        final ArrayDataInputBuffer buf = new ArrayDataInputBuffer(data);
+        this.timestamp = buf.readVLQInt64();
+        this.timeZoneOffset = buf.readInt8();
     }
 
     public short getType() {
@@ -68,6 +68,6 @@ public final class DateTimeSyncPacket extends AbstractPacket {
         return "DateTimeSyncPacket{" +
                 "timestamp=" + timestamp +
                 ", timeZoneOffset=" + timeZoneOffset +
-                '}';
+                "} " + super.toString();
     }
 }
