@@ -18,7 +18,9 @@
 package org.openjst.server.mobile.dao;
 
 import org.jetbrains.annotations.Nullable;
-import org.openjst.commons.dto.tuples.Pair;
+import org.openjst.commons.protocols.auth.SecretKey;
+import org.openjst.server.mobile.model.Client;
+import org.openjst.server.mobile.model.dto.ClientAuthenticationObj;
 
 /**
  * @author Sergey Grachev
@@ -26,5 +28,16 @@ import org.openjst.commons.dto.tuples.Pair;
 public interface ClientDAO {
 
     @Nullable
-    Pair<String, byte[]> findCachedSecretKeyOf(String accountId, String clientId);
+    ClientAuthenticationObj findCachedSecretKeyOf(String accountId, String clientId);
+
+    @Nullable
+    Client findByAccountAndClientId(String accountId, String clientId);
+
+    void changeStatusOfflineForAll();
+
+    void changeStatusOnline(Long clientId, boolean isOnline);
+
+    Client synchronizeClient(String accountId, String clientId, boolean cache, SecretKey secretKey);
+
+    Long getOrCreateClientId(Long accountId, String clientId);
 }

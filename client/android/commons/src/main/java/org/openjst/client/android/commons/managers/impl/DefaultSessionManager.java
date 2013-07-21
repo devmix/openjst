@@ -34,11 +34,11 @@ public class DefaultSessionManager implements SessionManager {
     private Session currentSession;
 
     public String getAccountId() {
-        return currentSession.getAccountId();
+        return currentSession == null ? "<UNKNOWN>" : currentSession.getAccountId();
     }
 
     public String getClientId() {
-        return currentSession.getClientId();
+        return currentSession == null ? "<UNKNOWN>" : currentSession.getClientId();
     }
 
     public void setSession(final Session session) {

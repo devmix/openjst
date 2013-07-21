@@ -45,7 +45,7 @@ public final class RPCPacketTest {
 
         assertThat(packet2.getType()).isEqualTo(packet.getType());
         assertThat(packet2.getPacketId()).isEqualTo(packet.getPacketId());
-        assertThat(packet2.getClientId()).isEqualTo(packet.getClientId());
+        assertThat(packet2.getRecipientId()).isEqualTo(packet.getRecipientId());
         assertThat(packet2.getTimestamp()).isEqualTo(packet.getTimestamp());
         Assertions.assertThat(packet2.getFormat()).isEqualTo(packet.getFormat());
         assertThat(packet2.getData()).isEqualTo(packet.getData());

@@ -18,15 +18,14 @@
 package org.openjst.server.mobile.dao;
 
 import org.jetbrains.annotations.Nullable;
-import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.mobile.model.Account;
+import org.openjst.server.mobile.model.dto.AccountAuthenticationObj;
 import org.openjst.server.mobile.mq.model.AccountModel;
 import org.openjst.server.mobile.mq.queries.AccountQuery;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Sergey Grachev
@@ -43,7 +42,7 @@ public interface AccountDAO {
     Account findSystemAccount();
 
     @Nullable
-    String findAccountIdByApiKey(String secretKey);
+    AccountAuthenticationObj findAccountByApiKey(String secretKey);
 
     List<Account> getListOf(ModelQuery<VoidQuery.Filter, AccountQuery.Order, VoidQuery.Search> query);
 
@@ -54,6 +53,4 @@ public interface AccountDAO {
     Account update(Account account, AccountModel model);
 
     void delete(Long id);
-
-    Map<String, ProtocolType> getPreferredServerToServerProtocols();
 }

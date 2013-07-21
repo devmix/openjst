@@ -85,9 +85,14 @@ public class Server {
         }
     }
 
-    public SendFuture rpcInvoke(final String accountId, final RPCMessageFormat format, final byte[] data) throws ClientNotConnectedException {
+    public SendFuture rpcInvokeOnServer(final String accountId, final RPCMessageFormat format, final byte[] data) throws ClientNotConnectedException {
         final PDU packet = PacketsFactory.newRPCPacket(serverContext.nextPacketId(), System.currentTimeMillis(), null, format, data);
         return sendPacket(serverContext.getServerChannel(accountId), packet);
+    }
+
+    public SendFuture rpcInvokeOnClient(final String accountId, final String clientId, final RPCMessageFormat format, final byte[] data) throws ClientNotConnectedException {
+        final PDU packet = PacketsFactory.newRPCPacket(serverContext.nextPacketId(), System.currentTimeMillis(), null, format, data);
+        return sendPacket(serverContext.getClientChannel(accountId, clientId), packet);
     }
 
     public SendFuture rpcForwardToServer(final String accountId, final String clientId, final RPCMessageFormat format, final byte[] data) throws ClientNotConnectedException {

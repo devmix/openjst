@@ -35,8 +35,10 @@ import java.util.Collection;
         @NamedQuery(name = Queries.Account.FIND_BY_AUTH_ID,
                 query = "select e from Account e where e.authId = :authId"),
 
-        @NamedQuery(name = Queries.Account.FIND_ACCOUNT_ID_BY_API_KEY,
-                query = "select e.authId from Account e where e.apiKey = :apiKey"),
+        @NamedQuery(name = Queries.Account.FIND_ACCOUNT_BY_API_KEY,
+                query = "select new org.openjst.server.mobile.model.dto.AccountAuthenticationObj(" +
+                        "   e.id, e.authId" +
+                        ")from Account e where e.apiKey = :apiKey"),
 
         @NamedQuery(name = Queries.Account.GET_LIST_OF,
                 query = "select e from Account e"),

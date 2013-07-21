@@ -24,7 +24,6 @@ import org.openjst.protocols.basic.exceptions.ClientNotConnectedException;
 import org.openjst.protocols.basic.pdu.packets.AuthClientRequestPacket;
 import org.openjst.protocols.basic.server.Server;
 import org.openjst.protocols.basic.server.ServerEventsListener;
-import org.openjst.protocols.basic.session.ClientSession;
 
 /**
  * @author Sergey Grachev
@@ -39,7 +38,7 @@ public class ServerLoadTest {
 
             @Override
             public boolean onAuthenticate(final ServerAuthenticationEvent event) {
-                event.assignSession(new ClientSession(
+                event.assignSession(new TestClientSession(
                         ((AuthClientRequestPacket) event.getPacket()).getAccountId(),
                         ((AuthClientRequestPacket) event.getPacket()).getClientId()));
                 return true;
@@ -68,11 +67,6 @@ public class ServerLoadTest {
 
             @Override
             public void onForwardAuthenticationResponse(final ForwardAuthenticationResponseEvent event) {
-
-            }
-
-            @Override
-            public void onForwardRPC(final ForwardRPCEvent event) {
 
             }
         });

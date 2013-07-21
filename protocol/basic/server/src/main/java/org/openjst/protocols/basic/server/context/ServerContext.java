@@ -36,9 +36,17 @@ public final class ServerContext extends AbstractContext {
     private final Map<ForwardAuthenticationCallbackKey, WeakReference<ForwardAuthenticationCallback>> forwardAuthentication
             = new HashMap<ForwardAuthenticationCallbackKey, WeakReference<ForwardAuthenticationCallback>>();
 
-    public void registerChannel(final Channel channel, final Session session) {
+    public void registerClientChannel(final Channel channel, final Session session) {
+        registerChannel(channel, session, SessionKey.Type.CLIENT);
+    }
+
+    public void registerServerChannel(final Channel channel, final Session session) {
+        registerChannel(channel, session, SessionKey.Type.SERVER);
+    }
+
+    public void registerChannel(final Channel channel, final Session session, final SessionKey.Type type) {
         synchronized (channelIdToSession) {
-            final SessionContext sessionContext = new SessionContext(session, channel, new SessionKey(session));
+            final SessionContext sessionContext = new SessionContext(session, channel, new SessionKey(session, type));
             channelIdToSession.put(channel.getId(), sessionContext);
             sessionKeyToSession.put(sessionContext.sessionKey, sessionContext);
         }

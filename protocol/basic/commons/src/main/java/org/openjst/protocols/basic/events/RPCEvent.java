@@ -28,19 +28,23 @@ import java.util.Arrays;
 public final class RPCEvent implements Event {
 
     private final Session session;
-    private final String clientId;
+    private final String recipientId;
     private final RPCMessageFormat format;
     private final byte[] data;
 
     public RPCEvent(final Session session, final String clientId, final RPCMessageFormat format, final byte[] data) {
         this.session = session;
-        this.clientId = clientId;
+        this.recipientId = clientId;
         this.format = format;
         this.data = Arrays.copyOf(data, data.length);
     }
 
     public Session getSession() {
         return session;
+    }
+
+    public String getRecipientId() {
+        return recipientId;
     }
 
     public RPCMessageFormat getFormat() {
@@ -51,17 +55,17 @@ public final class RPCEvent implements Event {
         return data;
     }
 
+    public boolean isForward() {
+        return recipientId != null;
+    }
+
     @Override
     public String toString() {
         return "RPCEvent{" +
                 "session=" + session +
-                ", clientId='" + clientId + '\'' +
+                ", recipientId='" + recipientId + '\'' +
                 ", format=" + format +
                 ", data=" + data +
                 '}';
-    }
-
-    public String getClientId() {
-        return clientId;
     }
 }

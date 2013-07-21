@@ -17,13 +17,13 @@
 
 package org.openjst.server.mobile.rpc;
 
-import javax.enterprise.context.ApplicationScoped;
+import org.openjst.commons.rpc.RPCMessageFormat;
+import org.openjst.protocols.basic.session.Session;
 
 /**
  * @author Sergey Grachev
  */
-@ApplicationScoped
-public class RpcHandler {
-    public RpcHandler() {
-    }
+public interface RpcHandler {
+
+    void invoke(Session session, RPCMessageFormat format, byte[] data);
 }

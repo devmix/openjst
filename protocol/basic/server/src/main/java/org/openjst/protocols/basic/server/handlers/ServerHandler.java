@@ -23,7 +23,6 @@ import org.jboss.netty.logging.InternalLoggerFactory;
 import org.openjst.protocols.basic.constants.ProtocolResponseStatus;
 import org.openjst.protocols.basic.context.SendFuture;
 import org.openjst.protocols.basic.events.DisconnectEvent;
-import org.openjst.protocols.basic.events.ForwardRPCEvent;
 import org.openjst.protocols.basic.events.RPCEvent;
 import org.openjst.protocols.basic.pdu.PDU;
 import org.openjst.protocols.basic.pdu.Packets;
@@ -84,13 +83,13 @@ public class ServerHandler extends SimpleChannelHandler {
             successResponse(thisChannel, packet.getPacketId());
         }
 
-        final String clientId = packet.getClientId();
+        final String recipientId = packet.getRecipientId();
         final Session session = serverContext.getSessionByChannel(thisChannel);
-        if (clientId == null || "".equals(clientId.trim())) {
-            eventsProducer.queue(new RPCEvent(session, clientId, packet.getFormat(), packet.getData()));
-        } else {
-            eventsProducer.queue(new ForwardRPCEvent(session, packet.getFormat(), packet.getData()));
-        }
+        eventsProducer.queue(new RPCEvent(session, packet.getRecipientId(), packet.getFormat(), packet.getData()));
+//        if (recipientId == null || "".equals(recipientId.trim())) {
+//        } else {
+//            eventsProducer.queue(new ForwardRPCEvent(session, recipientId, packet.getFormat(), packet.getData()));
+//        }
 
         // TODO forwarding ???
 

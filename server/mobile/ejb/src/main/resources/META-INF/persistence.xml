@@ -28,6 +28,9 @@
         <class>org.openjst.server.mobile.model.Account</class>
         <class>org.openjst.server.mobile.model.User</class>
         <class>org.openjst.server.mobile.model.Client</class>
+        <class>org.openjst.server.mobile.model.RPCMessage</class>
+        <class>org.openjst.server.mobile.model.RPCMessageForwardToClient</class>
+        <class>org.openjst.server.mobile.model.RPCMessageForwardToServer</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

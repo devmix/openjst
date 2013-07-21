@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mvn clean install -Pprotocol,client-android,server-mobile
+mvn -T4 clean install -Pprotocol,client-android,server-mobile $@

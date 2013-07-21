@@ -1,0 +1,3 @@
+#!/bin/sh
+
+mvn sonar:sonar -Pprotocol,client-android,server-mobile $@

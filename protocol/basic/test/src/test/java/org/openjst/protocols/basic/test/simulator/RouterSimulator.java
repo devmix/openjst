@@ -29,8 +29,8 @@ import org.openjst.protocols.basic.pdu.packets.AuthClientRequestPacket;
 import org.openjst.protocols.basic.pdu.packets.AuthServerRequestPacket;
 import org.openjst.protocols.basic.server.Server;
 import org.openjst.protocols.basic.server.ServerEventsListener;
-import org.openjst.protocols.basic.session.ClientSession;
-import org.openjst.protocols.basic.session.ServerSession;
+import org.openjst.protocols.basic.test.TestClientSession;
+import org.openjst.protocols.basic.test.TestServerSession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +63,7 @@ public final class RouterSimulator {
                     if (!apiKeys.containsKey(secretKey)) {
                         return false;
                     }
-                    event.assignSession(new ServerSession(apiKeys.get(secretKey), secretKey));
+                    event.assignSession(new TestServerSession(apiKeys.get(secretKey), secretKey));
                     return true;
 
                 } else if (packet instanceof AuthClientRequestPacket) {
@@ -71,7 +71,7 @@ public final class RouterSimulator {
                     final String clientId = ((AuthClientRequestPacket) packet).getClientId();
                     final String accountId = ((AuthClientRequestPacket) packet).getAccountId();
 
-                    event.assignSession(new ClientSession(accountId, clientId));
+                    event.assignSession(new TestClientSession(accountId, clientId));
 
                     final SecretKey cachedSecretKey = cachedSecretKeys.get(clientId);
                     if (cachedSecretKey != null && ((AuthClientRequestPacket) packet).getSecretKey().equals(cachedSecretKey)) {
@@ -102,23 +102,6 @@ public final class RouterSimulator {
             }
 
             @Override
-            public void onForwardRPC(final ForwardRPCEvent event) {
-                try {
-                    System.out.println("RouterSimulator onForwardRPC: " + event + "," +
-                            event.getFormat().newFormatter(true).read(event.getData()));
-                } catch (RPCException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    server.rpcInvoke(event.getSession().getAccountId(), event.getFormat(), event.getData())
-                            .await();
-                } catch (ClientNotConnectedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
             public void onConnect(final ConnectEvent event) {
                 System.out.println("RouterSimulator onConnect: " + event);
             }
@@ -130,11 +113,28 @@ public final class RouterSimulator {
 
             @Override
             public void onRPC(final RPCEvent event) {
-                try {
-                    System.out.println("RouterSimulator onRPC: " + event + "," +
-                            event.getFormat().newFormatter(true).read(event.getData()));
-                } catch (RPCException e) {
-                    e.printStackTrace();
+
+                if (event.isForward()) {
+                    try {
+                        System.out.println("RouterSimulator onForwardRPC: " + event + "," +
+                                event.getFormat().newFormatter(true).read(event.getData()));
+                    } catch (RPCException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        server.rpcInvokeOnServer(event.getSession().getAccountId(), event.getFormat(), event.getData())
+                                .await();
+                    } catch (ClientNotConnectedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        System.out.println("RouterSimulator onRPC: " + event + "," +
+                                event.getFormat().newFormatter(true).read(event.getData()));
+                    } catch (RPCException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

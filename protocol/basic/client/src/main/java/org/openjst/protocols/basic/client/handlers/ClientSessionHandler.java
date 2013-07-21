@@ -33,8 +33,6 @@ import org.openjst.protocols.basic.pdu.packets.AbstractAuthPacket;
 import org.openjst.protocols.basic.pdu.packets.AuthClientRequestPacket;
 import org.openjst.protocols.basic.pdu.packets.AuthResponsePacket;
 import org.openjst.protocols.basic.pdu.packets.AuthServerRequestPacket;
-import org.openjst.protocols.basic.session.ClientSession;
-import org.openjst.protocols.basic.session.ServerSession;
 import org.openjst.protocols.basic.session.Session;
 import org.openjst.protocols.basic.utils.LogUtils;
 

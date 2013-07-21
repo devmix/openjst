@@ -23,14 +23,30 @@ import org.openjst.server.commons.model.AbstractIdEntity;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * @author Sergey Grachev
  */
 @NamedQueries({
+        @NamedQuery(name = Queries.Client.GET_CLIENT_ID_OF_ACCOUNT_BY_AUTH_ID,
+                query = "select e.id from Client e where e.account.id = :accountId and e.authId = :clientId"),
+
         @NamedQuery(name = Queries.Client.FIND_CACHED_SECRET_KEY_OF,
-                query = "select e.password, e.passwordSalt from Client e" +
-                        " where e.allowServerAuthentication = true and e.authId = :clientId and e.account.authId = :accountId")
+                query = "select new org.openjst.server.mobile.model.dto.ClientAuthenticationObj(" +
+                        "   e.account.id, e.id, e.password, e.passwordSalt" +
+                        ") from Client e" +
+                        " where e.allowServerAuthentication = true " +
+                        "   and e.authId = :clientId and e.account.authId = :accountId"),
+
+        @NamedQuery(name = Queries.Client.FIND_BY_ACCOUNT_AND_CLIENT_NAME,
+                query = "select e from Client e where e.id = :clientId and e.account.authId = :accountId"),
+
+        @NamedQuery(name = Queries.Client.CHANGE_STATUS_OFFLINE_FOR_ALL,
+                query = "update Client e set e.online = false"),
+
+        @NamedQuery(name = Queries.Client.CHANGE_STATUS_ONLINE,
+                query = "update Client e set e.online = :isOnline where e.id = :clientId")
 })
 @Entity
 @Table(name = Client.TABLE,
@@ -65,16 +81,15 @@ public class Client extends AbstractIdEntity {
     private String authId;
 
     @Size(min = 1, max = 255)
-    @Column(name = COLUMN_PASSWORD, length = 255, nullable = false)
+    @Column(name = COLUMN_PASSWORD, length = 255)
     private String password;
 
     @Size(min = 8, max = DEFAULT_SALT_SIZE)
-    @Column(name = COLUMN_PASSWORD_SALT, length = DEFAULT_SALT_SIZE, nullable = false)
+    @Column(name = COLUMN_PASSWORD_SALT, length = DEFAULT_SALT_SIZE)
     private byte[] passwordSalt;
 
-    @NotEmpty
     @Size(min = 1, max = 255)
-    @Column(name = COLUMN_NAME, length = 255, nullable = false)
+    @Column(name = COLUMN_NAME, length = 255)
     private String name;
 
     @Column(name = COLUMN_ONLINE, nullable = false)
@@ -96,7 +111,7 @@ public class Client extends AbstractIdEntity {
     private String lastProtocolType;
 
     @Column(name = COLUMN_LAST_SYNC_TIME)
-    private String lastSyncTime;
+    private Date lastSyncTime = new Date();
 
     public Account getAccount() {
         return account;
@@ -186,11 +201,11 @@ public class Client extends AbstractIdEntity {
         this.lastProtocolType = lastProtocolType;
     }
 
-    public String getLastSyncTime() {
+    public Date getLastSyncTime() {
         return lastSyncTime;
     }
 
-    public void setLastSyncTime(final String lastSyncTime) {
+    public void setLastSyncTime(final Date lastSyncTime) {
         this.lastSyncTime = lastSyncTime;
     }
 }

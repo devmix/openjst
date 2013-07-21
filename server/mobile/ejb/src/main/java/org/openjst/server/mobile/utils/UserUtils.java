@@ -70,4 +70,8 @@ public final class UserUtils {
         final SecretKey key = encoder.encode(password, salt);
         return key.getType().name() + '|' + Base64.encodeToString(key.get(), false);
     }
+
+    public static String encodePassword(final SecretKey key) {
+        return key.getType().name() + '|' + Base64.encodeToString(key.get(), false);
+    }
 }

@@ -17,8 +17,6 @@
 
 package org.openjst.protocols.basic.server.context;
 
-import org.openjst.protocols.basic.session.ClientSession;
-import org.openjst.protocols.basic.session.ServerSession;
 import org.openjst.protocols.basic.session.Session;
 
 /**
@@ -26,34 +24,26 @@ import org.openjst.protocols.basic.session.Session;
  */
 final class SessionKey {
 
-    private final byte type;
+    private final Type type;
     private final String accountId;
     private final String clientId;
 
     public SessionKey(final String accountId, final String clientId) {
-        this.type = 0;
+        this.type = Type.CLIENT;
         this.accountId = accountId;
         this.clientId = clientId;
     }
 
     public SessionKey(final String accountId) {
-        this.type = 1;
+        this.type = Type.SERVER;
         this.accountId = accountId;
         this.clientId = null;
     }
 
-    public SessionKey(final Session session) {
-        if (session instanceof ClientSession) {
-            this.type = 0;
-            this.accountId = session.getAccountId();
-            this.clientId = session.getClientId();
-        } else if (session instanceof ServerSession) {
-            this.type = 1;
-            this.accountId = session.getAccountId();
-            this.clientId = null;
-        } else {
-            throw new IllegalArgumentException("Unsupported session type " + session.getClass().getName());
-        }
+    public SessionKey(final Session session, final Type type) {
+        this.type = type;
+        this.accountId = session.getAccountId();
+        this.clientId = Type.CLIENT.equals(type) ? session.getClientId() : null;
     }
 
     @Override
@@ -61,16 +51,21 @@ final class SessionKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final SessionKey that = (SessionKey) o;
-        return type == that.type
-                && !(accountId != null ? !accountId.equals(that.accountId) : that.accountId != null)
-                && !(clientId != null ? !clientId.equals(that.clientId) : that.clientId != null);
+        return !(accountId != null ? !accountId.equals(that.accountId) : that.accountId != null)
+                && !(clientId != null ? !clientId.equals(that.clientId) : that.clientId != null)
+                && type == that.type;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) type;
+        int result = type != null ? type.hashCode() : 0;
         result = 31 * result + (accountId != null ? accountId.hashCode() : 0);
         result = 31 * result + (clientId != null ? clientId.hashCode() : 0);
         return result;
+    }
+
+    public static enum Type {
+        CLIENT,
+        SERVER
     }
 }

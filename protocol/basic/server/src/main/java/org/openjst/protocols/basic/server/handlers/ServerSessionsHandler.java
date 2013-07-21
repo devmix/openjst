@@ -218,7 +218,11 @@ public class ServerSessionsHandler extends SimpleChannelHandler {
                 + "\n\tChannel ID: " + channel.getId() + ", Remote IP: " + channel.getRemoteAddress()
                 + "\n\tSession: " + session);
 
-        serverContext.registerChannel(channel, session);
+        if (packet instanceof AuthClientRequestPacket) {
+            serverContext.registerClientChannel(channel, session);
+        } else {
+            serverContext.registerServerChannel(channel, session);
+        }
 
         NettyUtils.writeDownstream(ctx, PacketsFactory.newAuthResponsePacket(packet.getPacketId(), ProtocolResponseStatus.OK));
 
@@ -236,7 +240,7 @@ public class ServerSessionsHandler extends SimpleChannelHandler {
         final Channel serverChannel = serverContext.getServerChannel(request.getAccountId());
 
         if (serverChannel == null) {
-            errorResponse(ctx, request.getPacketId(), ProtocolResponseStatus.NO_FORWARD_SERVER, request.toString());
+            errorResponse(ctx, request.getPacketId(), ProtocolResponseStatus.NO_FORWARD_RECIPIENT, request.toString());
             return;
         }
 

@@ -32,7 +32,7 @@ public final class Queries {
         public static final String FIND_BY_AUTH_ID = PREFIX + "findByAuthId";
         public static final String FIND_BY_ID = PREFIX + "find";
         public static final String FIND_SYSTEM = PREFIX + "findSystem";
-        public static final String FIND_ACCOUNT_ID_BY_API_KEY = PREFIX + "findAccountIdByApiKey";
+        public static final String FIND_ACCOUNT_BY_API_KEY = PREFIX + "findAccountByApiKey";
         public static final String GET_LIST_OF = PREFIX + "getListOf";
         public static final String GET_COUNT_OF = PREFIX + "getCountOf";
 
@@ -63,9 +63,28 @@ public final class Queries {
 
     public static final class Client {
         public static final String PREFIX = "Client.";
+        public static final String GET_CLIENT_ID_OF_ACCOUNT_BY_AUTH_ID = PREFIX + "getClientIdOfAccountByAuthId";
         public static final String FIND_CACHED_SECRET_KEY_OF = PREFIX + "findCachedSecretKeyOf";
+        public static final String FIND_BY_ACCOUNT_AND_CLIENT_NAME = PREFIX + "findByAccountAndClientId";
+        public static final String CHANGE_STATUS_OFFLINE_FOR_ALL = PREFIX + "changeStatusOfflineForAll";
+        public static final String CHANGE_STATUS_ONLINE = PREFIX + "changeStatusOnline";
 
         private Client() {
+        }
+    }
+    //</editor-fold>
+    //<editor-fold desc="RPCMessage">
+
+    public static final class RPCMessage {
+        public static final String PREFIX = "RPCMessage.";
+        public static final String GET_NOT_DELIVERED_TO_CLIENTS = PREFIX + "getNotDeliveredToClients";
+        public static final String GET_NOT_DELIVERED_TO_SERVERS = PREFIX + "getNotDeliveredToServers";
+        public static final String DELIVERY_SUCCESS = PREFIX + "deliverySuccess";
+        public static final String DELIVERY_FAIL = PREFIX + "deliveryFail";
+        public static final String FILTER_CLIENTS_WITH_NOT_DELIVERED_MESSAGES = PREFIX + "filterClientsWithNotDeliveredMessages";
+        public static final String FILTER_SERVERS_WITH_NOT_DELIVERED_MESSAGES = PREFIX + "filterServersWithNotDeliveredMessages";
+
+        private RPCMessage() {
         }
     }
     //</editor-fold>

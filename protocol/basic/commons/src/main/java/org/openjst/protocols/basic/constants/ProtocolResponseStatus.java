@@ -32,7 +32,7 @@ public final class ProtocolResponseStatus {
     public static final short AUTH_TIMEOUT = 104;
     public static final short AUTH_INTERNAL_ERROR = 105;
     public static final short AUTH_INTERRUPTED = 106;
-    public static final short NO_FORWARD_SERVER = 108;
+    public static final short NO_FORWARD_RECIPIENT = 108;
     public static final short NO_RESPONSE = 109;
 
     private ProtocolResponseStatus() {

@@ -49,7 +49,6 @@ import org.openjst.protocols.basic.client.Client;
 import org.openjst.protocols.basic.client.ClientEventsListener;
 import org.openjst.protocols.basic.events.*;
 import org.openjst.protocols.basic.exceptions.ClientNotConnectedException;
-import org.openjst.protocols.basic.session.ClientSession;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -144,6 +143,7 @@ public final class ServerConnectionService extends Service {
                     final RPCRequest request = RPCObjectsFactory.newRequest("1", null, "method", null);
                     final byte[] data = RPCMessageFormat.XML.newFormatter(true).write(request);
                     client.sendRPC(RPCMessageFormat.XML, data);
+                    client.sendRPC(sessionManager.getClientId(), RPCMessageFormat.XML, data);
                 } catch (ClientNotConnectedException e) {
                     e.printStackTrace();
                 } catch (RPCException e) {
@@ -186,7 +186,7 @@ public final class ServerConnectionService extends Service {
         super.onCreate();
         Inject.apply(this, injector);
 
-        sessionManager.setSession(new ClientSession("<UNKNOWN>", "<UNKNOWN>"));
+        sessionManager.setSession(null);
 
         startForeground(Constants.Notifications.ID_APPLICATION, new NotificationBuilder(getApplicationContext())
                 .icon(R.drawable.ic_notification_app)

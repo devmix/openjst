@@ -48,8 +48,7 @@ public final class LogUtils {
             case ProtocolResponseStatus.AUTH_TIMEOUT:
                 msg.append("Authentication timeout, no response");
                 break;
-
-            case ProtocolResponseStatus.NO_FORWARD_SERVER:
+            case ProtocolResponseStatus.NO_FORWARD_RECIPIENT:
                 msg.append("No server for forward packet");
                 break;
         }

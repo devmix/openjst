@@ -17,6 +17,7 @@
 
 package org.openjst.server.mobile.services.impl;
 
+import org.openjst.commons.encodings.Base64;
 import org.openjst.commons.protocols.auth.SecretKeys;
 import org.openjst.server.commons.AbstractMBean;
 import org.openjst.server.commons.model.types.LanguageCode;
@@ -91,6 +92,7 @@ public class MobileApplicationMXBeanImpl extends AbstractMBean implements Mobile
         account.setAuthId("system");
         account.setName("System account");
         account.setSystem(true);
+        account.setApiKey(Base64.encodeToString(new byte[]{1, 2, 3, 4, 5}, false));
         em.persist(account);
 
         LOG.info("Create system user");

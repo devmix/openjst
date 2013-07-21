@@ -19,12 +19,12 @@ package org.openjst.server.mobile.dao.impl;
 
 import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.AbstractEJB;
-import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.model.Account;
 import org.openjst.server.mobile.model.Queries;
+import org.openjst.server.mobile.model.dto.AccountAuthenticationObj;
 import org.openjst.server.mobile.mq.model.AccountModel;
 import org.openjst.server.mobile.mq.queries.AccountQuery;
 
@@ -32,7 +32,6 @@ import javax.ejb.Stateless;
 import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Sergey Grachev
@@ -84,11 +83,6 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
         em.remove(account);
     }
 
-    @Override
-    public Map<String, ProtocolType> getPreferredServerToServerProtocols() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     @Nullable
     @Override
     public Account findSystemAccount() {
@@ -99,9 +93,10 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
 
     @Override
     @Nullable
-    public String findAccountIdByApiKey(final String apiKey) {
+    public AccountAuthenticationObj findAccountByApiKey(final String apiKey) {
         try {
-            return (String) em.createNamedQuery(Queries.Account.FIND_ACCOUNT_ID_BY_API_KEY).setParameter("apiKey", apiKey).getSingleResult();
+            return (AccountAuthenticationObj) em.createNamedQuery(Queries.Account.FIND_ACCOUNT_BY_API_KEY)
+                    .setParameter("apiKey", apiKey).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }

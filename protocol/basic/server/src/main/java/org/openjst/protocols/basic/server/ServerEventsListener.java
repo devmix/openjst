@@ -18,7 +18,6 @@
 package org.openjst.protocols.basic.server;
 
 import org.openjst.protocols.basic.events.ForwardAuthenticationResponseEvent;
-import org.openjst.protocols.basic.events.ForwardRPCEvent;
 import org.openjst.protocols.basic.events.ProtocolEventsListener;
 import org.openjst.protocols.basic.events.ServerAuthenticationEvent;
 
@@ -30,6 +29,4 @@ public interface ServerEventsListener extends ProtocolEventsListener {
     boolean onAuthenticate(ServerAuthenticationEvent event);
 
     void onForwardAuthenticationResponse(ForwardAuthenticationResponseEvent event);
-
-    void onForwardRPC(ForwardRPCEvent event);
 }

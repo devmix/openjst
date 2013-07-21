@@ -30,7 +30,7 @@ public final class RPCPacket extends AbstractAuditedPacket {
 
     public static final short FLAG_NO_DELIVERY_RECEIPT = 0x01;
 
-    private String clientId;
+    private String recipientId;
     private RPCMessageFormat format;
     private byte[] data;
     private boolean requireDeliveryReceipt;
@@ -38,11 +38,11 @@ public final class RPCPacket extends AbstractAuditedPacket {
     RPCPacket() {
     }
 
-    RPCPacket(final long packetId, final long timestamp, final String clientId, final RPCMessageFormat format, final byte[] data,
+    RPCPacket(final long packetId, final long timestamp, final String recipientId, final RPCMessageFormat format, final byte[] data,
               final boolean requireDeliveryReceipt) {
         this.requireDeliveryReceipt = requireDeliveryReceipt;
         this.packetId = packetId;
-        this.clientId = clientId;
+        this.recipientId = recipientId;
         this.timestamp = timestamp;
         this.format = format;
         this.data = data;
@@ -57,7 +57,7 @@ public final class RPCPacket extends AbstractAuditedPacket {
         buf.writeVLQInt32(flags);
         buf.writeVLQInt64(packetId);
         buf.writeVLQInt64(timestamp);
-        buf.writeUtf8(clientId);
+        buf.writeUtf8(recipientId);
         buf.writeInt8(formatToInt(format));
         buf.writeVLQInt32(data.length);
         buf.writeBytes(data);
@@ -69,7 +69,7 @@ public final class RPCPacket extends AbstractAuditedPacket {
         final int flags = buf.readVLQInt32();
         this.packetId = buf.readVLQInt64();
         this.timestamp = buf.readVLQInt64();
-        this.clientId = buf.readUtf8();
+        this.recipientId = buf.readUtf8();
         this.format = intToFormat(buf.readInt8());
         final int dataLength = buf.readVLQInt32();
         this.data = buf.readBytes(dataLength);
@@ -104,8 +104,8 @@ public final class RPCPacket extends AbstractAuditedPacket {
         return -1;
     }
 
-    public String getClientId() {
-        return clientId;
+    public String getRecipientId() {
+        return recipientId;
     }
 
     public RPCMessageFormat getFormat() {
@@ -120,15 +120,17 @@ public final class RPCPacket extends AbstractAuditedPacket {
         return requireDeliveryReceipt;
     }
 
+    public void setRequireDeliveryReceipt(final boolean requireDeliveryReceipt) {
+        this.requireDeliveryReceipt = requireDeliveryReceipt;
+    }
+
     @Override
     public String toString() {
         return "RPCPacket{" +
-                "clientId='" + clientId + '\'' +
+                "recipientId='" + recipientId + '\'' +
                 ", format=" + format +
-                "} " + super.toString();
-    }
-
-    public void setRequireDeliveryReceipt(boolean requireDeliveryReceipt) {
-        this.requireDeliveryReceipt = requireDeliveryReceipt;
+                ", data=" + data +
+                ", requireDeliveryReceipt=" + requireDeliveryReceipt +
+                '}';
     }
 }

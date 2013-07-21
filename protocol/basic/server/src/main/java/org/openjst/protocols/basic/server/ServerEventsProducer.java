@@ -19,7 +19,10 @@ package org.openjst.protocols.basic.server;
 
 import org.jboss.netty.logging.InternalLogger;
 import org.jboss.netty.logging.InternalLoggerFactory;
-import org.openjst.protocols.basic.events.*;
+import org.openjst.protocols.basic.events.Event;
+import org.openjst.protocols.basic.events.ForwardAuthenticationResponseEvent;
+import org.openjst.protocols.basic.events.ProtocolEventsProducer;
+import org.openjst.protocols.basic.events.ServerAuthenticationEvent;
 
 /**
  * @author Sergey Grachev
@@ -46,8 +49,6 @@ public final class ServerEventsProducer extends ProtocolEventsProducer<ServerEve
     protected void processEvent(final Event event) {
         if (event instanceof ForwardAuthenticationResponseEvent) {
             fireForwardAuthenticationResponseEvent((ForwardAuthenticationResponseEvent) event);
-        } else if (event instanceof ForwardRPCEvent) {
-            fireForwardRPCEvent((ForwardRPCEvent) event);
         } else {
             super.processEvent(event);
         }
@@ -57,16 +58,6 @@ public final class ServerEventsProducer extends ProtocolEventsProducer<ServerEve
         for (final Object listener : getListeners()) {
             try {
                 ((ServerEventsListener) listener).onForwardAuthenticationResponse(event);
-            } catch (Exception e) {
-                LOG.error("onForwardAuthenticationResponse", e);
-            }
-        }
-    }
-
-    private void fireForwardRPCEvent(final ForwardRPCEvent event) {
-        for (final Object listener : getListeners()) {
-            try {
-                ((ServerEventsListener) listener).onForwardRPC(event);
             } catch (Exception e) {
                 LOG.error("onForwardAuthenticationResponse", e);
             }

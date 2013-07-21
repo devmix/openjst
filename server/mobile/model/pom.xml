@@ -41,6 +41,10 @@
         </dependency>
         <dependency>
             <groupId>org.openjst.server</groupId>
+            <artifactId>server-commons-ejb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst.server</groupId>
             <artifactId>server-commons-model</artifactId>
         </dependency>
 

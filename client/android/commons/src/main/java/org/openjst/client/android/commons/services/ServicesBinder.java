@@ -45,6 +45,7 @@ public final class ServicesBinder implements ServiceConnection {
 
     private AsyncTask<Void, Void, Void> bindServicesTask;
 
+    @SuppressWarnings("unchecked")
     public void onServiceConnected(final ComponentName name, final IBinder service) {
         final Service serviceInstance = (Service) ((LocalServiceBinder) service).getService();
         try {
@@ -53,7 +54,6 @@ public final class ServicesBinder implements ServiceConnection {
                 final List<LookupServiceFuture> list = bindFutures.get(serviceClass);
                 if (list != null) {
                     for (final LookupServiceFuture future : list) {
-                        //noinspection unchecked
                         future.onBind(serviceInstance);
                     }
                 }

@@ -105,7 +105,7 @@ public class ClientHandler extends SimpleChannelUpstreamHandler {
             successResponse(ctx.getChannel(), packet.getPacketId());
         }
         eventsProducer.queue(new RPCEvent(clientContext.getSession(),
-                packet.getClientId(), packet.getFormat(), packet.getData()));
+                packet.getRecipientId(), packet.getFormat(), packet.getData()));
     }
 
     private void processDeliveryResponse(final DeliveryResponsePacket packet) {

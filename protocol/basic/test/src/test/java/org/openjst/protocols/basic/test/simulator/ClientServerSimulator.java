@@ -24,6 +24,7 @@ import org.openjst.commons.rpc.exceptions.RPCException;
 import org.openjst.commons.rpc.objects.RPCObjectsFactory;
 import org.openjst.protocols.basic.client.Client;
 import org.openjst.protocols.basic.client.ClientEventsListener;
+import org.openjst.protocols.basic.constants.ProtocolBasicConstants;
 import org.openjst.protocols.basic.events.*;
 import org.openjst.protocols.basic.exceptions.ClientNotConnectedException;
 import org.openjst.protocols.basic.pdu.packets.AuthClientRequestPacket;
@@ -86,8 +87,10 @@ public final class ClientServerSimulator {
                     System.out.println("ClientServerSimulator onRPC: " + event.getSession() + ", " +
                             event.getFormat().newFormatter(true).read(event.getData()));
 
-                    client.sendRPC(event.getClientId(), RPCMessageFormat.XML, RPCMessageFormat.XML.newFormatter(true)
-                            .write(RPCObjectsFactory.newRequest("3", "o789", "zxc", null)));
+                    if (event.getRecipientId() != null) {
+                        client.sendRPC(event.getRecipientId(), RPCMessageFormat.XML, RPCMessageFormat.XML.newFormatter(true)
+                                .write(RPCObjectsFactory.newRequest("3", "o789", "zxc", null)));
+                    }
 
                 } catch (RPCException e) {
                     e.printStackTrace();
@@ -100,5 +103,18 @@ public final class ClientServerSimulator {
 
     public void connect() {
         client.connect(apiKey, null);
+    }
+
+    public static void main(final String[] args) {
+        final String HOST = "localhost";
+        final String ACCOUNT = "system";
+        final byte[] ACCOUNT_KEY = new byte[]{1, 2, 3, 4, 5};
+        final String CLIENT = "client";
+        final String CLIENT_PASSWORD = "client";
+
+        final ClientServerSimulator clientServerSimulator = new ClientServerSimulator(
+                ACCOUNT, CLIENT, CLIENT_PASSWORD, ACCOUNT_KEY, HOST, ProtocolBasicConstants.DEFAULT_SERVERS_PORT);
+
+        clientServerSimulator.connect();
     }
 }
