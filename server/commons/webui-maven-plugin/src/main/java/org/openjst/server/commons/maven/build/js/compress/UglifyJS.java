@@ -23,8 +23,6 @@ import org.openjst.server.commons.maven.build.Compressor;
 import org.openjst.server.commons.maven.utils.OptionGroup;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * @author Sergey Grachev
@@ -32,10 +30,13 @@ import java.util.Map;
 final class UglifyJS implements Compressor {
 
     public static final int DEFAULT_INDENT_LEVEL = 4;
+    public static final String[] SCRIPTS = new String[]{"commons.js", "consolidator.js", "parse-js.js", "process.js", "squeeze-more.js", "uglify-js.js"};
 
     private final ContextFactory factory;
-    private final Map<String, String> cache = new LinkedHashMap<String, String>();
     private final OptionGroup options;
+    private Context ctx = null;
+    private ScriptableObject scope = null;
+    private Function fnUglify = null;
 
     public UglifyJS(final ContextFactory factory, final OptionGroup config) throws IOException {
         this.factory = factory;
@@ -78,22 +79,34 @@ final class UglifyJS implements Compressor {
 
     @Override
     public String compress(final String data) throws IOException {
-        if (cache.isEmpty()) {
-            for (final String script : new String[]{"commons.js", "consolidator.js", "parse-js.js", "process.js", "squeeze-more.js", "uglify-js.js"}) {
-                cache.put(script, load(script));
+        try {
+            if (ctx == null) {
+                ctx = Context.enter();
+            } else {
+                factory.enterContext(ctx);
             }
-        }
-        return (String) factory.call(new ContextAction() {
-            @Override
-            public Object run(final Context cx) {
-                final ScriptableObject scope = cx.initStandardObjects();
-                for (final Map.Entry<String, String> entry : cache.entrySet()) {
-                    cx.evaluateString(scope, entry.getValue(), entry.getKey(), 1, null);
+
+            if (scope == null) {
+                initializeScope();
+            }
+
+            return (String) factory.call(new ContextAction() {
+                @Override
+                public Object run(final Context cx) {
+                    return fnUglify.call(ctx, scope, scope, new Object[]{data, options.toJSObject(ctx, scope)});
                 }
-                final Function fn = (Function) scope.get("uglify");
-                return fn.call(cx, scope, scope, new Object[]{data, options.toJSObject(cx, scope)});
-            }
-        });
+            });
+        } finally {
+            Context.exit();
+        }
+    }
+
+    private void initializeScope() throws IOException {
+        scope = ctx.initStandardObjects();
+        for (final String script : SCRIPTS) {
+            ctx.evaluateString(scope, load(script), script, 1, null);
+        }
+        fnUglify = (Function) scope.get("uglify");
     }
 
     private String load(final String name) throws IOException {
