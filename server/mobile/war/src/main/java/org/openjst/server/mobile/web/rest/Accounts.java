@@ -26,7 +26,7 @@ import javax.ws.rs.Path;
 /**
  * @author Sergey Grachev
  */
-@Path("/ui/accounts")
+@Path("/accounts")
 public interface Accounts extends IRestCrud<AccountModel, QueryListParams> {
 
 }

@@ -162,7 +162,7 @@ YUI.add(OJST.modules.views.PageAbstract, function (Y) {
                             breadcrumbsCfg.children.push({
                                 label: item.label,
                                 handler: item.handler || (item.route ? function () {
-                                    OJST.singleton.Application.save(item.route);
+                                    OJST.app.saveRoute(item.route);
                                 } : null),
                                 scope: item.scope
                             });
@@ -187,7 +187,7 @@ YUI.add(OJST.modules.views.PageAbstract, function (Y) {
                                 visible: item.visible,
                                 level: item.level,
                                 handler: item.handler || (item.route ? function () {
-                                    OJST.singleton.Application.save(item.route);
+                                    OJST.app.saveRoute(item.route);
                                 } : null),
                                 scope: item.scope
                             });

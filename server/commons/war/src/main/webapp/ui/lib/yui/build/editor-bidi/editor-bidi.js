@@ -1,9 +1,9 @@
 /*
- YUI 3.10.3 (build 2fb5187)
- Copyright 2013 Yahoo! Inc. All rights reserved.
- Licensed under the BSD License.
- http://yuilibrary.com/license/
- */
+YUI 3.11.0 (build d549e5c)
+Copyright 2013 Yahoo! Inc. All rights reserved.
+Licensed under the BSD License.
+http://yuilibrary.com/license/
+*/
 
 YUI.add('editor-bidi', function (Y, NAME) {
 
@@ -18,31 +18,31 @@ YUI.add('editor-bidi', function (Y, NAME) {
      */
 
 
-    var EditorBidi = function () {
-            EditorBidi.superclass.constructor.apply(this, arguments);
-        }, HOST = 'host', DIR = 'dir', BODY = 'BODY', NODE_CHANGE = 'nodeChange',
-        B_C_CHANGE = 'bidiContextChange', STYLE = 'style';
+    var EditorBidi = function() {
+        EditorBidi.superclass.constructor.apply(this, arguments);
+    }, HOST = 'host', DIR = 'dir', BODY = 'BODY', NODE_CHANGE = 'nodeChange',
+    B_C_CHANGE = 'bidiContextChange', STYLE = 'style';
 
     Y.extend(EditorBidi, Y.Base, {
         /**
-         * Place holder for the last direction when checking for a switch
-         * @private
-         * @property lastDirection
-         */
+        * Place holder for the last direction when checking for a switch
+        * @private
+        * @property lastDirection
+        */
         lastDirection: null,
         /**
-         * Tells us that an initial bidi check has already been performed
-         * @private
-         * @property firstEvent
-         */
+        * Tells us that an initial bidi check has already been performed
+        * @private
+        * @property firstEvent
+        */
         firstEvent: null,
 
         /**
-         * Method checks to see if the direction of the text has changed based on a nodeChange event.
-         * @private
-         * @method _checkForChange
-         */
-        _checkForChange: function () {
+        * Method checks to see if the direction of the text has changed based on a nodeChange event.
+        * @private
+        * @method _checkForChange
+        */
+        _checkForChange: function() {
             var host = this.get(HOST),
                 inst = host.getInstance(),
                 sel = new inst.EditorSelection(),
@@ -64,11 +64,11 @@ YUI.add('editor-bidi', function (Y, NAME) {
         },
 
         /**
-         * Checked for a change after a specific nodeChange event has been fired.
-         * @private
-         * @method _afterNodeChange
-         */
-        _afterNodeChange: function (e) {
+        * Checked for a change after a specific nodeChange event has been fired.
+        * @private
+        * @method _afterNodeChange
+        */
+        _afterNodeChange: function(e) {
             // If this is the first event ever, or an event that can result in a context change
             if (this.firstEvent || EditorBidi.EVENTS[e.changedType]) {
                 this._checkForChange();
@@ -77,15 +77,15 @@ YUI.add('editor-bidi', function (Y, NAME) {
         },
 
         /**
-         * Checks for a direction change after a mouseup occurs.
-         * @private
-         * @method _afterMouseUp
-         */
-        _afterMouseUp: function () {
+        * Checks for a direction change after a mouseup occurs.
+        * @private
+        * @method _afterMouseUp
+        */
+        _afterMouseUp: function() {
             this._checkForChange();
             this.firstEvent = false;
         },
-        initializer: function () {
+        initializer: function() {
             var host = this.get(HOST);
 
             this.firstEvent = true;
@@ -95,10 +95,10 @@ YUI.add('editor-bidi', function (Y, NAME) {
         }
     }, {
         /**
-         * The events to check for a direction change on
-         * @property EVENTS
-         * @static
-         */
+        * The events to check for a direction change on
+        * @property EVENTS
+        * @static
+        */
         EVENTS: {
             'backspace-up': true,
             'pageup-up': true,
@@ -113,29 +113,29 @@ YUI.add('editor-bidi', function (Y, NAME) {
         },
 
         /**
-         * More elements may be needed. BODY *must* be in the list to take care of the special case.
-         *
-         * blockParent could be changed to use inst.EditorSelection.BLOCKS
-         * instead, but that would make Y.Plugin.EditorBidi.blockParent
-         * unusable in non-RTE contexts (it being usable is a nice
-         * side-effect).
-         * @property BLOCKS
-         * @static
-         */
+        * More elements may be needed. BODY *must* be in the list to take care of the special case.
+        *
+        * blockParent could be changed to use inst.EditorSelection.BLOCKS
+        * instead, but that would make Y.Plugin.EditorBidi.blockParent
+        * unusable in non-RTE contexts (it being usable is a nice
+        * side-effect).
+        * @property BLOCKS
+        * @static
+        */
         //BLOCKS: Y.EditorSelection.BLOCKS+',LI,HR,' + BODY,
         BLOCKS: Y.EditorSelection.BLOCKS,
         /**
-         * Template for creating a block element
-         * @static
-         * @property DIV_WRAPPER
-         */
+        * Template for creating a block element
+        * @static
+        * @property DIV_WRAPPER
+        */
         DIV_WRAPPER: '<DIV></DIV>',
         /**
-         * Returns a block parent for a given element
-         * @static
-         * @method blockParent
-         */
-        blockParent: function (node, wrap) {
+        * Returns a block parent for a given element
+        * @static
+        * @method blockParent
+        */
+        blockParent: function(node, wrap) {
             var parent = node, divNode, firstChild;
 
             if (!parent) {
@@ -153,7 +153,7 @@ YUI.add('editor-bidi', function (Y, NAME) {
 
                 // The code is based on YUI3's Y.EditorSelection._wrapBlock function.
                 divNode = Y.Node.create(EditorBidi.DIV_WRAPPER);
-                parent.get('children').each(function (node, index) {
+                parent.get('children').each(function(node, index) {
                     if (index === 0) {
                         firstChild = node;
                     } else {
@@ -167,24 +167,24 @@ YUI.add('editor-bidi', function (Y, NAME) {
             return parent;
         },
         /**
-         * The data key to store on the node.
-         * @static
-         * @property _NODE_SELECTED
-         */
+        * The data key to store on the node.
+        * @static
+        * @property _NODE_SELECTED
+        */
         _NODE_SELECTED: 'bidiSelected',
         /**
-         * Generates a list of all the block parents of the current NodeList
-         * @static
-         * @method addParents
-         */
-        addParents: function (nodeArray) {
+        * Generates a list of all the block parents of the current NodeList
+        * @static
+        * @method addParents
+        */
+        addParents: function(nodeArray) {
             var i, parent, addParent;
-            tester = function (sibling) {
-                if (!sibling.getData(EditorBidi._NODE_SELECTED)) {
-                    addParent = false;
-                    return true; // stop more processing
-                }
-            };
+                tester = function(sibling) {
+                    if (!sibling.getData(EditorBidi._NODE_SELECTED)) {
+                        addParent = false;
+                        return true; // stop more processing
+                    }
+                };
 
             for (i = 0; i < nodeArray.length; i += 1) {
                 nodeArray[i].setData(EditorBidi._NODE_SELECTED, true);
@@ -220,16 +220,16 @@ YUI.add('editor-bidi', function (Y, NAME) {
 
 
         /**
-         * editorBidi
-         * @static
-         * @property NAME
-         */
+        * editorBidi
+        * @static
+        * @property NAME
+        */
         NAME: 'editorBidi',
         /**
-         * editorBidi
-         * @static
-         * @property NS
-         */
+        * editorBidi
+        * @static
+        * @property NS
+        */
         NS: 'editorBidi',
         ATTRS: {
             host: {
@@ -237,17 +237,17 @@ YUI.add('editor-bidi', function (Y, NAME) {
             }
         },
         /**
-         * Regex for testing/removing text-align style from an element
-         * @static
-         * @property RE_TEXT_ALIGN
-         */
+        * Regex for testing/removing text-align style from an element
+        * @static
+        * @property RE_TEXT_ALIGN
+        */
         RE_TEXT_ALIGN: /text-align:\s*\w*\s*;/,
         /**
-         * Method to test a node's style attribute for text-align and removing it.
-         * @static
-         * @method removeTextAlign
-         */
-        removeTextAlign: function (n) {
+        * Method to test a node's style attribute for text-align and removing it.
+        * @static
+        * @method removeTextAlign
+        */
+        removeTextAlign: function(n) {
             if (n) {
                 if (n.getAttribute(STYLE).match(EditorBidi.RE_TEXT_ALIGN)) {
                     n.setAttribute(STYLE, n.getAttribute(STYLE).replace(EditorBidi.RE_TEXT_ALIGN, ''));
@@ -272,8 +272,8 @@ YUI.add('editor-bidi', function (Y, NAME) {
      * @for Plugin.ExecCommand
      * @property bidi
      */
-        //TODO -- This should not add this command unless the plugin is added to the instance..
-    Y.Plugin.ExecCommand.COMMANDS.bidi = function (cmd, direction) {
+    //TODO -- This should not add this command unless the plugin is added to the instance..
+    Y.Plugin.ExecCommand.COMMANDS.bidi = function(cmd, direction) {
         var inst = this.getInstance(),
             sel = new inst.EditorSelection(),
             ns = this.get(HOST).get(HOST).editorBidi,
@@ -314,11 +314,11 @@ YUI.add('editor-bidi', function (Y, NAME) {
         } else { // some text is selected
             selected = sel.getSelected();
             selectedBlocks = [];
-            selected.each(function (node) {
+            selected.each(function(node) {
                 selectedBlocks.push(EditorBidi.blockParent(node));
             });
             selectedBlocks = inst.all(EditorBidi.addParents(selectedBlocks));
-            selectedBlocks.each(function (n) {
+            selectedBlocks.each(function(n) {
                 var d = direction;
                 //Remove text-align attribute if it exists
                 n = EditorBidi.removeTextAlign(n);
@@ -339,4 +339,6 @@ YUI.add('editor-bidi', function (Y, NAME) {
     };
 
 
-}, 'true', {"requires": ["editor-base"]});
+
+
+}, '3.11.0', {"requires": ["editor-base"]});

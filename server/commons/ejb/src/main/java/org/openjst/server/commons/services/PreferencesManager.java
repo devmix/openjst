@@ -56,4 +56,6 @@ public interface PreferencesManager {
     void setBoolean(ServerPreference property, boolean value);
 
     void setDate(ServerPreference property, Date value);
+
+    Object get(ServerPreference property);
 }

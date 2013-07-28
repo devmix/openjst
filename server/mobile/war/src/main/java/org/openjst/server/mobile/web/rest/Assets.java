@@ -33,31 +33,23 @@ import javax.ws.rs.core.UriInfo;
 /**
  * @author Sergey Grachev
  */
-@Path("/ui/assets")
+@Path("/assets")
 public interface Assets {
 
     @GZIP
     @GET
-    @Path("/common.css")
+    @Path("/core.js")
     @Cache(maxAge = 315360000, noStore = false, mustRevalidate = true)
-    @Produces("text/css")
-    Response commonCss(@Context ServletContext servletContext,
-                       @HeaderParam("Cache-Control") String cacheControl, @HeaderParam("Pragma") String pragma);
+    @Produces("text/javascript")
+    Response coreJs(@Context ServletContext servletContext,
+                    @HeaderParam("Cache-Control") String cacheControl, @HeaderParam("Pragma") String pragma);
 
     @GZIP
     @GET
-    @Path("/common.js")
-    @Cache(maxAge = 315360000, noStore = false, mustRevalidate = true)
+    @Path("/config.js")
+    @Cache(maxAge = 0, noStore = true, mustRevalidate = true)
     @Produces("text/javascript")
-    Response commonJs(@Context ServletContext servletContext,
-                      @HeaderParam("Cache-Control") String cacheControl, @HeaderParam("Pragma") String pragma);
-
-    @GZIP
-    @GET
-    @Path("/application.js")
-    @Cache(maxAge = 315360000, noStore = false, mustRevalidate = true)
-    @Produces("text/javascript")
-    Response applicationJs(@Context HttpServletRequest request, @Context ServletContext servletContext);
+    Response configJs(@Context HttpServletRequest request, @Context ServletContext servletContext);
 
     @GZIP
     @GET

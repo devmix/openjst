@@ -70,43 +70,12 @@
                         <id>manifest</id>
                         <phase>prepare-package</phase>
                         <goals>
-                            <goal>manifest</goal>
+                            <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <projectName>OpenJST</projectName>
-                            <projectManifestObject>OJST</projectManifestObject>
-                            <projectNamespace>OJST.modules</projectNamespace>
-                            <resourcesPathCss>
-                                ${project.build.directory}/${project.build.finalName}/ui/css
-                            </resourcesPathCss>
-                            <resourcesPathJs>
-                                ${project.build.directory}/${project.build.finalName}/ui/js
-                            </resourcesPathJs>
                             <manifestFile>
-                                ${project.build.directory}/${project.build.finalName}/ui/js/manifest.js
+                                ${project.build.directory}/${project.build.finalName}/ui/manifest.xml
                             </manifestFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compress-and-validate</id>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                        <phase>prepare-package</phase>
-                        <configuration>
-                            <skipCompress>false</skipCompress>
-                            <skipValidate>false</skipValidate>
-                            <allowNotValid>false</allowNotValid>
-                            <sourcePath>
-                                ${project.build.directory}/${project.build.finalName}
-                            </sourcePath>
-                            <includes>
-                                <include>ui/js/**</include>
-                                <include>ui/css/**</include>
-                            </includes>
-                            <excludes>
-                                <exclude>ui/js/manifest.js</exclude>
-                            </excludes>
                         </configuration>
                     </execution>
                 </executions>

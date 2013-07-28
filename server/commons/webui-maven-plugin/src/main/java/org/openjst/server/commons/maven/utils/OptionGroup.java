@@ -17,6 +17,7 @@
 
 package org.openjst.server.commons.maven.utils;
 
+import org.jetbrains.annotations.Nullable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -94,8 +95,10 @@ public class OptionGroup {
         return groups.containsKey(group);
     }
 
-    public OptionGroup merge(final OptionGroup group) {
-        merge(group, this);
+    public OptionGroup merge(@Nullable final OptionGroup group) {
+        if (group != null) {
+            merge(group, this);
+        }
         return this;
     }
 

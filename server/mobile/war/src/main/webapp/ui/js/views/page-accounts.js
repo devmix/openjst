@@ -53,14 +53,14 @@ YUI.add(OJST.modules.views.PageAccounts, function (Y) {
                     {
                         label: OJST.i18n.label('add'),
                         handler: function () {
-                            OJST.singleton.Application.save('/accounts/');
+                            OJST.app.saveRoute('/accounts/');
                         },
                         scope: this
                     }
                 ],
                 on: {
                     'row-select': function (model) {
-                        OJST.singleton.Application.save('/accounts/' + model.get('id'));
+                        OJST.app.saveRoute('/accounts/' + model.get('id'));
                     }
                 },
                 delegates: {

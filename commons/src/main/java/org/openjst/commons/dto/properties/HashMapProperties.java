@@ -17,6 +17,7 @@
 
 package org.openjst.commons.dto.properties;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,28 +26,44 @@ import java.util.Map;
  */
 public class HashMapProperties<K, V> implements Properties<K, V> {
 
-    private final Map<K, V> data = new HashMap<K, V>(0);
+    private final Map<K, V> properties = new HashMap<K, V>(0);
+    private final Map<K, V> immutable = Collections.unmodifiableMap(properties);
 
     @Override
-    public V property(final K name) {
-        return data.get(name);
+    public V get(final K name) {
+        return properties.get(name);
     }
 
     @Override
-    public Properties<K, V> withProperty(final K name, final V value) {
-        data.put(name, value);
+    public Properties<K, V> set(final K name, final V value) {
+        properties.put(name, value);
         return this;
     }
 
     @Override
-    public boolean isEmpty() {
-        return data.isEmpty();
+    public int size() {
+        return properties.size();
+    }
+
+    @Override
+    public boolean contains(final K name) {
+        return properties.containsKey(name);
+    }
+
+    @Override
+    public boolean empty() {
+        return properties.isEmpty();
+    }
+
+    @Override
+    public Map<K, V> getProperties() {
+        return immutable;
     }
 
     @Override
     public String toString() {
         return "Properties{" +
-                "data=" + data +
+                "data=" + properties +
                 '}';
     }
 }

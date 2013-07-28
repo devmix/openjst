@@ -60,19 +60,21 @@ YUI.add(OJST.modules.views.PageAccountUser, function (Y) {
                     {
                         type: OJST.ui.widgets.form.TextField,
                         name: 'name',
-                        label: OJST.i18n.label('name')
+                        label: OJST.i18n.label('name'),
+                        required: true
                     },
                     {
                         type: OJST.ui.widgets.form.TextField,
                         name: 'authId',
-                        label: OJST.i18n.label('authId')
+                        label: OJST.i18n.label('authId'),
+                        required: true
                     },
                     {
                         type: OJST.ui.widgets.form.TextField,
                         name: 'password',
                         label: 'Password',
                         isPassword: true,
-                        placeholder: 'Input new for change'
+                        placeholder: OJST.i18n.label('passwordPlaceholder')
                     },
                     {
                         type: OJST.ui.widgets.form.ListField,
@@ -81,7 +83,8 @@ YUI.add(OJST.modules.views.PageAccountUser, function (Y) {
                         data: [
                             ['ADMIN', OJST.i18n.label('administrator')],
                             ['USER', OJST.i18n.label('user')]
-                        ]
+                        ],
+                        required: true
                     },
                     {
                         type: OJST.ui.widgets.form.ListField,
@@ -96,10 +99,10 @@ YUI.add(OJST.modules.views.PageAccountUser, function (Y) {
                 ],
                 on: {
                     'create': function (m) {
-                        OJST.singleton.Application.save('/accounts/' + accountId + '/users/' + m.get('id'));
+                        OJST.app.saveRoute('/accounts/' + accountId + '/users/' + m.get('id'));
                     },
                     'close': function () {
-                        OJST.singleton.Application.save('/accounts/' + accountId + '/users');
+                        OJST.app.saveRoute('/accounts/' + accountId + '/users');
                     },
                     'error': function (e) {
                         if (e.status === OJST.ui.models.STATUS.NOT_UNIQUE) {
@@ -119,7 +122,7 @@ YUI.add(OJST.modules.views.PageAccountUser, function (Y) {
 
 }, OJST.VERSION, {
     requires: [
-        OJST.ui.views.PageAbstract,
+        OJST.modules.views.PageAbstract,
         OJST.modules.models.User,
         OJST.modules.widgets.form.Form,
         OJST.modules.widgets.form.TextField,

@@ -1,5 +1,5 @@
 /*
-YUI 3.10.3 (build 2fb5187)
+YUI 3.11.0 (build d549e5c)
 Copyright 2013 Yahoo! Inc. All rights reserved.
 Licensed under the BSD License.
 http://yuilibrary.com/license/
@@ -22,7 +22,6 @@ http://yuilibrary.com/license/
 .yui3-skin-capsule-dark .yui3-slider-x .yui3-slider-rail {
     height: 25px;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-x .yui3-slider-thumb {
     height: 30px;
     width: 14px;
@@ -34,7 +33,6 @@ http://yuilibrary.com/license/
     left: -2px;
     width: 5px;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-x .yui3-slider-rail-cap-right {
     background-position: 0 -40px;
     height: 20px;
@@ -46,11 +44,10 @@ http://yuilibrary.com/license/
     left: 0;
     top: -10px;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-x .yui3-slider-thumb-shadow {
     left: 0;
     opacity: 0.15;
-    filter: alpha(opacity = 15);
+    filter: alpha(opacity=15);
     top: -50px;
 }
 
@@ -71,7 +68,6 @@ http://yuilibrary.com/license/
 .yui3-skin-capsule-dark .yui3-slider-y .yui3-slider-rail {
     width: 25px;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-y .yui3-slider-thumb {
     width: 30px;
     height: 14px;
@@ -83,7 +79,6 @@ http://yuilibrary.com/license/
     top: -2px;
     height: 5px;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-y .yui3-slider-rail-cap-bottom {
     background-position: -40px 0;
     width: 20px;
@@ -95,16 +90,15 @@ http://yuilibrary.com/license/
     left: -10px;
     top: 0;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-y .yui3-slider-thumb-shadow {
     left: -50px;
     opacity: 0.15;
-    filter: alpha(opacity = 15);
+    filter: alpha(opacity=15);
     top: 0;
 }
 
 /*
-YUI 3.10.3 (build 2fb5187)
+YUI 3.11.0 (build d549e5c)
 Copyright 2013 Yahoo! Inc. All rights reserved.
 Licensed under the BSD License.
 http://yuilibrary.com/license/
@@ -127,7 +121,6 @@ http://yuilibrary.com/license/
 .yui3-skin-capsule-dark .yui3-slider-x .yui3-slider-rail {
     height: 25px;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-x .yui3-slider-thumb {
     height: 30px;
     width: 14px;
@@ -139,7 +132,6 @@ http://yuilibrary.com/license/
     left: -2px;
     width: 5px;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-x .yui3-slider-rail-cap-right {
     background-position: 0 -40px;
     height: 20px;
@@ -151,11 +143,10 @@ http://yuilibrary.com/license/
     left: 0;
     top: -10px;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-x .yui3-slider-thumb-shadow {
     left: 0;
     opacity: 0.15;
-    filter: alpha(opacity = 15);
+    filter: alpha(opacity=15);
     top: -50px;
 }
 
@@ -176,7 +167,6 @@ http://yuilibrary.com/license/
 .yui3-skin-capsule-dark .yui3-slider-y .yui3-slider-rail {
     width: 25px;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-y .yui3-slider-thumb {
     width: 30px;
     height: 14px;
@@ -188,7 +178,6 @@ http://yuilibrary.com/license/
     top: -2px;
     height: 5px;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-y .yui3-slider-rail-cap-bottom {
     background-position: -40px 0;
     width: 20px;
@@ -200,10 +189,9 @@ http://yuilibrary.com/license/
     left: -10px;
     top: 0;
 }
-
 .yui3-skin-capsule-dark .yui3-slider-y .yui3-slider-thumb-shadow {
     left: -50px;
     opacity: 0.15;
-    filter: alpha(opacity = 15);
+    filter: alpha(opacity=15);
     top: 0;
 }

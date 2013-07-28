@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<manifest xmlns="http://openjst.org/xml/ns/web-ui/manifest"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://openjst.org/xml/ns/web-ui/manifest http://openjst.org/xml/ns/web-ui/manifest_0_1.xsd"
+          version="0.1">
+
+    <parameters>
+        <project>OpenJST</project>
+        <version>0.1</version>
+        <namespace>OJST</namespace>
+    </parameters>
+
+    <compressors>
+        <compressor type="uglifyjs" for="JavaScript"/>
+        <compressor type="yui" for="CSS"/>
+    </compressors>
+
+    <validators>
+        <validator type="jslint" for="JavaScript" failOnError="false"/>
+    </validators>
+
+    <framework type="yui">
+        <core comboServiceUrl="ui-api/assets/yui-combo?"/>
+        <groups>
+            <group name="openjst" comboServiceUrl="ui-api/assets/ui-combo?">
+                <namespaces>
+                    <namespace>modules</namespace>
+                    <namespace>libs</namespace>
+                </namespaces>
+            </group>
+        </groups>
+    </framework>
+
+    <resources>
+        <core root="core" joinAs="core-all">
+            <entry>core.js</entry>
+        </core>
+
+        <modules namespace="modules">
+            <sources root="js"/>
+            <styles root="css"/>
+        </modules>
+
+        <libraries root="lib" namespace="libs">
+            <library root="select2" name="Select2" joinAs="select2-all">
+                <sources>
+                    <includes>
+                        <include>select2.js</include>
+                    </includes>
+                </sources>
+                <styles>
+                    <includes>
+                        <include>select2.css</include>
+                    </includes>
+                </styles>
+            </library>
+            <library root="bootstrap" joinAs="bootstrap-all" name="Bootstrap">
+                <sources>
+                    <includes>
+                        <include>js/bootstrap.js</include>
+                    </includes>
+                </sources>
+                <styles>
+                    <includes>
+                        <include>css/bootstrap.css</include>
+                        <include>css/bootstrap-responsive.css</include>
+                    </includes>
+                </styles>
+            </library>
+        </libraries>
+    </resources>
+</manifest>

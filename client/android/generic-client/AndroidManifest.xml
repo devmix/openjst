@@ -39,14 +39,14 @@
             android:debuggable="true"
             android:icon="@drawable/ic_app"
             android:label="@string/app_name"
-            android:name="org.openjst.client.android.OpenJSTApplication"
+            android:name=".OpenJSTApplication"
             android:theme="@style/OpenJST.DarkTheme">
 
-        <service android:name="org.openjst.client.android.service.ServerConnectionService"/>
+        <service android:name=".service.ServerConnectionService"/>
 
         <activity
                 android:label="@string/app_name"
-                android:name="org.openjst.client.android.activity.StartupActivity"
+                android:name=".activity.StartupActivity"
                 android:theme="@style/OpenJST.DarkTheme.NoTitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -55,32 +55,32 @@
         </activity>
         <activity
                 android:label="@string/app_name"
-                android:name="org.openjst.client.android.activity.LoginActivity"
+                android:name=".activity.LoginActivity"
                 android:theme="@style/OpenJST.DarkTheme.NoTitle">
         </activity>
         <activity
                 android:label="@string/settings"
-                android:name="org.openjst.client.android.activity.SettingsActivity"/>
+                android:name=".activity.SettingsActivity"/>
         <activity
                 android:label="@string/register_new_client"
-                android:name="org.openjst.client.android.activity.RegisterClientActivity"/>
+                android:name=".activity.RegisterClientActivity"/>
         <activity
                 android:label="@string/schedule_today"
-                android:name="org.openjst.client.android.activity.ScheduleTodayActivity"/>
+                android:name=".activity.ScheduleTodayActivity"/>
         <activity
                 android:label="@string/status"
-                android:name="org.openjst.client.android.activity.StatusActivity"/>
+                android:name=".activity.StatusActivity"/>
         <activity
                 android:label="Application"
-                android:name="org.openjst.client.android.activity.status.StatusApplicationActivity"/>
+                android:name=".activity.status.StatusApplicationActivity"/>
         <activity
                 android:label="Connection"
-                android:name="org.openjst.client.android.activity.status.StatusConnectionActivity"/>
+                android:name=".activity.status.StatusConnectionActivity"/>
         <activity
                 android:label="Traffic"
-                android:name="org.openjst.client.android.activity.status.StatusTrafficActivity"/>
+                android:name=".activity.status.StatusTrafficActivity"/>
         <activity
                 android:label="Application update"
-                android:name="org.openjst.client.android.activity.ApplicationUpdateActivity"/>
+                android:name=".activity.ApplicationUpdateActivity"/>
     </application>
 </manifest>

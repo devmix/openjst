@@ -25,15 +25,13 @@ import java.util.regex.Pattern;
 public final class Patterns {
 
     public static final String STRING_EXT_REPLACE = "\\.\\w{2,3}$";
-    public static final Pattern EXT_REPLACE = Pattern.compile(STRING_EXT_REPLACE);
-    public static final Pattern MIN = Pattern.compile(".*-min\\.\\w{2,3}");
-    public static final Pattern JS = Pattern.compile(".*\\.js");
+    public static final Pattern COMPRESSED = Pattern.compile(".*[-\\.]?min\\.\\w{2,3}");
     public static final Pattern JS_MODULE_FILE_NAME = Pattern.compile("(/?[a-z\\d](?:-[a-z\\d])*[a-z\\d]*(?:[\\.js])?)*");
-    public static final Pattern CSS = Pattern.compile(".*\\.css");
     public static final Pattern CSS_MODULE_FILE_NAME = Pattern.compile("(/?[a-z\\d](?:-[a-z\\d])*[a-z\\d]*(?:[\\.css])?)*");
     public static final Pattern MODULE_REQUIRES = Pattern.compile(
             ".*,\\s*OJST\\.VERSION\\s*,\\s*\\{\\s*requires\\s*:\\s*\\[\\s*(.*)\\s*\\]\\s*\\}.*$",
             Pattern.DOTALL + Pattern.MULTILINE + Pattern.CASE_INSENSITIVE + Pattern.UNICODE_CASE);
+    public static final Pattern MODULE_REQUIRES_SPLITTER = Pattern.compile(",(?=([^'\"]*['\"][^'\"]*['\"])*[^'\"]*$)");
 
     private Patterns() {
     }

@@ -22,43 +22,23 @@ package org.openjst.server.mobile.web;
  */
 public final class UIAssets {
 
+    public static final String PATH_UI = "ui/";
     public static final String PATH_LIB = "ui/lib/";
-    public static final String PATH_ASSETS_CSS = "ui/assets/css/";
-
-    public static final String[] CSS_COMMON = new String[]{
-            "select2/select2.css"
-    };
-    public static final String[] CSS_ASSETS = new String[]{
-
-    };
-    public static final String[] JS_COMMON = new String[]{
-            "jquery/jquery-1.8.3.min.js",
-            "select2/select2.min.js",
-            "yui/build/yui/yui.js",
-            "bootstrap/js/bootstrap.min.js"
-    };
+    public static final String PATH_CORE = "ui/core/";
 
     private UIAssets() {
     }
 
-    public static String jspDefault(final String pageName) {
-        return "<link href='rest/ui/assets/common.css' rel='stylesheet'>\n"
-                +
-                "<link href='" + PATH_LIB + "bootstrap/css/bootstrap.min.css' rel='stylesheet'>\n"
-                +
-                "<link href='" + PATH_ASSETS_CSS + "pages/" + pageName + ".css' rel='stylesheet'>\n"
-                +
-                "<link href='" + PATH_LIB + "bootstrap/css/bootstrap-responsive.min.css' rel='stylesheet'>\n"
-                +
-                "<!--[if lt IE 9]>\n" +
-                "<script src='" + PATH_LIB + "html5shim/html5.js' type='text/javascript'></script>\n" +
+    public static String jspDefault() {
+        return "<!--[if lt IE 9]>\n" +
+                "<script src='" + PATH_LIB + "html5shim/html5shiv-3.6.2-min.js' type='text/javascript'></script>\n" +
                 "<![endif]-->\n"
                 +
                 "<link href=\"ui/assets/ico/favicon.png\" rel=\"shortcut icon\">\n";
     }
 
     public static String jsDefault() {
-        return "<script src='rest/ui/assets/common.js' type='text/javascript'></script>\n"
-                + "<script src='rest/ui/assets/application.js' type='text/javascript'></script>\n";
+        return "<script src='ui-api/assets/config.js' type='text/javascript'></script>\n"
+                + "<script src='ui-api/assets/core.js' type='text/javascript'></script>\n";
     }
 }

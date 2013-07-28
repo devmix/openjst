@@ -22,7 +22,6 @@ import org.openjst.server.commons.model.types.RoleType;
 import org.openjst.server.mobile.I18n;
 import org.openjst.server.mobile.cdi.beans.MobileSession;
 import org.openjst.server.mobile.model.User;
-import org.openjst.server.mobile.mq.model.SessionModel;
 import org.openjst.server.mobile.mq.model.UserModel;
 
 import javax.enterprise.context.SessionScoped;
@@ -38,23 +37,23 @@ public class MobileSessionImpl extends AbstractGlobalSession implements MobileSe
     private static final long serialVersionUID = -4401358883640148661L;
 
     private Locale locale = null;
-    private SessionModel session = SessionModel.GUEST;
+    private UserModel user = UserModel.GUEST;
     private RoleType role = RoleType.UNKNOWN;
     private long userId = -1;
     private long accountId = -1;
 
     @Override
     public void initialization(final User user) {
-        this.session = SessionModel.newInstance(UserModel.USER_TO_MODEL.map(user));
         this.role = user.getRole();
         this.locale = I18n.getLocale(user.getLanguage().name());
         this.userId = user.getId();
         this.accountId = user.getAccount().getId();
+        this.user = UserModel.USER_TO_MODEL.map(user);
     }
 
     @Override
-    public SessionModel getSession() {
-        return session;
+    public UserModel getUser() {
+        return user;
     }
 
     @Override
@@ -69,7 +68,7 @@ public class MobileSessionImpl extends AbstractGlobalSession implements MobileSe
 
     @Override
     public boolean isAuthorized() {
-        return !SessionModel.GUEST.equals(session);
+        return !UserModel.GUEST.equals(user);
     }
 
     @Override

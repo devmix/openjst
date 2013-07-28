@@ -24,7 +24,7 @@ import org.infinispan.Cache;
  */
 public interface CacheService {
 
-    Cache<Integer, String> getWebUI();
+    Cache<String, String> getWebUI();
 
     void clearWebUI();
 }

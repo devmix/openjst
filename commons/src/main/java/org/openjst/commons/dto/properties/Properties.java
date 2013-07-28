@@ -17,14 +17,22 @@
 
 package org.openjst.commons.dto.properties;
 
+import java.util.Map;
+
 /**
  * @author Sergey Grachev
  */
 public interface Properties<K, V> {
 
-    V property(K name);
+    V get(K name);
 
-    Properties<K, V> withProperty(K name, V value);
+    Properties<K, V> set(K name, V value);
 
-    boolean isEmpty();
+    int size();
+
+    boolean contains(K name);
+
+    boolean empty();
+
+    Map<K, V> getProperties();
 }

@@ -163,7 +163,7 @@ public final class DatabaseLoginModule implements LoginModule {
 
         session.initialization(user);
 
-        LOG.trace("User authorized {}", session.getSession());
+        LOG.trace("User authorized {}", session.getUser());
 
         commitSucceeded = true;
         id.clear();

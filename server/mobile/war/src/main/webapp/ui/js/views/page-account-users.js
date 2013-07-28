@@ -55,14 +55,14 @@ YUI.add(OJST.modules.views.PageAccountUsers, function (Y) {
                     {
                         label: OJST.i18n.label('add'),
                         handler: function () {
-                            OJST.singleton.Application.save('/accounts/' + accountId + '/users/');
+                            OJST.app.saveRoute('/accounts/' + accountId + '/users/');
                         },
                         scope: this
                     }
                 ],
                 on: {
                     'row-select': function (model) {
-                        OJST.singleton.Application.save('/accounts/' + accountId + '/users/' + model.get('id'));
+                        OJST.app.saveRoute('/accounts/' + accountId + '/users/' + model.get('id'));
                     }
                 },
                 delegates: {

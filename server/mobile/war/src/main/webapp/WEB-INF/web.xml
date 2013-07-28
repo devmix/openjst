@@ -51,12 +51,10 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Public UI</web-resource-name>
-            <url-pattern>/ui/js/application.js</url-pattern>
-            <url-pattern>/ui/js/manifest.js</url-pattern>
             <url-pattern>/ui/assets/*</url-pattern>
             <url-pattern>/ui/css/*</url-pattern>
             <url-pattern>/ui/lib/*</url-pattern>
-            <url-pattern>/rest/ui/assets/*</url-pattern>
+            <url-pattern>/ui-api/assets/*</url-pattern>
             <http-method>GET</http-method>
         </web-resource-collection>
         <user-data-constraint>

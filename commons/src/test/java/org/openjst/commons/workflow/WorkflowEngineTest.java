@@ -105,7 +105,7 @@ public final class WorkflowEngineTest {
 
                 if (EVENT_CHANGE_STATE.equals(event.getName()) && data != null) {
 
-                    final String newState = (String) data.property(PROPERTY_STATE);
+                    final String newState = (String) data.get(PROPERTY_STATE);
                     LOG.info("\t\tchange state on: {}", newState);
                     return ProcessStates.newMutableState().setNext(Tasks.newNamed("task-" + newState));
 
@@ -192,10 +192,10 @@ public final class WorkflowEngineTest {
                 for (int i = 0; i < count; i++) {
                     final String id;
                     try {
-                        id = engine.execute(JOB_WORKFLOW, (UserData) new UserDataHashMap().withProperty("id", now + i));
+                        id = engine.execute(JOB_WORKFLOW, (UserData) new UserDataHashMap().set("id", now + i));
                         engine.event(id, EVENT_CHANGE_STATE, (UserData) new UserDataHashMap()
-                                .withProperty(PROPERTY_STATE, STATE_ASSIGN)
-                                .withProperty("rnd", RANDOM.nextLong()));
+                                .set(PROPERTY_STATE, STATE_ASSIGN)
+                                .set("rnd", RANDOM.nextLong()));
                     } catch (WorkflowException e) {
                         e.printStackTrace();
                     }

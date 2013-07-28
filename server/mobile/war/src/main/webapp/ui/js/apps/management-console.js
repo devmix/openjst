@@ -56,7 +56,7 @@ YUI.add(OJST.modules.apps.ManagementConsole, function (Y) {
          * @protected
          */
         initializer: function (cfg) {
-            this.set('brand', OJST.PROJECT_NAME);
+            this.set('brand', OJST.i18n.label('brand'));
             this.set('navigation', {
                 buttons: [
                     {
@@ -68,9 +68,9 @@ YUI.add(OJST.modules.apps.ManagementConsole, function (Y) {
                         route: '/accounts'
                     }
                 ],
-                menuLabel: OJST.app.session.user.name,
+                menuLabel: OJST.session.getUser().getName(),
                 menu: [
-                    OJST.app.session.user.name,
+                    OJST.session.getUser().getRole(),
                     {label: OJST.i18n.label('changePassword'), handler: function () {
                         console.log('TODO Change password...');
                     }},
@@ -79,7 +79,7 @@ YUI.add(OJST.modules.apps.ManagementConsole, function (Y) {
                     }},
                     '-',
                     {label: OJST.i18n.label('logout'), handler: function () {
-                        Y.io('/mobile/rest/ui/session/logout', {
+                        Y.io('ui-api/session/logout', {
                             method: 'POST',
                             on: {
                                 complete: function () {
@@ -139,12 +139,17 @@ YUI.add(OJST.modules.apps.ManagementConsole, function (Y) {
         }
     });
 
-}, OJST.VERSION, {requires: [
-    OJST.modules.apps.Abstract,
-    OJST.modules.views.PageManagementConsole,
-    OJST.modules.views.PageAccounts,
-    OJST.modules.views.PageAccount,
-    OJST.modules.views.PageAccountUsers,
-    OJST.modules.views.PageAccountUser,
-    'io-base'
-]});
+}, OJST.VERSION, {
+    requires: [
+        OJST.libs.Select2,
+        OJST.libs.Bootstrap,
+        OJST.modules.utils.Framework,
+        OJST.modules.utils.Html,
+        OJST.modules.apps.Abstract,
+        OJST.modules.views.PageManagementConsole,
+        OJST.modules.views.PageAccounts,
+        OJST.modules.views.PageAccount,
+        OJST.modules.views.PageAccountUsers,
+        OJST.modules.views.PageAccountUser,
+        'io-base'
+    ]});

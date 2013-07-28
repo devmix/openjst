@@ -31,10 +31,8 @@ import javax.annotation.PreDestroy;
 import javax.ejb.*;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.jms.MessageProducer;
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Sergey Grachev
@@ -55,7 +53,6 @@ public class PreferencesManagerImpl implements PreferencesManager, Serializable 
     @Inject
     private Event<PreferenceChangeEvent> preferenceChangeEvents;
 
-    private final Map<String, MessageProducer> listeners = new ConcurrentHashMap<String, MessageProducer>();
     private CacheOnDemand<String, Object, ServerPreference> cache;
 
     @PostConstruct
@@ -76,6 +73,12 @@ public class PreferencesManagerImpl implements PreferencesManager, Serializable 
     @PreDestroy
     public void destroy() {
         cache.clear();
+    }
+
+    @Override
+    public Object get(final ServerPreference property) {
+        final Object value = cache.get(property.key());
+        return value == null ? property.defaultValue() : value;
     }
 
     @Override
@@ -220,11 +223,6 @@ public class PreferencesManagerImpl implements PreferencesManager, Serializable 
 
     private void notifyChange(final String name, final Object newValue, final Object oldValue) {
         preferenceChangeEvents.fire(PreferenceChangeEvent.newInstance(name, newValue, oldValue));
-    }
-
-    private Object get(final ServerPreference property) {
-        final Object value = cache.get(property.key());
-        return value == null ? property.defaultValue() : value;
     }
 
     public void set(final ServerPreference property, final Object value) {

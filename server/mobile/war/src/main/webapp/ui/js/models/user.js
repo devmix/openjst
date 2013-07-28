@@ -31,7 +31,7 @@ YUI.add(OJST.modules.models.User, function (Y) {
      * @extends OJST.ui.models.Base
      */
     OJST.ui.models.User = Y.Base.create('modelUser', OJST.ui.models.Base, [], {
-        root: 'rest/ui/users'
+        root: 'ui-api/users'
     }, {
         ATTRS: {
             id: {value: null},
@@ -51,7 +51,7 @@ YUI.add(OJST.modules.models.User, function (Y) {
      */
     OJST.ui.models.UserList = Y.Base.create('modelsUserList', OJST.ui.models.BaseList, [], {
         model: OJST.ui.models.User,
-        url: 'rest/ui/users?accountId={accountId}'
+        url: 'ui-api/users?accountId={accountId}'
     }, {
         ATTRS: {
             accountId: {}

@@ -17,21 +17,20 @@
 
 package org.openjst.server.mobile.web.rest.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.infinispan.Cache;
+import org.openjst.commons.dto.properties.GroupedProperties;
+import org.openjst.commons.dto.properties.PropertiesFactory;
 import org.openjst.commons.i18n.Language;
 import org.openjst.server.commons.services.PreferencesManager;
 import org.openjst.server.commons.web.utils.WebAssetsAggregator;
 import org.openjst.server.mobile.I18n;
 import org.openjst.server.mobile.Preferences;
 import org.openjst.server.mobile.cdi.beans.MobileSession;
-import org.openjst.server.mobile.mq.model.ApplicationModel;
+import org.openjst.server.mobile.mq.model.UIConfigModel;
 import org.openjst.server.mobile.services.CacheService;
-import org.openjst.server.mobile.web.UIAssets;
 import org.openjst.server.mobile.web.rest.Assets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.inject.Inject;
@@ -42,15 +41,14 @@ import javax.ws.rs.core.UriInfo;
 import java.util.Arrays;
 import java.util.Set;
 
+import static org.openjst.server.mobile.web.UIAssets.*;
+
 /**
  * @author Sergey Grachev
  */
 public class AssetsImpl implements Assets {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Assets.class);
-
-    private static final int CACHE_COMMON_CSS = "common.css".hashCode();
-    private static final int CACHE_COMMON_JS = "common.js".hashCode();
+    private static final String CACHE_COMMON_JS = "common.js";
 
     @EJB
     private CacheService cacheService;
@@ -61,35 +59,38 @@ public class AssetsImpl implements Assets {
     @Inject
     private MobileSession session;
 
-    @Override
-    public Response commonCss(final ServletContext servletContext, final String cacheControl, final String pragma) {
-        final Cache<Integer, String> cache = cacheService.getWebUI();
-
-        final String content;
-        if (!preferences.getBoolean(Preferences.UI.SCRIPTS_CACHE) || !cache.containsKey(CACHE_COMMON_CSS)) {
-            content = WebAssetsAggregator.newInstance(servletContext)
-                    .addResources("/" + UIAssets.PATH_LIB, UIAssets.CSS_COMMON)
-//                    .addResources("/" + UIAssets.PATH_ASSETS_CSS, UIAssets.CSS_ASSETS)
-                    .aggregate();
-            cache.put(CACHE_COMMON_CSS, content);
-        } else {
-            content = cache.get(CACHE_COMMON_CSS);
-        }
-
-        return Response.ok(content).header("Content-Type", "text/css").build();
+    public static String extJs(final String fileName, final boolean debug) {
+        return (debug ? fileName : fileName + "-min") + ".js";
     }
 
     @Override
-    public Response commonJs(final ServletContext servletContext, final String cacheControl, final String pragma) {
-        return getAggregatedResources(servletContext, cacheControl, pragma, CACHE_COMMON_JS, "/" + UIAssets.PATH_LIB, UIAssets.JS_COMMON);
+    public Response coreJs(final ServletContext servletContext, final String cacheControl, final String pragma) {
+        final Cache<String, String> cache = cacheService.getWebUI();
+        final boolean debug = preferences.getBoolean(Preferences.UI.SCRIPTS_DEBUG);
+        final boolean useCache = preferences.getBoolean(Preferences.UI.SCRIPTS_CACHE);
+
+        final String commonJs;
+        if (!useCache || !cache.containsKey(CACHE_COMMON_JS)) {
+            commonJs = WebAssetsAggregator.newInstance(servletContext)
+                    .addResource('/' + PATH_LIB + extJs("yui/build/yui/yui", debug))
+                    .addResource('/' + PATH_LIB + extJs("jquery/jquery-1.8.3", debug))
+                    .addResource('/' + PATH_UI + "manifest.js")
+                    .addResource('/' + PATH_CORE + extJs("core-all", debug))
+                    .aggregate();
+            cache.put(CACHE_COMMON_JS, commonJs);
+        } else {
+            commonJs = cache.get(CACHE_COMMON_JS);
+        }
+
+        return Response.ok().entity(commonJs).build();
     }
 
     @Override
     public Response yuiFrameworkCombo(final UriInfo uriInfo, final ServletContext servletContext, final String cacheControl, final String pragma) {
         final Set<String> resourcesSet = uriInfo.getQueryParameters().keySet();
         final String[] resources = resourcesSet.toArray(new String[resourcesSet.size()]);
-        final int cacheKey = Arrays.hashCode(resources);
-        return getAggregatedResources(servletContext, cacheControl, pragma, cacheKey, "/" + UIAssets.PATH_LIB + "yui/build/",
+        final String cacheKey = Arrays.toString(resources);
+        return getAggregatedResources(servletContext, cacheControl, pragma, cacheKey, '/' + PATH_LIB + "yui/build/",
                 resources
         );
     }
@@ -98,37 +99,36 @@ public class AssetsImpl implements Assets {
     public Response yuiUiCombo(final UriInfo uriInfo, final ServletContext servletContext, final String cacheControl, final String pragma) {
         final Set<String> resourcesSet = uriInfo.getQueryParameters().keySet();
         final String[] resources = resourcesSet.toArray(new String[resourcesSet.size()]);
-        final int cacheKey = Arrays.hashCode(resources);
-        return getAggregatedResources(servletContext, cacheControl, pragma, cacheKey, "/ui/",
+        final String cacheKey = Arrays.toString(resources);
+        return getAggregatedResources(servletContext, cacheControl, pragma, cacheKey, '/' + PATH_UI,
                 resources
         );
     }
 
     @Override
-    public Response applicationJs(final HttpServletRequest request, final ServletContext servletContext) {
-        final Language language = I18n.get(this.session.getLocale());
-
-        // TODO split localization keys into groups by '.', ex. i18n: {ui:{label:{'sing-in':'Sing in','password':'Password'}}}
-        // TODO user preferences
-
-        final ApplicationModel application = new ApplicationModel(this.session.getSession(), language.getAll());
-
-        final ObjectMapper mapper = new ObjectMapper();
-        final ObjectWriter writer = mapper.writer();
-        final String applicationJson;
+    public Response configJs(final HttpServletRequest request, final ServletContext servletContext) {
+        final String config;
         try {
-            applicationJson = "\n(function(){\n\"use strict\";\nOJST.app=" + writer.writeValueAsString(application) + "}());\n";
+            config = getConfigJson();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getLocalizedMessage()).build();
         }
+        return Response.ok().entity("(function(){OJST={CONFIG:" + config + ",core:{}}})();").build();
+    }
 
-        final String js = WebAssetsAggregator.newInstance(servletContext, "/ui/js/")
-                .addResource("manifest.js")
-                .addString(applicationJson)
-                .addResource(preferences.getBoolean(Preferences.UI.SCRIPTS_DEBUG) ? "application-min.js" : "application.js")
-                .aggregate();
+    private String getConfigJson() throws JsonProcessingException {
+        // TODO split localization keys into groups by '.', ex. i18n: {ui:{label:{'sing-in':'Sing in','password':'Password'}}}
 
-        return Response.ok().entity(js).build();
+        final Language language = I18n.get(this.session.getLocale());
+
+        final GroupedProperties<String, String, Object> properties = PropertiesFactory.newHashMapGroupedProperties();
+        properties.ensureGroup("ui").ensureGroup("scripts")
+                .set("debug", preferences.get(Preferences.UI.SCRIPTS_DEBUG))
+                .set("combine", true);
+
+        final UIConfigModel application = new UIConfigModel(this.session.getUser(), language.getAll(), properties);
+
+        return new ObjectMapper().writer().writeValueAsString(application);
     }
 
 //    private boolean isRequireInvalidate(final String cacheControl, final String pragma) {
@@ -137,18 +137,19 @@ public class AssetsImpl implements Assets {
 //    }
 
     private Response getAggregatedResources(final ServletContext servletContext, final String cacheControl, final String pragma,
-                                            final int cacheKey, final String root, final String... resources) {
+                                            final String cacheKey, final String root, final String... resources) {
 
-        final Cache<Integer, String> cache = cacheService.getWebUI();
+        final Cache<String, String> cache = cacheService.getWebUI();
 //        if (isRequireInvalidate(cacheControl, pragma) || !cache.containsKey(cacheKey)) {
+        final boolean isCss = resources.length > 0 && resources[0].toLowerCase().endsWith(".css");
         final String content;
         if (!preferences.getBoolean(Preferences.UI.SCRIPTS_CACHE) || !cache.containsKey(cacheKey)) {
-            content = WebAssetsAggregator.newInstance(servletContext, root).addResources(resources).aggregate();
+            content = WebAssetsAggregator.newInstance(servletContext, root).addResources(resources)
+                    .aggregate(isCss ? "\n" : ";\n");
             cache.put(cacheKey, content);
         } else {
             content = cache.get(cacheKey);
         }
-        final boolean isCss = resources.length > 0 && resources[0].toLowerCase().endsWith(".css");
         return Response.ok(content).header("Content-Type", isCss ? "text/css" : "text/javascript").build();
 //        }
 //        return Response.notModified().build();

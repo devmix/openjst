@@ -1,63 +1,67 @@
 /*
- YUI 3.10.3 (build 2fb5187)
- Copyright 2013 Yahoo! Inc. All rights reserved.
- Licensed under the BSD License.
- http://yuilibrary.com/license/
- */
+YUI 3.11.0 (build d549e5c)
+Copyright 2013 Yahoo! Inc. All rights reserved.
+Licensed under the BSD License.
+http://yuilibrary.com/license/
+*/
 
 YUI.add('series-combospline', function (Y, NAME) {
 
+/**
+ * Provides functionality for creating a combospline series.
+ *
+ * @module charts
+ * @submodule series-combospline
+ */
+/**
+ * The ComboSplineSeries class renders a combination of splines, plots and areaspline fills in a single series. Each
+ * series type has a corresponding boolean attribute indicating if it is rendered. By default, splines and plots
+ * are rendered and areaspline is not.
+ *
+ * @class ComboSplineSeries
+ * @extends ComboSeries
+ * @uses CurveUtil
+ * @constructor
+ * @param {Object} config (optional) Configuration parameters.
+ * @submodule series-combospline
+ */
+Y.ComboSplineSeries = Y.Base.create("comboSplineSeries", Y.ComboSeries, [Y.CurveUtil], {
     /**
-     * Provides functionality for creating a combospline series.
+     * @protected
      *
-     * @module charts
-     * @submodule series-combospline
-     */
-    /**
-     * The ComboSplineSeries class renders a combination of splines, plots and areaspline fills in a single series. Each
-     * series type has a corresponding boolean attribute indicating if it is rendered. By default, splines and plots
-     * are rendered and areaspline is not.
+     * Draws the series.
      *
-     * @class ComboSplineSeries
-     * @extends ComboSeries
-     * @uses CurveUtil
-     * @constructor
-     * @param {Object} config (optional) Configuration parameters.
-     * @submodule series-combospline
+     * @method drawSeries
      */
-    Y.ComboSplineSeries = Y.Base.create("comboSplineSeries", Y.ComboSeries, [Y.CurveUtil], {
+    drawSeries: function()
+    {
+        if(this.get("showAreaFill"))
+        {
+            this.drawAreaSpline();
+        }
+        if(this.get("showLines"))
+        {
+            this.drawSpline();
+        }
+        if(this.get("showMarkers"))
+        {
+            this.drawPlots();
+        }
+    }
+}, {
+    ATTRS: {
         /**
-         * @protected
+         * Read-only attribute indicating the type of series.
          *
-         * Draws the series.
-         *
-         * @method drawSeries
+         * @attribute type
+         * @type String
+         * @default comboSpline
          */
-        drawSeries: function () {
-            if (this.get("showAreaFill")) {
-                this.drawAreaSpline();
-            }
-            if (this.get("showLines")) {
-                this.drawSpline();
-            }
-            if (this.get("showMarkers")) {
-                this.drawPlots();
-            }
+        type: {
+            value : "comboSpline"
         }
-    }, {
-        ATTRS: {
-            /**
-             * Read-only attribute indicating the type of series.
-             *
-             * @attribute type
-             * @type String
-             * @default comboSpline
-             */
-            type: {
-                value: "comboSpline"
-            }
-        }
-    });
+    }
+});
 
 
-}, 'true', {"requires": ["series-combo", "series-curve-util"]});
+}, '3.11.0', {"requires": ["series-combo", "series-curve-util"]});

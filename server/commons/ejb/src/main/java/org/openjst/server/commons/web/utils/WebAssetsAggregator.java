@@ -65,15 +65,11 @@ public final class WebAssetsAggregator {
         return addResource(defaultRoot, resource);
     }
 
-    public WebAssetsAggregator addResources(final String root, final String... resources) {
+    public WebAssetsAggregator addResources(final String... resources) {
         for (final String resource : resources) {
-            addResource(root, resource);
+            addResource(defaultRoot, resource);
         }
         return this;
-    }
-
-    public WebAssetsAggregator addResources(final String... resources) {
-        return addResources(defaultRoot, resources);
     }
 
     public WebAssetsAggregator addString(final String value) {
@@ -82,6 +78,10 @@ public final class WebAssetsAggregator {
     }
 
     public String aggregate() {
+        return aggregate("\n");
+    }
+
+    public String aggregate(final String endOfResourceMark) {
         final StringBuilder sb = new StringBuilder();
         for (final Map.Entry<String, Type> resource : resources.entrySet()) {
             final String content = resource.getKey();
@@ -90,7 +90,7 @@ public final class WebAssetsAggregator {
                     final InputStream is = servletContext.getResourceAsStream(content);
                     if (is != null) {
                         try {
-                            sb.append(IOUtils.toString(is)).append("\n");
+                            sb.append(IOUtils.toString(is)).append(endOfResourceMark);
                         } catch (IOException e) {
                             LOG.error("Can't read resource", e);
                         } finally {

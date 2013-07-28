@@ -19,7 +19,7 @@ package org.openjst.server.mobile.cdi.beans;
 
 import org.openjst.server.commons.cdi.beans.GlobalSession;
 import org.openjst.server.mobile.model.User;
-import org.openjst.server.mobile.mq.model.SessionModel;
+import org.openjst.server.mobile.mq.model.UserModel;
 
 /**
  * @author Sergey Grachev
@@ -28,7 +28,7 @@ public interface MobileSession extends GlobalSession {
 
     void initialization(User user);
 
-    SessionModel getSession();
+    UserModel getUser();
 
     long getUserId();
 

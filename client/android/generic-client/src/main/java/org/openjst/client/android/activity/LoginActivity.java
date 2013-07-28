@@ -152,11 +152,14 @@ public final class LoginActivity extends AbstractActivity {
             return;
         }
 
+        final String clientId = edClientId.getText().toString();
+        final String secretKey = edSecretKey.getText().toString();
+
         if (cbRememberMe.isChecked()) {
             settingsManager.edit()
                     .putBoolean(Constants.Settings.LOGIN_REMEMBER, true)
-                    .putString(Constants.Settings.LOGIN_CLIENT_ID, edClientId.getText().toString())
-                    .putString(Constants.Settings.LOGIN_CLIENT_SECRET_KEY, edSecretKey.getText().toString())
+                    .putString(Constants.Settings.LOGIN_CLIENT_ID, clientId)
+                    .putString(Constants.Settings.LOGIN_CLIENT_SECRET_KEY, secretKey)
                     .commit();
         } else {
             settingsManager.edit()
@@ -177,7 +180,7 @@ public final class LoginActivity extends AbstractActivity {
         });
         progress.show();
 
-        if (connection == null || !connection.reconnect()) {
+        if (connection == null || !connection.reconnect(clientId, secretKey)) {
             Toast.makeText(LoginActivity.this, "fail to connect", Toast.LENGTH_SHORT).show();
             progress.hide();
         }

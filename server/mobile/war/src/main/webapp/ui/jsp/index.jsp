@@ -25,8 +25,7 @@
 <head>
     <title>OpenJST</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%= UIAssets.jspDefault("index") %>
-    <%= UIAssets.jsDefault() %>
+    <%= UIAssets.jspDefault() + UIAssets.jsDefault() %>
 </head>
 
 <body class="yui3-skin-sam">
@@ -34,7 +33,7 @@
 <div style="background: transparent;"></div>
 
 <script>
-    YUI(OJST.yui.config).use(OJST.modules.utils.Framework, OJST.modules.utils.Html, OJST.modules.apps.ManagementConsole, function (Y) {
+    YUI(OJST.framework).use(OJST.modules.pages.IndexCss, OJST.modules.apps.ManagementConsole, function (Y) {
         "use strict";
 
         new OJST.ui.apps.ManagementConsole({ viewContainer: 'body > div', html5: false })

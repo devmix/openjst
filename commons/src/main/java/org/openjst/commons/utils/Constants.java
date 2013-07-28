@@ -26,6 +26,7 @@ public final class Constants {
     private static final Class[] ARRAYS_EMPTY_CLASSES = new Class[0];
     private static final Object[] ARRAYS_EMPTY_OBJECTS = new Object[0];
     private static final String STRING_EMPTY = "";
+    private static final Object OBJECT = new Object();
 
     private Constants() {
     }
@@ -44,5 +45,9 @@ public final class Constants {
 
     public static Object[] arraysEmptyObjects() {
         return ARRAYS_EMPTY_OBJECTS;
+    }
+
+    public static Object object() {
+        return OBJECT;
     }
 }

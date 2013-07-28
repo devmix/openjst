@@ -54,3 +54,52 @@
     margin-left: 8px;
     float: right;
 }
+
+.yui3-widgetsform .alert {
+    margin-bottom: 0;
+    padding: 2px 8px;
+    font-weight: bold;
+}
+
+.yui3-widgetsform .yui3-form-field label.required {
+    font-weight: bold;
+}
+
+.yui3-widgetsform .invalid textarea:focus,
+.yui3-widgetsform .invalid input[type="text"]:focus,
+.yui3-widgetsform .invalid input[type="password"]:focus,
+.yui3-widgetsform .invalid input[type="datetime"]:focus,
+.yui3-widgetsform .invalid input[type="datetime-local"]:focus,
+.yui3-widgetsform .invalid input[type="date"]:focus,
+.yui3-widgetsform .invalid input[type="month"]:focus,
+.yui3-widgetsform .invalid input[type="time"]:focus,
+.yui3-widgetsform .invalid input[type="week"]:focus,
+.yui3-widgetsform .invalid input[type="number"]:focus,
+.yui3-widgetsform .invalid input[type="email"]:focus,
+.yui3-widgetsform .invalid input[type="url"]:focus,
+.yui3-widgetsform .invalid input[type="search"]:focus,
+.yui3-widgetsform .invalid input[type="tel"]:focus,
+.yui3-widgetsform .invalid input[type="color"]:focus,
+.yui3-widgetsform .invalid .uneditable-input:focus {
+    border-color: rgba(255, 0, 0, 0.80);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(255, 0, 0, 0.6);
+}
+
+.yui3-widgetsform .invalid textarea,
+.yui3-widgetsform .invalid input[type="text"],
+.yui3-widgetsform .invalid input[type="password"],
+.yui3-widgetsform .invalid input[type="datetime"],
+.yui3-widgetsform .invalid input[type="datetime-local"],
+.yui3-widgetsform .invalid input[type="date"],
+.yui3-widgetsform .invalid input[type="month"],
+.yui3-widgetsform .invalid input[type="time"],
+.yui3-widgetsform .invalid input[type="week"],
+.yui3-widgetsform .invalid input[type="number"],
+.yui3-widgetsform .invalid input[type="email"],
+.yui3-widgetsform .invalid input[type="url"],
+.yui3-widgetsform .invalid input[type="search"],
+.yui3-widgetsform .invalid input[type="tel"],
+.yui3-widgetsform .invalid input[type="color"],
+.yui3-widgetsform .invalid .uneditable-input {
+    border: 1px solid #ff0000;
+}

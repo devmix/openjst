@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<manifest xmlns="http://openjst.org/xml/ns/web-ui/manifest"
+          version="0.1">
+
+    <parameters>
+        <project>ProjectX</project>
+        <version>0.1</version>
+        <namespace>X</namespace>
+    </parameters>
+
+    <compressors>
+        <compressor type="uglifyjs" for="JavaScript">
+            <options>
+                <option name="param1">value1</option>
+                <option name="param2">value2</option>
+            </options>
+        </compressor>
+        <compressor type="yui" for="CSS">
+            <options>
+                <option name="param1">value1</option>
+                <option name="param2">value2</option>
+            </options>
+        </compressor>
+    </compressors>
+
+    <validators>
+        <validator type="jslint" for="JavaScript" failOnError="false">
+            <options>
+                <option name="param1">value1</option>
+                <option name="param2">value2</option>
+            </options>
+        </validator>
+    </validators>
+
+    <framework type="yui">
+        <core comboServiceUrl="rest/ui/assets/yui-combo?"/>
+        <groups>
+            <group name="project-x" comboServiceUrl="rest/ui/assets/ui-combo?">
+                <namespaces>
+                    <namespace>modules</namespace>
+                    <namespace>libs</namespace>
+                </namespaces>
+            </group>
+        </groups>
+    </framework>
+
+    <resources>
+        <core root="core" joinAs="core-all">
+            <entry>bootstrap.js</entry>
+        </core>
+
+        <modules namespace="modules">
+            <sources root="js"/>
+            <styles root="css"/>
+        </modules>
+
+        <libraries root="lib" namespace="libs">
+            <library root="select2" name="Select2" joinAs="select2-all" skipValidate="false">
+                <sources>
+                    <includes>
+                        <include>select2.js</include>
+                        <include>select2_locale_ru.js</include>
+                    </includes>
+                </sources>
+                <styles>
+                    <includes>
+                        <include>select2.css</include>
+                    </includes>
+                </styles>
+            </library>
+            <library root="jquery" joinAs="jquery-all" name="jQuery">
+                <sources>
+                    <includes>
+                        <include>jquery-1.8.3.js</include>
+                    </includes>
+                </sources>
+            </library>
+            <library root="bootstrap" joinAs="bootstrap-all" name="Bootstrap" skipValidate="false">
+                <sources>
+                    <includes>
+                        <include>js/bootstrap.js</include>
+                    </includes>
+                </sources>
+                <styles>
+                    <includes>
+                        <include>css/bootstrap.css</include>
+                        <include>css/bootstrap-responsive.css</include>
+                    </includes>
+                </styles>
+            </library>
+        </libraries>
+
+    </resources>
+
+</manifest>

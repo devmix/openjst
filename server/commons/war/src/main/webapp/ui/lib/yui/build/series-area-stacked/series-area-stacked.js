@@ -1,65 +1,67 @@
 /*
- YUI 3.10.3 (build 2fb5187)
- Copyright 2013 Yahoo! Inc. All rights reserved.
- Licensed under the BSD License.
- http://yuilibrary.com/license/
- */
+YUI 3.11.0 (build d549e5c)
+Copyright 2013 Yahoo! Inc. All rights reserved.
+Licensed under the BSD License.
+http://yuilibrary.com/license/
+*/
 
 YUI.add('series-area-stacked', function (Y, NAME) {
 
+/**
+ * Provides functionality for creating a stacked area series.
+ *
+ * @module charts
+ * @submodule series-area-stacked
+ */
+/**
+ * StackedAreaSeries area fills to display data showing its contribution to a whole.
+ *
+ * @class StackedAreaSeries
+ * @extends AreaSeries
+ * @uses StackingUtil
+ * @constructor
+ * @param {Object} config (optional) Configuration parameters.
+ * @submodule series-area-stacked
+ */
+Y.StackedAreaSeries = Y.Base.create("stackedAreaSeries", Y.AreaSeries, [Y.StackingUtil], {
     /**
-     * Provides functionality for creating a stacked area series.
+     * @protected
      *
-     * @module charts
-     * @submodule series-area-stacked
+     * Calculates the coordinates for the series. Overrides base implementation.
+     *
+     * @method setAreaData
      */
+    setAreaData: function()
+    {
+        Y.StackedAreaSeries.superclass.setAreaData.apply(this);
+        this._stackCoordinates.apply(this);
+    },
+
     /**
-     * StackedAreaSeries area fills to display data showing its contribution to a whole.
+     * @protected
      *
-     * @class StackedAreaSeries
-     * @extends AreaSeries
-     * @uses StackingUtil
-     * @constructor
-     * @param {Object} config (optional) Configuration parameters.
-     * @submodule series-area-stacked
+     * Draws the series
+     *
+     * @method drawSeries
      */
-    Y.StackedAreaSeries = Y.Base.create("stackedAreaSeries", Y.AreaSeries, [Y.StackingUtil], {
+	drawSeries: function()
+    {
+        this.drawFill.apply(this, this._getStackedClosingPoints());
+    }
+}, {
+    ATTRS: {
         /**
-         * @protected
+         * Read-only attribute indicating the type of series.
          *
-         * Calculates the coordinates for the series. Overrides base implementation.
-         *
-         * @method setAreaData
+         * @attribute type
+         * @type String
+         * @default stackedArea
          */
-        setAreaData: function () {
-            Y.StackedAreaSeries.superclass.setAreaData.apply(this);
-            this._stackCoordinates.apply(this);
-        },
-
-        /**
-         * @protected
-         *
-         * Draws the series
-         *
-         * @method drawSeries
-         */
-        drawSeries: function () {
-            this.drawFill.apply(this, this._getStackedClosingPoints());
+        type: {
+            value:"stackedArea"
         }
-    }, {
-        ATTRS: {
-            /**
-             * Read-only attribute indicating the type of series.
-             *
-             * @attribute type
-             * @type String
-             * @default stackedArea
-             */
-            type: {
-                value: "stackedArea"
-            }
-        }
-    });
+    }
+});
 
 
-}, 'true', {"requires": ["series-stacked", "series-area"]});
+}, '3.11.0', {"requires": ["series-stacked", "series-area"]});

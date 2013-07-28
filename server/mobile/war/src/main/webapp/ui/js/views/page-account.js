@@ -52,20 +52,22 @@ YUI.add(OJST.modules.views.PageAccount, function (Y) {
                     {
                         type: OJST.ui.widgets.form.TextField,
                         name: 'name',
-                        label: OJST.i18n.label('name')
+                        label: OJST.i18n.label('name'),
+                        required: true
                     },
                     {
                         type: OJST.ui.widgets.form.TextField,
                         name: 'authId',
-                        label: OJST.i18n.label('authId')
+                        label: OJST.i18n.label('authId'),
+                        required: true
                     }
                 ],
                 on: {
                     'create': function (m) {
-                        OJST.singleton.Application.save('/accounts/' + m.get('id'));
+                        OJST.app.saveRoute('/accounts/' + m.get('id'));
                     },
                     'close': function () {
-                        OJST.singleton.Application.save('/accounts');
+                        OJST.app.saveRoute('/accounts');
                     },
                     'error': function (e) {
                         if (e.status === OJST.ui.models.STATUS.NOT_UNIQUE) {

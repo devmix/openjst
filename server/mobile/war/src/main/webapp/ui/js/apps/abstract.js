@@ -41,7 +41,7 @@ YUI.add(OJST.modules.apps.Abstract, function (Y) {
 
         /** @override */
         initializer: function (cfg) {
-            OJST.singleton.Application = this;
+            OJST.app.assignYUIApplication(this);
             /**
              * @type {Y.EventHandle[]}
              * @private
@@ -57,7 +57,7 @@ YUI.add(OJST.modules.apps.Abstract, function (Y) {
         destructor: function () {
             OJST.ui.utils.Framework.detach(this._subscribers);
             delete this._subscribers;
-            delete OJST.singleton.Application;
+            OJST.app.assignYUIApplication(null);
         },
 
         /**

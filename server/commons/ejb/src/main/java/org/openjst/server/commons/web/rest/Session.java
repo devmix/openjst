@@ -25,7 +25,7 @@ import javax.ws.rs.core.Context;
 /**
  * @author Sergey Grachev
  */
-@Path("/ui/session")
+@Path("/session")
 public interface Session {
 
     @Path("/logout")

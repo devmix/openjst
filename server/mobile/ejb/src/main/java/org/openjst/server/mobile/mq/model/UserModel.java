@@ -38,6 +38,9 @@ public final class UserModel extends AbstractEntityModel {
         }
     };
 
+    public static final UserModel GUEST = newInstance(
+            -1L, null, "guest", RoleType.USER, LanguageCode.EN, null);
+
     private String authId;
     private String name;
     private String password;

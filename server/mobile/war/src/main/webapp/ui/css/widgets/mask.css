@@ -41,7 +41,7 @@
 }
 
 .yui3-widgetsmask-message .icon {
-    background: url("../../../ui/assets/img/loading.gif") no-repeat center;
+    background: url("../../ui/assets/img/loading.gif") no-repeat center;
     height: 32px;
     margin-left: -4px;
 }

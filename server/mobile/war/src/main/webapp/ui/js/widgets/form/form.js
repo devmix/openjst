@@ -94,6 +94,11 @@ YUI.add(OJST.modules.widgets.form.Form, function (Y) {
              * @private
              */
             this._isNew = true;
+            /**
+             * @type {Y.Node}
+             * @private
+             */
+            this._alertMessageNode = undefined;
 
             this.set('layout', 'border');
         },
@@ -103,6 +108,7 @@ YUI.add(OJST.modules.widgets.form.Form, function (Y) {
             delete this._fields;
             delete this._saveBtn;
             delete this._closeBtn;
+            delete this._alertMessageNode;
         },
 
         /** @override */
@@ -123,7 +129,8 @@ YUI.add(OJST.modules.widgets.form.Form, function (Y) {
             }
 
             if ((buttons && buttons.length > 0) || useDefaultButtons) {
-                buttonsPanel = Y.Node.create('<div style="text-align:right"></div>');
+                buttonsPanel = Y.Node.create('<div style="text-align:right"><div class="alert" style="display:none;float:left;"></div></div>');
+                this._alertMessageNode = buttonsPanel.one('div.alert');
                 if (useDefaultButtons) {
                     this._closeBtn = new Y.Button({
                         render: buttonsPanel,
@@ -189,15 +196,20 @@ YUI.add(OJST.modules.widgets.form.Form, function (Y) {
 
         /**
          * @param {Y.Model} model
-         * @return {Y.Model}
+         * @return {boolean}
          * @public
          */
         updateModel: function (model) {
+            var valid = true;
             this._fields.each(function (item) {
-                var value = item.get('value');
-                model.set(item.get('name'), Y.Lang.isValue(value) ? value : null);
+                if (item.validate()) {
+                    var value = item.get('value');
+                    model.set(item.get('name'), Y.Lang.isValue(value) ? value : null);
+                } else {
+                    valid = false;
+                }
             });
-            return model;
+            return valid;
         },
 
         /**
@@ -208,8 +220,24 @@ YUI.add(OJST.modules.widgets.form.Form, function (Y) {
             this._fields.each(function (item) {
                 var name = item.get('name');
                 item.set('value', model.get(name));
+                if (item.validate) {
+                    item.validate();
+                }
             });
             return model;
+        },
+
+        /**
+         * @public
+         */
+        validate: function () {
+            var isValid = true;
+            this._fields.each(function (item) {
+                if (item.validate) {
+                    isValid = isValid && item.validate();
+                }
+            });
+            return isValid;
         },
 
         /**
@@ -227,14 +255,22 @@ YUI.add(OJST.modules.widgets.form.Form, function (Y) {
             var model = this.get('model');
 
             if (this.get('auto') && model) {
-                this.mask();
-                this.updateModel(model).save(Y.bind(function () {
-                    this.unmask();
-                    if (!model.isLastOperationFailed()) {
-                        this.fire(this._isNew ? EVT.CREATE : EVT.UPDATE, model);
-                        this._checkNew(model);
-                    }
-                }, this));
+                this._hideAlertMessage();
+                if (this.updateModel(model)) {
+                    this.mask();
+                    model.save(Y.bind(function () {
+                        this.unmask();
+                        if (!model.isLastOperationFailed()) {
+                            this.fire(this._isNew ? EVT.CREATE : EVT.UPDATE, model);
+                            this._checkNew(model);
+                            this._showAlertMessage('Data has been successfully saved', 'success');
+                        } else {
+                            this._showAlertMessage('Error saving data!', 'error');
+                        }
+                    }, this));
+                } else {
+                    this._showAlertMessage('Some fields filled incorrect!', 'error');
+                }
             } else {
                 this.fire(EVT.UPDATE);
             }
@@ -260,6 +296,31 @@ YUI.add(OJST.modules.widgets.form.Form, function (Y) {
             var firstItem = this._fields.item(0);
             if (firstItem) {
                 firstItem.focus();
+            }
+        },
+
+        /**
+         * @param {string} message
+         * @private
+         */
+        _showAlertMessage: function (message, type) {
+            if (this._alertMessageNode) {
+                this._alertMessageNode.setAttribute('class', '');
+                this._alertMessageNode.addClass('alert alert-' + type);
+                this._alertMessageNode.setStyle('display', 'block');
+                this._alertMessageNode.set('text', message);
+            } else {
+                OJST.ui.widgets.Alerts.alert(OJST.i18n.label('error', message));
+            }
+        },
+
+        /**
+         * @private
+         */
+        _hideAlertMessage: function () {
+            if (this._alertMessageNode) {
+                this._alertMessageNode.setStyle('display', 'none');
+                this._alertMessageNode.set('text', '');
             }
         }
 

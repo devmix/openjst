@@ -23,6 +23,6 @@ import javax.ws.rs.core.Application;
 /**
  * @author Sergey Grachev
  */
-@ApplicationPath("/rest")
+@ApplicationPath("/ui-api")
 public class RestApplication extends Application {
 }

@@ -53,6 +53,22 @@ YUI.add(OJST.modules.widgets.form.TextField, function (Y) {
             this.get('controlsContainer').append(this._control);
         },
 
+        /** @override */
+        focus: function () {
+            this._control.focus();
+        },
+
+//        /** @override */
+//        validate: function() {
+//            if (!OJST.ui.widgets.form.TextField.superclass.validate.apply(this, arguments)) {
+//                return false;
+//            }
+//        },
+
+        getValueNode: function () {
+            return this._control;
+        },
+
         _valueSetter: function (value) {
             this._control.set('value', value);
             return value;
@@ -60,11 +76,6 @@ YUI.add(OJST.modules.widgets.form.TextField, function (Y) {
 
         _valueGetter: function () {
             return this._control.get('value');
-        },
-
-        /** @override */
-        focus: function () {
-            this._control.focus();
         }
 
     }, {

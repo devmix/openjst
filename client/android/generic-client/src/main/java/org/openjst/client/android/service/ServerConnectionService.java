@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
+import org.jetbrains.annotations.Nullable;
 import org.openjst.client.android.Constants;
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.ScheduleTodayActivity;
@@ -40,6 +41,7 @@ import org.openjst.client.android.commons.managers.SettingsManager;
 import org.openjst.client.android.commons.services.LocalServiceBinder;
 import org.openjst.client.android.commons.utils.NotificationBuilder;
 import org.openjst.client.android.managers.RPCManager;
+import org.openjst.commons.protocols.auth.SecretKey;
 import org.openjst.commons.protocols.auth.SecretKeys;
 import org.openjst.commons.rpc.RPCMessageFormat;
 import org.openjst.commons.rpc.RPCRequest;
@@ -56,6 +58,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Sergey Grachev
  */
 public final class ServerConnectionService extends Service {
+
+    private static final SecretKey SECRET_KEY_NONE = SecretKeys.NONE.create(new byte[0]);
 
     private final LocalServiceBinder<ServerConnectionService> localBinder;
     private final Injector injector = new GenericInjector();
@@ -80,6 +84,7 @@ public final class ServerConnectionService extends Service {
     private boolean updateChecked = false;
     private String accountId;
     private String clientId;
+    private String secretKey;
 
     public ServerConnectionService() {
         ApplicationContext.addAndroidService(ServerConnectionService.class, this);
@@ -226,7 +231,7 @@ public final class ServerConnectionService extends Service {
         }
     }
 
-    public boolean connect() {
+    public boolean connect(@Nullable final String newClientId, @Nullable final String newSecretKey) {
         synchronized (lock) {
             disconnect();
 
@@ -237,11 +242,16 @@ public final class ServerConnectionService extends Service {
             client.addListener(clientEventsListener);
 
             accountId = settings.getString(Constants.Settings.LOGIN_CLIENT_ACCOUNT);
-            clientId = settings.getString(Constants.Settings.LOGIN_CLIENT_ID);
+            if (newClientId != null) {
+                clientId = newClientId;
+            }
+            if (newSecretKey != null) {
+                secretKey = newSecretKey;
+            }
 
-            final String secretKey = settings.getString(Constants.Settings.LOGIN_CLIENT_SECRET_KEY);
             try {
-                if (client.connect(accountId, clientId, secretKey != null ? SecretKeys.PLAIN.encode(secretKey) : null, null)) {
+                if (client.connect(accountId, this.clientId,
+                        this.secretKey != null ? SecretKeys.PLAIN.encode(newSecretKey) : SECRET_KEY_NONE, null)) {
                     return true;
                 }
             } catch (Exception ignore) {
@@ -251,8 +261,12 @@ public final class ServerConnectionService extends Service {
     }
 
     public boolean reconnect() {
+        return reconnect(null, null);
+    }
+
+    public boolean reconnect(@Nullable final String clientId, @Nullable final String secretKey) {
         disconnect();
-        return connect();
+        return connect(clientId, secretKey);
     }
 
     public boolean isConnected() {

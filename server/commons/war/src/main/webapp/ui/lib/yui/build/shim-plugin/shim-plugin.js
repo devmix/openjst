@@ -1,9 +1,9 @@
 /*
- YUI 3.10.3 (build 2fb5187)
- Copyright 2013 Yahoo! Inc. All rights reserved.
- Licensed under the BSD License.
- http://yuilibrary.com/license/
- */
+YUI 3.11.0 (build d549e5c)
+Copyright 2013 Yahoo! Inc. All rights reserved.
+Licensed under the BSD License.
+http://yuilibrary.com/license/
+*/
 
 YUI.add('shim-plugin', function (Y, NAME) {
 
@@ -31,53 +31,53 @@ YUI.add('shim-plugin', function (Y, NAME) {
      * @static
      * @default "yui-node-shim"
      */
-        // TODO: use ClassNameManager
+    // TODO: use ClassNameManager
     Shim.CLASS_NAME = 'yui-node-shim';
 
     /**
      * Default markup template used to generate the shim element.
-     *
+     * 
      * @property TEMPLATE
      * @type String
      * @static
      */
     Shim.TEMPLATE = '<iframe class="' + Shim.CLASS_NAME +
-        '" frameborder="0" title="Node Stacking Shim"' +
-        'src="javascript:false" tabindex="-1" role="presentation"' +
-        'style="position:absolute; z-index:-1;"></iframe>';
+            '" frameborder="0" title="Node Stacking Shim"' +
+            'src="javascript:false" tabindex="-1" role="presentation"' +
+            'style="position:absolute; z-index:-1;"></iframe>';
 
     Shim.prototype = {
-        init: function (config) {
+        init: function(config) {
             this._host = config.host;
             this.initEvents();
             this.insert();
             this.sync();
         },
 
-        initEvents: function () {
+        initEvents: function() {
             this._resizeHandle = this._host.on('resize', this.sync, this);
         },
-
-        getShim: function () {
+        
+        getShim: function() {
             return this._shim || (
                 this._shim = Y.Node.create(
                     Shim.TEMPLATE,
                     this._host.get('ownerDocument')
                 )
-                );
+            );
         },
 
-        insert: function () {
+        insert: function() {
             var node = this._host;
-            this._shim = node.insertBefore(this.getShim(),
-                node.get('firstChild'));
+            this._shim = node.insertBefore( this.getShim(),
+                    node.get('firstChild'));
         },
 
         /**
          * Updates the size of the shim to fill its container
          * @method sync
          */
-        sync: function () {
+        sync: function() {
             var shim = this._shim,
                 node = this._host;
 
@@ -93,7 +93,7 @@ YUI.add('shim-plugin', function (Y, NAME) {
          * Removes the shim and destroys the plugin
          * @method destroy
          */
-        destroy: function () {
+        destroy: function() {
             var shim = this._shim;
             if (shim) {
                 shim.remove(true);
@@ -110,4 +110,4 @@ YUI.add('shim-plugin', function (Y, NAME) {
     Y.Plugin.Shim = Shim;
 
 
-}, 'true', {"requires": ["node-style", "node-pluginhost"]});
+}, '3.11.0', {"requires": ["node-style", "node-pluginhost"]});

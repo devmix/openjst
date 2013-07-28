@@ -26,7 +26,7 @@
 <head>
     <title>OpenJST</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%=UIAssets.jspDefault("sing-in")%>
+    <%=UIAssets.jspDefault()%>
 </head>
 
 <body class="sam">
@@ -51,7 +51,7 @@
 <%= UIAssets.jsDefault() %>
 
 <script>
-    YUI(OJST.yui.config).use('base', function (Y) {
+    YUI(OJST.framework).use(OJST.modules.pages.SingInCss, OJST.libs.BootstrapCss, function (Y) {
     });
 </script>
 

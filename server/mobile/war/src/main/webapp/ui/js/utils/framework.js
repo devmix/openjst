@@ -40,6 +40,40 @@ YUI.add(OJST.modules.utils.Framework, function (Y) {
             Y.each(!Lang.isArray(handlers) ? [handlers] : handlers, function (h) {
                 h.detach();
             });
+        },
+
+        /**
+         * @param {*} v
+         * @return {boolean}
+         */
+        isValue: function (v) {
+            return Y.Lang.isValue(v) && String(v).trim() !== '';
+        },
+
+        /**
+         * @param {Y.Node} node
+         * @param {string} text
+         * @param {top | bottom | left | right} placement
+         */
+        setToolTip: function (node, text, placement) {
+            node.setAttribute('data-toggle', 'tooltip');
+            node.setAttribute('title', text);
+            $(node.getDOMNode()).tooltip(Y.merge({}, {
+                delay: { show: 500, hide: 100 },
+                title: text,
+                placement: placement
+            }));
+        },
+
+        /**
+         * @param {Y,Node} node
+         */
+        removeToolTip: function (node) {
+            if (node) {
+                node.removeAttribute('data-toggle');
+                node.removeAttribute('title');
+                $(node.getDOMNode()).tooltip('destroy');
+            }
         }
     };
 

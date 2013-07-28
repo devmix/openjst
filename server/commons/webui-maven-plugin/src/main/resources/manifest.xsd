@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2013 OpenJST Project
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           targetNamespace="http://openjst.org/xml/ns/web-ui/manifest"
+           xmlns:ns="http://openjst.org/xml/ns/web-ui/manifest"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="manifest" type="ns:manifestType"/>
+
+    <xs:simpleType name="namespaceNameType">
+        <xs:annotation>
+            <xs:documentation>Pattern [a-zA-z0-9$_]+</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z0-9]+"/>
+            <xs:whiteSpace value="collapse"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="versionType">
+        <xs:annotation>
+            <xs:documentation>Pattern [0-9]\.[0-9]</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9]\.[0-9]"/>
+            <xs:whiteSpace value="collapse"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="stringWithoutWhiteSpacesType">
+        <xs:annotation>
+            <xs:documentation>String without all white space characters</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:whiteSpace value="collapse"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="manifestType">
+        <xs:sequence>
+            <xs:element type="ns:parametersType" name="parameters"/>
+            <xs:element type="ns:compressorsType" name="compressors" minOccurs="0"/>
+            <xs:element type="ns:validatorsType" name="validators" minOccurs="0"/>
+            <xs:element type="ns:frameworkType" name="framework" minOccurs="0"/>
+            <xs:element type="ns:resourcesType" name="resources"/>
+        </xs:sequence>
+        <xs:attribute type="ns:versionType" name="version" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="parametersType">
+        <xs:annotation>
+            <xs:documentation>
+                Global settings of manifest: project name, version, used compressors, validators, etc.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element type="xs:string" name="project"/>
+            <xs:element type="xs:string" name="version"/>
+            <xs:element type="ns:namespaceNameType" name="namespace"/>
+            <xs:element type="xs:boolean" name="createManifest" minOccurs="0" default="true"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="includesType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="include" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="excludesType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="exclude" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="sourcesType">
+        <xs:sequence>
+            <xs:element type="ns:includesType" name="includes" minOccurs="0"/>
+            <xs:element type="ns:excludesType" name="excludes" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="sourcesWithRootType">
+        <xs:complexContent>
+            <xs:extension base="ns:sourcesType">
+                <xs:attribute type="ns:stringWithoutWhiteSpacesType" name="root" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="stylesType">
+        <xs:sequence>
+            <xs:element type="ns:includesType" name="includes" minOccurs="0"/>
+            <xs:element type="ns:excludesType" name="excludes" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="stylesWithRootType">
+        <xs:complexContent>
+            <xs:extension base="ns:stylesType">
+                <xs:attribute type="ns:stringWithoutWhiteSpacesType" name="root" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="optionsType">
+        <xs:sequence>
+            <xs:element type="ns:optionType" name="option" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="optionType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="name" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="compressorsType">
+        <xs:sequence>
+            <xs:element type="ns:compressorType" name="compressor" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="compressorType">
+        <xs:sequence>
+            <xs:element type="ns:optionsType" name="options" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="uglifyjs"/>
+                    <xs:enumeration value="yui"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="for" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="JavaScript"/>
+                    <xs:enumeration value="CSS"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute type="xs:boolean" name="skip" use="optional" default="false"/>
+    </xs:complexType>
+
+    <xs:complexType name="validatorsType">
+        <xs:sequence>
+            <xs:element type="ns:validatorType" name="validator" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="validatorType">
+        <xs:sequence>
+            <xs:element type="ns:optionsType" name="options" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="jslint"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="for" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="JavaScript"/>
+                    <xs:enumeration value="CSS"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute type="xs:boolean" name="skip" use="optional" default="false"/>
+        <xs:attribute type="xs:boolean" name="failOnError" use="optional" default="true"/>
+    </xs:complexType>
+
+    <xs:complexType name="resourcesType">
+        <xs:sequence>
+            <xs:element type="ns:coreType" name="core" minOccurs="0"/>
+            <xs:element type="ns:modulesType" name="modules" minOccurs="0"/>
+            <xs:element type="ns:librariesType" name="libraries" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="modulesType">
+        <xs:sequence>
+            <xs:element type="ns:sourcesWithRootType" name="sources" minOccurs="0"/>
+            <xs:element type="ns:stylesWithRootType" name="styles" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute type="ns:namespaceNameType" name="namespace" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="librariesType">
+        <xs:sequence>
+            <xs:element type="ns:libraryType" name="library" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute type="ns:stringWithoutWhiteSpacesType" name="root" use="required"/>
+        <xs:attribute type="ns:namespaceNameType" name="namespace" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="libraryType">
+        <xs:sequence>
+            <xs:element type="ns:sourcesType" name="sources" minOccurs="0"/>
+            <xs:element type="ns:stylesType" name="styles" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute type="ns:stringWithoutWhiteSpacesType" name="root" use="required"/>
+        <xs:attribute type="ns:namespaceNameType" name="name" use="required"/>
+        <xs:attribute type="xs:boolean" name="skipValidate" default="true"/>
+        <xs:attribute type="ns:stringWithoutWhiteSpacesType" name="joinAs" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="coreType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="entry"/>
+            <xs:element type="ns:sourcesType" name="sources" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute type="ns:stringWithoutWhiteSpacesType" name="root" use="required"/>
+        <xs:attribute type="ns:stringWithoutWhiteSpacesType" name="joinAs"/>
+    </xs:complexType>
+
+    <xs:complexType name="frameworkType">
+        <xs:sequence>
+            <xs:element type="ns:frameworkCoreGroupType" name="core" minOccurs="1"/>
+            <xs:element type="ns:frameworkGroupsType" name="groups" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="yui"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="frameworkGroupsType">
+        <xs:sequence>
+            <xs:element type="ns:frameworkGroupType" name="group" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="frameworkCoreGroupType">
+        <xs:attribute type="xs:boolean" name="debug" use="optional" default="false"/>
+        <xs:attribute type="xs:boolean" name="combine" use="optional" default="true"/>
+        <xs:attribute type="ns:stringWithoutWhiteSpacesType" name="comboServiceUrl" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="frameworkGroupType">
+        <xs:complexContent>
+            <xs:extension base="ns:frameworkCoreGroupType">
+                <xs:sequence>
+                    <xs:element type="ns:frameworkGroupNamespacesType" name="namespaces" minOccurs="1"/>
+                </xs:sequence>
+                <xs:attribute type="ns:stringWithoutWhiteSpacesType" name="name" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="frameworkGroupNamespacesType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="namespace" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

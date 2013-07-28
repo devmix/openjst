@@ -52,7 +52,7 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
-    public Cache<Integer, String> getWebUI() {
+    public Cache<String, String> getWebUI() {
         return cacheContainer.getCache(Environment.Cache.WEB_IU);
     }
 

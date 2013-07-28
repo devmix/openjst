@@ -111,6 +111,7 @@ public class MobileApplicationMXBeanImpl extends AbstractMBean implements Mobile
         // TODO remove
 
         preferencesManager.setBoolean(Preferences.UI.SCRIPTS_CACHE, false);
+        preferencesManager.setBoolean(Preferences.UI.SCRIPTS_DEBUG, true);
 
         final Client client = new Client();
         client.setAccount(account);

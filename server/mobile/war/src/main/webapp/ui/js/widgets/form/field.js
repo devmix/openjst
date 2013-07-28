@@ -24,6 +24,15 @@
 YUI.add(OJST.modules.widgets.form.Field, function (Y) {
     "use strict";
 
+    var CLS = {
+            INVALID: 'invalid',
+            REQUIRED: 'required'
+        },
+        TPL = {
+            LABEL: '<label class="control-label {requiredClass}" for="{controlId}">{label}</label>'
+        },
+        Framework = OJST.ui.utils.Framework;
+
     /**
      * @class Field
      * @namespace OJST.ui.widgets.form
@@ -65,7 +74,8 @@ YUI.add(OJST.modules.widgets.form.Field, function (Y) {
                 controlId = Y.guid(),
                 label = this.get('label'),
                 controlsContainer = Y.Node.create('<div class="controls"></div>'),
-                labelContainer = Y.Node.create('<label class="control-label" for="' + controlId + '">' + label + '</label>');
+                labelContainer = Y.Node.create(Y.Lang.sub(TPL.LABEL, {
+                    controlId: controlId, label: label, requiredClass: this.get('required') ? CLS.REQUIRED : '' }));
 
             if (label) {
                 bbx.prepend(labelContainer);
@@ -76,26 +86,82 @@ YUI.add(OJST.modules.widgets.form.Field, function (Y) {
             this.set('controlsContainer', controlsContainer);
             this.set('labelContainer', labelContainer);
             this.set('controlId', controlId);
+        },
+
+        bindUI: function () {
+            this.subscribe(this.on('focus', function () {
+                this.validate();
+            }));
+            this.subscribe(this.on('blur', function () {
+                this.validate();
+            }));
+        },
+
+        /**
+         * @return {Y.Node}
+         * @protected
+         */
+        getValueNode: function () {
+            return this.get(OJST.STATIC.BBX);
+        },
+
+        /**
+         * @return {boolean}
+         * @public
+         */
+        validate: function () {
+            var isValid = !this.get('required') || Framework.isValue(this.get('value'));
+            if (!isValid) {
+                this.markInvalid(OJST.i18n.msg('errorRequiredField'));
+            } else {
+                this.clearInvalid();
+            }
+            return isValid;
+        },
+
+        /**
+         * @public
+         */
+        markInvalid: function (msg) {
+            this.get(OJST.STATIC.BBX).addClass(CLS.INVALID);
+            Framework.setToolTip(this.getValueNode(), msg, 'left');
+        },
+
+        /**
+         * @public
+         */
+        clearInvalid: function () {
+            this.get(OJST.STATIC.BBX).removeClass(CLS.INVALID);
+            Framework.removeToolTip(this.getValueNode());
         }
 
     }, {
         ATTRS: {
             label: {
-                writeOnce: 'initOnly',
-                validator: Y.Lang.isString
+                validator: Y.Lang.isString,
+                writeOnce: 'initOnly'
             },
             name: {
-                writeOnce: 'initOnly',
-                validator: Y.Lang.isString
+                validator: Y.Lang.isString,
+                writeOnce: 'initOnly'
             },
             value: {
+
             },
             controlId: {
-                writeOnce: true,
-                validator: Y.Lang.isString
+                validator: Y.Lang.isString,
+                writeOnce: true
             },
             tabIndex: {
                 value: -1
+            },
+            required: {
+                validator: Y.Lang.isBoolean,
+                value: false
+            },
+            valid: {
+                validator: Y.Lang.isBoolean,
+                value: true
             }
         }
     });

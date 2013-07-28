@@ -1,26 +1,26 @@
 /*
- YUI 3.10.3 (build 2fb5187)
- Copyright 2013 Yahoo! Inc. All rights reserved.
- Licensed under the BSD License.
- http://yuilibrary.com/license/
- */
+YUI 3.11.0 (build d549e5c)
+Copyright 2013 Yahoo! Inc. All rights reserved.
+Licensed under the BSD License.
+http://yuilibrary.com/license/
+*/
 
 YUI.add('io-nodejs', function (Y, NAME) {
 
-    /*global Y: false, Buffer: false, clearInterval: false, clearTimeout: false, console: false, exports: false, global: false, module: false, process: false, querystring: false, require: false, setInterval: false, setTimeout: false, __filename: false, __dirname: false */
+/*global Y: false, Buffer: false, clearInterval: false, clearTimeout: false, console: false, exports: false, global: false, module: false, process: false, querystring: false, require: false, setInterval: false, setTimeout: false, __filename: false, __dirname: false */
     /**
-     * Node.js override for IO, methods are mixed into `Y.IO`
-     * @module io-nodejs
-     * @main io-nodejs
-     */
+    * Node.js override for IO, methods are mixed into `Y.IO`
+    * @module io-nodejs
+    * @main io-nodejs
+    */
     /**
-     * Passthru to the NodeJS <a href="https://github.com/mikeal/request">request</a> module.
-     * This method is return of `require('request')` so you can use it inside NodeJS without
-     * the IO abstraction.
-     * @method request
-     * @static
-     * @for IO
-     */
+    * Passthru to the NodeJS <a href="https://github.com/mikeal/request">request</a> module.
+    * This method is return of `require('request')` so you can use it inside NodeJS without
+    * the IO abstraction.
+    * @method request
+    * @static
+    * @for IO
+    */
     if (!Y.IO.request) {
         // Default Request's cookie jar to `false`. This way cookies will not be
         // maintained across requests.
@@ -30,16 +30,16 @@ YUI.add('io-nodejs', function (Y, NAME) {
     var codes = require('http').STATUS_CODES;
 
     /**
-     Flatten headers object
-     @method flatten
-     @protected
-     @for IO
-     @param {Object} o The headers object
-     @return {String} The flattened headers object
-     */
-    var flatten = function (o) {
+    Flatten headers object
+    @method flatten
+    @protected
+    @for IO
+    @param {Object} o The headers object
+    @return {String} The flattened headers object
+    */
+    var flatten = function(o) {
         var str = [];
-        Object.keys(o).forEach(function (name) {
+        Object.keys(o).forEach(function(name) {
             str.push(name + ': ' + o[name]);
         });
         return str.join('\n');
@@ -47,16 +47,16 @@ YUI.add('io-nodejs', function (Y, NAME) {
 
 
     /**
-     NodeJS IO transport, uses the NodeJS <a href="https://github.com/mikeal/request">request</a>
-     module under the hood to perform all network IO.
-     @method transports.nodejs
-     @for IO
-     @static
-     @return {Object} This object contains only a `send` method that accepts a
-     `transaction object`, `uri` and the `config object`.
-     @example
+    NodeJS IO transport, uses the NodeJS <a href="https://github.com/mikeal/request">request</a>
+    module under the hood to perform all network IO.
+    @method transports.nodejs
+    @for IO
+    @static
+    @return {Object} This object contains only a `send` method that accepts a
+    `transaction object`, `uri` and the `config object`.
+    @example
 
-     Y.io('https://somedomain.com/url', {
+        Y.io('https://somedomain.com/url', {
             method: 'PUT',
             data: '?foo=bar',
             //Extra request module config options.
@@ -87,9 +87,9 @@ YUI.add('io-nodejs', function (Y, NAME) {
                 }
             }
         });
-     */
+    */
 
-    Y.IO.transports.nodejs = function () {
+    Y.IO.transports.nodejs = function() {
         return {
             send: function (transaction, uri, config) {
 
@@ -120,7 +120,7 @@ YUI.add('io-nodejs', function (Y, NAME) {
                 if (config.request) {
                     Y.mix(rconf, config.request);
                 }
-                Y.IO.request(rconf, function (err, data) {
+                Y.IO.request(rconf, function(err, data) {
 
                     if (err) {
                         transaction.c = err;
@@ -135,10 +135,10 @@ YUI.add('io-nodejs', function (Y, NAME) {
                             headers: data.headers,
                             responseText: data.body || '',
                             responseXML: null,
-                            getResponseHeader: function (name) {
+                            getResponseHeader: function(name) {
                                 return this.headers[name];
                             },
-                            getAllResponseHeaders: function () {
+                            getAllResponseHeaders: function() {
                                 return flatten(this.headers);
                             }
                         };
@@ -159,4 +159,5 @@ YUI.add('io-nodejs', function (Y, NAME) {
     Y.IO.defaultTransport('nodejs');
 
 
-}, 'true', {"requires": ["io-base"]});
+
+}, '3.11.0', {"requires": ["io-base"]});
