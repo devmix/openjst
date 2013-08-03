@@ -21,41 +21,36 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.ns.models.User, function (Y) {
+YUI.add(OJST.ns.models.connection.Client, function (Y) {
     "use strict";
 
     /**
-     * @class User
-     * @namespace OJST.ui.models
+     * @class Client
+     * @namespace OJST.ui.models.connection
      * @constructor
      * @extends OJST.ui.models.Base
      */
-    OJST.ui.models.User = Y.Base.create('modelUser', OJST.ui.models.Base, [], {
-        root: 'ui-api/users'
+    OJST.ui.models.connection.Client = Y.Base.create('modelsConnectionClient', OJST.ui.models.Base, [], {
+        root: 'ui-api/dashboard/connections/clients'
     }, {
         ATTRS: {
-            id: {value: null},
-            authId: {value: null},
-            name: {value: null},
-            role: {value: null},
-            language: {value: 'EN'},
-            account: {value: null}
+            id: {validator: Y.Lang.isNumber},
+            accountId: {validator: Y.Lang.isNumber},
+            authId: {validator: Y.Lang.isString},
+            lastOnlineTime: {validator: Y.Lang.isDate, type: 'date'},
+            lastProtocolType: {validator: Y.Lang.isString},
+            lastRemoteHost: {validator: Y.Lang.isString}
         }
     });
 
     /**
-     * @class UserList
-     * @namespace OJST.ui.models
+     * @class ClientList
+     * @namespace OJST.ui.models.connection
      * @constructor
      * @extends OJST.ui.models.BaseList
      */
-    OJST.ui.models.UserList = Y.Base.create('modelsUserList', OJST.ui.models.BaseList, [], {
-        model: OJST.ui.models.User,
-        url: 'ui-api/users?accountId={accountId}'
-    }, {
-        ATTRS: {
-            accountId: {}
-        }
+    OJST.ui.models.connection.ClientList = Y.Base.create('modelsConnectionClientList', OJST.ui.models.BaseList, [], {
+        model: OJST.ui.models.connection.Client
     });
 
 }, OJST.VERSION, {requires: [

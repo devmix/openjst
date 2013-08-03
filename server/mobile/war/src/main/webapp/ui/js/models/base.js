@@ -21,10 +21,11 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true, stupid: true*/
-YUI.add(OJST.modules.models.Base, function (Y) {
+YUI.add(OJST.ns.models.Base, function (Y) {
     "use strict";
 
     var DEFAULT_PAGE_SIZE = 15,
+        COOKIE_GROUP = 'modelList',
         RESULT_ARGS = {
             START_INDEX: 'startIndex',
             TOTAL: 'total',
@@ -41,6 +42,11 @@ YUI.add(OJST.modules.models.Base, function (Y) {
             NOT_UNIQUE: 'NOT_UNIQUE',
             NOT_EXISTS: 'NOT_EXISTS',
             INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR'
+        },
+        CONVERTERS = {
+            date: function (v) {
+                return Y.Date.parse(Y.Lang.isDate(v) ? v : new Date(v));
+            }
         };
 
     /**
@@ -138,6 +144,17 @@ YUI.add(OJST.modules.models.Base, function (Y) {
     OJST.ui.models.BaseList = Y.Base.create('modelsBaseList', Y.ModelList, [Y.ModelSync.REST], {
 
         /** @override */
+        initializer: function () {
+            /**
+             * @type {{string: {type: string, format: string, converter: function}}}
+             * @private
+             */
+            this._fieldTypes = this._getTypesOfModelFields();
+
+            this._loadState();
+        },
+
+        /** @override */
         parse: function (response) {
             if (typeof response !== 'string') {
                 return response || [];
@@ -149,7 +166,7 @@ YUI.add(OJST.modules.models.Base, function (Y) {
                 this.set(QUERY_ARGS.PAGE_SIZE, result.pageSize || DEFAULT_PAGE_SIZE);
                 this.set(QUERY_ARGS.SEARCH, result.search);
                 this.set(RESULT_ARGS.TOTAL, result.total);
-                return result.list || [];
+                return this._convertValues(result.list || []);
             } catch (ex) {
                 this.fire('error', {
                     error: ex,
@@ -180,6 +197,83 @@ YUI.add(OJST.modules.models.Base, function (Y) {
             }
 
             return url;
+        },
+
+        /**
+         * @private
+         */
+        _loadState: function () {
+            var id = this.get('persistentId'),
+                data = OJST.ui.utils.Framework.isValue(id) ? Y.Cookie.getSubs(COOKIE_GROUP + '.' + id) : undefined;
+            if (data) {
+                if (data[QUERY_ARGS.START_INDEX]) {
+                    this.set(QUERY_ARGS.START_INDEX, parseInt(data[QUERY_ARGS.START_INDEX], 10));
+                }
+                if (data[QUERY_ARGS.PAGE_SIZE]) {
+                    this.set(QUERY_ARGS.PAGE_SIZE, parseInt(data[QUERY_ARGS.PAGE_SIZE], 10));
+                }
+                if (data[QUERY_ARGS.SEARCH]) {
+                    this.set(QUERY_ARGS.SEARCH, data[QUERY_ARGS.SEARCH]);
+                }
+            }
+        },
+
+        /**
+         * @param {string} key
+         * @param {*} value
+         * @private
+         */
+        _storeState: function (key, value) {
+            if (key) {
+                var id = this.get('persistentId');
+                if (id) {
+                    Y.Cookie.setSub(COOKIE_GROUP + '.' + id, key, value);
+                }
+            }
+        },
+
+        /**
+         * @type {{string: {type: string, format: string, converter: function}}}
+         * @private
+         */
+        _getTypesOfModelFields: function () {
+            var types = {};
+            if (this.model) {
+                Y.each(this.model.ATTRS, function (v, k) {
+                    if (v.type || v.converter) {
+                        types[k] = {type: v.type, format: v.format, converter: v.converter};
+                    }
+                });
+            }
+            return types;
+        },
+
+        /**
+         * @param {object[]} list
+         * @return {object[]}
+         * @private
+         */
+        _convertValues: function (list) {
+            if (!this._fieldTypes || this._fieldTypes.length === 0) {
+                return [];
+            }
+
+            var i, length, model, field, c;
+            for (i = 0, length = list.length; i < length; i++) {
+                model = list[i];
+                for (field in this._fieldTypes) {
+                    if (this._fieldTypes.hasOwnProperty(field) && model.hasOwnProperty(field)) {
+                        c = this._fieldTypes[field];
+                        if (c.type && CONVERTERS[c.type]) {
+                            model[field] = CONVERTERS[c.type](model[field], c.format);
+                        } else if (c.converter && Y.Lang.isFunction(c.converter)) {
+                            model[field] = c.converter(model[field], c.format);
+                        }
+                    }
+                }
+            }
+
+            return list;
         }
 
     }, {
@@ -187,23 +281,38 @@ YUI.add(OJST.modules.models.Base, function (Y) {
         ATTRS: {
             startIndex: {
                 value: 0,
-                validator: Y.Lang.isNumber
+                validator: Y.Lang.isNumber,
+                setter: function (v) {
+                    this._storeState(QUERY_ARGS.START_INDEX, v);
+                    return v;
+                }
             },
             total: {
                 value: 0,
-                validator: Y.Lang.isNumber
+                validator: Y.Lang.isNumber,
+                setter: function (v) {
+                    this._storeState(QUERY_ARGS.SEARCH, v);
+                    return v;
+                }
             },
             pageSize: {
                 value: DEFAULT_PAGE_SIZE,
-                validator: Y.Lang.isNumber
+                validator: Y.Lang.isNumber,
+                setter: function (v) {
+                    this._storeState(QUERY_ARGS.PAGE_SIZE, v);
+                    return v;
+                }
             },
             search: {
+                validator: Y.Lang.isString
+            },
+            persistentId: {
                 validator: Y.Lang.isString
             }
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        'model', 'model-list', 'model-sync-rest', 'json-parse'
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.utils.Framework,
+    'cookie', 'model', 'model-list', 'model-sync-rest', 'json-parse', 'datatype'
+]});

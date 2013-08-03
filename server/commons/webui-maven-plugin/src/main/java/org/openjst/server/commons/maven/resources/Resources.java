@@ -23,10 +23,7 @@ import org.openjst.server.commons.maven.manifest.jaxb.ExcludesType;
 import org.openjst.server.commons.maven.manifest.jaxb.IncludesType;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Sergey Grachev
@@ -54,8 +51,8 @@ abstract class Resources<T> {
         scanner.addDefaultExcludes();
 
         final List<String> includesList = includes != null ? includes.getInclude() : new ArrayList<String>(0);
-        if (!includesList.isEmpty()) {
-            scanner.setIncludes(includesList.toArray(new String[includesList.size()]));
+        if (includesList.isEmpty()) {
+            includesList.add("**/**");
         }
 
         final List<String> excludesList = excludes != null ? excludes.getExclude() : new ArrayList<String>(1);
@@ -66,9 +63,14 @@ abstract class Resources<T> {
             scanner.setExcludes(excludesList.toArray(new String[excludesList.size()]));
         }
 
-        scanner.scan();
+        final Set<String> result = new LinkedHashSet<String>(includesList.size());
+        for (final String include : includesList) {
+            scanner.setIncludes(new String[]{include});
+            scanner.scan();
+            Collections.addAll(result, scanner.getIncludedFiles());
+        }
 
-        return scanner.getIncludedFiles();
+        return result.toArray(new String[result.size()]);
     }
 
     public Set<T> getResources() {

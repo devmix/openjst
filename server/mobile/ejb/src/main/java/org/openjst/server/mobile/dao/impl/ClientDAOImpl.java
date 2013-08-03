@@ -21,18 +21,24 @@ import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.protocols.auth.SecretKey;
 import org.openjst.commons.protocols.auth.SecretKeys;
 import org.openjst.server.commons.AbstractEJB;
+import org.openjst.server.commons.model.types.ProtocolType;
+import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.dao.ClientDAO;
 import org.openjst.server.mobile.model.Account;
 import org.openjst.server.mobile.model.Client;
-import org.openjst.server.mobile.model.Queries;
 import org.openjst.server.mobile.model.User;
 import org.openjst.server.mobile.model.dto.ClientAuthenticationObj;
+import org.openjst.server.mobile.model.dto.ClientConnectionObj;
 import org.openjst.server.mobile.utils.UserUtils;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
+import java.util.List;
+
+import static org.openjst.server.commons.mq.queries.VoidQuery.*;
+import static org.openjst.server.mobile.model.Queries.Client.*;
 
 /**
  * @author Sergey Grachev
@@ -48,7 +54,7 @@ public class ClientDAOImpl extends AbstractEJB implements ClientDAO {
     @Nullable
     public Client findByAccountAndClientId(final String accountId, final String clientId) {
         try {
-            return (Client) em.createNamedQuery(Queries.Client.FIND_BY_ACCOUNT_AND_CLIENT_NAME)
+            return (Client) em.createNamedQuery(FIND_BY_ACCOUNT_AND_CLIENT_NAME)
                     .setParameter("accountId", accountId)
                     .setParameter("clientId", clientId)
                     .getSingleResult();
@@ -60,7 +66,7 @@ public class ClientDAOImpl extends AbstractEJB implements ClientDAO {
     @Nullable
     public Long getClientIdOfAccountByAuthId(final Long accountId, final String clientId) {
         try {
-            return (Long) em.createNamedQuery(Queries.Client.GET_CLIENT_ID_OF_ACCOUNT_BY_AUTH_ID)
+            return (Long) em.createNamedQuery(GET_CLIENT_ID_OF_ACCOUNT_BY_AUTH_ID)
                     .setParameter("accountId", accountId)
                     .setParameter("clientId", clientId)
                     .getSingleResult();
@@ -73,7 +79,7 @@ public class ClientDAOImpl extends AbstractEJB implements ClientDAO {
     @Override
     public ClientAuthenticationObj findCachedSecretKeyOf(final String accountId, final String clientId) {
         try {
-            return (ClientAuthenticationObj) em.createNamedQuery(Queries.Client.FIND_CACHED_SECRET_KEY_OF)
+            return (ClientAuthenticationObj) em.createNamedQuery(FIND_CACHED_SECRET_KEY_OF)
                     .setParameter("accountId", accountId)
                     .setParameter("clientId", clientId)
                     .getSingleResult();
@@ -83,8 +89,8 @@ public class ClientDAOImpl extends AbstractEJB implements ClientDAO {
     }
 
     @Override
-    public void changeStatusOfflineForAll() {
-        em.createNamedQuery(Queries.Client.CHANGE_STATUS_OFFLINE_FOR_ALL).executeUpdate();
+    public void setOfflineStatusForAll() {
+        em.createNamedQuery(SET_OFFLINE_STATUS_FOR_ALL).executeUpdate();
     }
 
     @Override
@@ -139,10 +145,35 @@ public class ClientDAOImpl extends AbstractEJB implements ClientDAO {
     }
 
     @Override
-    public void changeStatusOnline(final Long clientId, final boolean isOnline) {
-        em.createNamedQuery(Queries.Client.CHANGE_STATUS_ONLINE)
+    public long getOnlineCountOf(final ModelQuery<Filter, Order, Search> query) {
+        return (Long) em.createNamedQuery(GET_ONLINE_COUNT_OF)
+                .setFirstResult(query.getStartIndex())
+                .setMaxResults(query.getPageSize())
+                .getSingleResult();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ClientConnectionObj> getOnlineListOf(final ModelQuery<Filter, Order, Search> query) {
+        return em.createNamedQuery(GET_ONLINE_LIST_OF)
+                .setFirstResult(query.getStartIndex())
+                .setMaxResults(query.getPageSize())
+                .getResultList();
+    }
+
+    @Override
+    public void setOnlineStatus(final Long clientId, final ProtocolType protocolType, final String host) {
+        em.createNamedQuery(SET_ONLINE_STATUS)
                 .setParameter("clientId", clientId)
-                .setParameter("isOnline", isOnline)
+                .setParameter("protocolType", protocolType)
+                .setParameter("host", host)
+                .executeUpdate();
+    }
+
+    @Override
+    public void setOfflineStatus(final Long clientId) {
+        em.createNamedQuery(SET_OFFLINE_STATUS)
+                .setParameter("clientId", clientId)
                 .executeUpdate();
     }
 }

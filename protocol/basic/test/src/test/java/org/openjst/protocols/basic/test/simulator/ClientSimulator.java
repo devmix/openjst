@@ -24,6 +24,7 @@ import org.openjst.commons.rpc.exceptions.RPCException;
 import org.openjst.commons.rpc.objects.RPCObjectsFactory;
 import org.openjst.protocols.basic.client.Client;
 import org.openjst.protocols.basic.client.ClientEventsListener;
+import org.openjst.protocols.basic.constants.ProtocolBasicConstants;
 import org.openjst.protocols.basic.events.*;
 import org.openjst.protocols.basic.exceptions.ClientNotConnectedException;
 
@@ -94,5 +95,10 @@ public final class ClientSimulator {
 
     public void disconnect() {
         client.disconnect();
+    }
+
+    public static void main(final String[] args) {
+        final ClientSimulator client = new ClientSimulator("system", "client", "client", "localhost", ProtocolBasicConstants.DEFAULT_CLIENTS_PORT);
+        client.connect();
     }
 }

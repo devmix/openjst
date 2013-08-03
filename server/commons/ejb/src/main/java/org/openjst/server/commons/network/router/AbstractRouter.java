@@ -73,6 +73,10 @@ abstract class AbstractRouter<A extends Actor<?>, M extends Message<?>> implemen
         return DeliveryResult.as(MessageDeliveryState.NO_FORWARD_RECIPIENT, null);
     }
 
+    @Override
+    public boolean isConnected(final A actor) {
+        return ensureRoutesExists(actor).isConnected();
+    }
 
     @Override
     public void connected(final A actor, final ProtocolType protocolType) {

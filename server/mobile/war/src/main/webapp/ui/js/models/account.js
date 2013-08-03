@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.models.Account, function (Y) {
+YUI.add(OJST.ns.models.Account, function (Y) {
     "use strict";
 
     /**
@@ -52,7 +52,6 @@ YUI.add(OJST.modules.models.Account, function (Y) {
         model: OJST.ui.models.Account
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.models.Base
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.models.Base
+]});

@@ -21,16 +21,16 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.views.PageAbstractAccount, function (Y) {
+YUI.add(OJST.ns.views.page.accounts.Abstract, function (Y) {
     "use strict";
 
     /**
-     * @class PageAbstractAccount
-     * @namespace OJST.ui.views
+     * @class Abstract
+     * @namespace OJST.ui.views.page.accounts
      * @constructor
-     * @extends OJST.ui.views.PageAbstract
+     * @extends  OJST.ui.views.page.Abstract
      */
-    OJST.ui.views.PageAbstractAccount = Y.Base.create('viewsPageAbstractAccount', OJST.ui.views.PageAbstract, [], {
+    OJST.ui.views.page.accounts.Abstract = Y.Base.create('viewsPageAccountsAbstract', OJST.ui.views.page.Abstract, [], {
 
         /** @override */
         getTabsTitle: function () {
@@ -45,17 +45,17 @@ YUI.add(OJST.modules.views.PageAbstractAccount, function (Y) {
                 width: 150,
                 items: [
                     {label: OJST.i18n.label('parameters'), route: '/accounts/' + accountId,
-                        active: this instanceof OJST.ui.views.PageAccount
+                        active: this instanceof OJST.ui.views.page.accounts.Account
                     },
 
                     {label: OJST.i18n.label('users'), route: '/accounts/' + accountId + '/users',
-                        active: this instanceof OJST.ui.views.PageAccountUsers,
+                        active: this instanceof OJST.ui.views.page.accounts.users.List,
                         visible: !this.isNewModel()
                     },
 
                     {label: OJST.i18n.label('user'),
-                        active: this instanceof OJST.ui.views.PageAccountUser,
-                        visible: !this.isNewModel() && this instanceof OJST.ui.views.PageAccountUser,
+                        active: this instanceof OJST.ui.views.page.accounts.users.User,
+                        visible: !this.isNewModel() && this instanceof OJST.ui.views.page.accounts.users.User,
                         level: 1
                     }
                 ]
@@ -64,7 +64,6 @@ YUI.add(OJST.modules.views.PageAbstractAccount, function (Y) {
 
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.views.PageAbstract
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.views.page.Abstract
+]});

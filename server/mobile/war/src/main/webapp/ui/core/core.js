@@ -27,9 +27,9 @@
     var cfg = OJST.CONFIG;
 
     OJST.framework = OJST.manifest.framework;
-    OJST.modules = OJST.manifest.modules.modules;
+    OJST.ns = OJST.manifest.modules.ns;
     OJST.libs = OJST.manifest.modules.libs;
-    OJST.ui = OJST.manifest.ns.modules;
+    OJST.ui = OJST.manifest.ns.ns;
     OJST.ui.libs = OJST.manifest.ns.libs;
 
     /**

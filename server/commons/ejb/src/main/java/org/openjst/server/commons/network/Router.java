@@ -33,4 +33,6 @@ public interface Router<A extends Actor<?>, M extends Message<?>> {
     void disconnected(A actor, ProtocolType protocolType);
 
     DeliveryResult send(A actor, M message);
+
+    boolean isConnected(A actor);
 }

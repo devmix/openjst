@@ -24,9 +24,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>OpenJST</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%=UIAssets.jspDefault()%>
+    <%=UIAssets.jspDefault() + UIAssets.jsDefault()%>
 </head>
 
 <body class="sam">
@@ -48,10 +46,8 @@
 
 </div>
 
-<%= UIAssets.jsDefault() %>
-
 <script>
-    YUI(OJST.framework).use(OJST.modules.pages.SingInCss, OJST.libs.BootstrapCss, function (Y) {
+    YUI(OJST.framework).use(OJST.ns.pages.SingInCss, OJST.libs.BootstrapCss, function (Y) {
     });
 </script>
 

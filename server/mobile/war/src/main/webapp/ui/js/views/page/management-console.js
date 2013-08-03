@@ -19,45 +19,35 @@
  * @author Sergey Grachev
  */
 
-/*global Y, YUI, OJST, $*/
+/*global YUI, OJST*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.ns.models.User, function (Y) {
+YUI.add(OJST.ns.views.page.ManagementConsole, function (Y) {
     "use strict";
 
     /**
-     * @class User
-     * @namespace OJST.ui.models
+     * @class ManagementConsole
+     * @namespace OJST.ui.views.page
      * @constructor
-     * @extends OJST.ui.models.Base
+     * @extends OJST.ui.views.page.Abstract
      */
-    OJST.ui.models.User = Y.Base.create('modelUser', OJST.ui.models.Base, [], {
-        root: 'ui-api/users'
-    }, {
-        ATTRS: {
-            id: {value: null},
-            authId: {value: null},
-            name: {value: null},
-            role: {value: null},
-            language: {value: 'EN'},
-            account: {value: null}
-        }
-    });
+    OJST.ui.views.page.ManagementConsole = Y.Base.create('viewsPageManagementConsole', OJST.ui.views.page.Abstract, [], {
 
-    /**
-     * @class UserList
-     * @namespace OJST.ui.models
-     * @constructor
-     * @extends OJST.ui.models.BaseList
-     */
-    OJST.ui.models.UserList = Y.Base.create('modelsUserList', OJST.ui.models.BaseList, [], {
-        model: OJST.ui.models.User,
-        url: 'ui-api/users?accountId={accountId}'
-    }, {
-        ATTRS: {
-            accountId: {}
+        /** @override */
+        createForm: function () {
+            return Y.Node.create(
+                '<div class="container-fluid"><div class="row-fluid">' +
+                    '<section class="span12">' +
+                    '   <div class="page-header">' +
+                    '       <h1>Management Console</h1>' +
+                    '   </div>' +
+                    '   <p>TODO</p>' +
+                    '</section>' +
+                    '</div></div>'
+            );
         }
+
     });
 
 }, OJST.VERSION, {requires: [
-    OJST.ns.models.Base
+    OJST.ns.views.page.Abstract
 ]});

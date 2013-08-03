@@ -25,19 +25,26 @@ import org.openjst.protocols.basic.session.Session;
 public final class ConnectEvent implements Event {
 
     private final Session session;
+    private final String remoteHost;
 
-    public ConnectEvent(final Session session) {
+    public ConnectEvent(final Session session, final String remoteHost) {
         this.session = session;
+        this.remoteHost = remoteHost;
     }
 
     public Session getSession() {
         return session;
     }
 
+    public String getRemoteHost() {
+        return remoteHost;
+    }
+
     @Override
     public String toString() {
         return "ConnectEvent{" +
                 "session=" + session +
+                ", remoteHost='" + remoteHost + '\'' +
                 '}';
     }
 }

@@ -21,34 +21,23 @@
 
 /*global YUI, OJST*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.views.PageManagementConsole, function (Y) {
+YUI.add(OJST.ns.views.page.dashboard.connections.Summary, function (Y) {
     "use strict";
 
     /**
-     * @class PageManagementConsole
-     * @namespace OJST.ui.views
+     * @class Summary
+     * @namespace OJST.ui.views.page.dashboard
      * @constructor
-     * @extends OJST.ui.views.PageAbstract
+     * @extends OJST.ui.views.page.dashboard.Abstract
      */
-    OJST.ui.views.PageManagementConsole = Y.Base.create('viewsPageManagementConsole', OJST.ui.views.PageAbstract, [], {
+    OJST.ui.views.page.dashboard.connections.Summary = Y.Base.create('viewsPageDashboardSummary', OJST.ui.views.page.dashboard.Abstract, [], {
 
         /** @override */
         createForm: function () {
-            return Y.Node.create(
-                '<div class="container-fluid"><div class="row-fluid">' +
-                    '<section class="span12">' +
-                    '   <div class="page-header">' +
-                    '       <h1>Management Console</h1>' +
-                    '   </div>' +
-                    '   <p>TODO</p>' +
-                    '</section>' +
-                    '</div></div>'
-            );
+            return Y.Node.create('<div class="page-header"><h1><small><center>TODO SUMMARY</center></small></h1></div>');
         }
-
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.views.PageAbstract
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.views.page.dashboard.Abstract
+]});

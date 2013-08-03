@@ -19,35 +19,56 @@ package org.openjst.server.mobile.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.openjst.server.commons.model.AbstractIdEntity;
+import org.openjst.server.commons.model.types.ProtocolType;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.Date;
+
+import static org.openjst.server.mobile.model.Queries.Account.*;
 
 /**
  * @author Sergey Grachev
  */
 @NamedQueries({
-        @NamedQuery(name = Queries.Account.FIND_BY_ID,
+        @NamedQuery(name = FIND_BY_ID,
                 query = "select e from Account e where e.id = :id"),
 
-        @NamedQuery(name = Queries.Account.FIND_BY_AUTH_ID,
+        @NamedQuery(name = FIND_BY_AUTH_ID,
                 query = "select e from Account e where e.authId = :authId"),
 
-        @NamedQuery(name = Queries.Account.FIND_ACCOUNT_BY_API_KEY,
+        @NamedQuery(name = FIND_ACCOUNT_BY_API_KEY,
                 query = "select new org.openjst.server.mobile.model.dto.AccountAuthenticationObj(" +
                         "   e.id, e.authId" +
                         ")from Account e where e.apiKey = :apiKey"),
 
-        @NamedQuery(name = Queries.Account.GET_LIST_OF,
+        @NamedQuery(name = GET_LIST_OF,
                 query = "select e from Account e"),
 
-        @NamedQuery(name = Queries.Account.GET_COUNT_OF,
+        @NamedQuery(name = GET_COUNT_OF,
                 query = "select count(e.id) from Account e"),
 
-        @NamedQuery(name = Queries.Account.FIND_SYSTEM,
-                query = "select e from Account e where e.system = true")
+        @NamedQuery(name = FIND_SYSTEM,
+                query = "select e from Account e where e.system = true"),
+
+        @NamedQuery(name = SET_ONLINE_STATUS,
+                query = "update Account e" +
+                        " set e.online = true," +
+                        "   e.lastOnlineTime = current_timestamp," +
+                        "   e.lastProtocolType = :protocolType," +
+                        "   e.lastRemoteHost = :host" +
+                        " where e.id = :accountId"),
+
+        @NamedQuery(name = GET_ONLINE_LIST_OF,
+                query = "select new org.openjst.server.mobile.model.dto.AccountConnectionObj(" +
+                        "   e.id, e.authId, e.name, e.lastOnlineTime, e.lastProtocolType, e.lastRemoteHost" +
+                        ")from Account e" +
+                        " where e.online = true"),
+
+        @NamedQuery(name = GET_ONLINE_COUNT_OF,
+                query = "select count(e.id) from Account e where e.online = true")
 })
 @Entity
 @Table(name = Account.TABLE)
@@ -58,6 +79,10 @@ public class Account extends AbstractIdEntity {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_SYSTEM = "system";
     public static final String COLUMN_API_KEY = "api_key";
+    public static final String COLUMN_ONLINE = "online";
+    public static final String COLUMN_LAST_PROTOCOL_TYPE = "last_protocol_type";
+    public static final String COLUMN_LAST_ONLINE_TIME = "last_online_time";
+    public static final String COLUMN_LAST_REMOTE_HOST = "last_remote_host";
 
     @NotEmpty
     @Size(min = 1, max = 255)
@@ -75,6 +100,18 @@ public class Account extends AbstractIdEntity {
 
     @Column(name = COLUMN_API_KEY, length = 255, unique = true)
     private String apiKey;
+
+    @Column(name = COLUMN_ONLINE, nullable = false)
+    private boolean online = false;
+
+    @Column(name = COLUMN_LAST_PROTOCOL_TYPE)
+    private ProtocolType lastProtocolType;
+
+    @Column(name = COLUMN_LAST_ONLINE_TIME)
+    private Date lastOnlineTime;
+
+    @Column(name = COLUMN_LAST_REMOTE_HOST)
+    private String lastRemoteHost;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
     private Collection<User> users;
@@ -117,5 +154,37 @@ public class Account extends AbstractIdEntity {
 
     public void setApiKey(final String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(final boolean online) {
+        this.online = online;
+    }
+
+    public ProtocolType getLastProtocolType() {
+        return lastProtocolType;
+    }
+
+    public void setLastProtocolType(final ProtocolType lastProtocolType) {
+        this.lastProtocolType = lastProtocolType;
+    }
+
+    public Date getLastOnlineTime() {
+        return lastOnlineTime;
+    }
+
+    public void setLastOnlineTime(final Date lastConnectTime) {
+        this.lastOnlineTime = lastConnectTime;
+    }
+
+    public String getLastRemoteHost() {
+        return lastRemoteHost;
+    }
+
+    public void setLastRemoteHost(final String lastRemoteHost) {
+        this.lastRemoteHost = lastRemoteHost;
     }
 }

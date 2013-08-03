@@ -21,16 +21,16 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.views.PageAccountUser, function (Y) {
+YUI.add(OJST.ns.views.page.accounts.users.User, function (Y) {
     "use strict";
 
     /**
-     * @class PageAccountUser
-     * @namespace OJST.ui.views
+     * @class User
+     * @namespace OJST.ui.views.page.accounts.users
      * @constructor
-     * @extends OJST.ui.views.PageAbstractAccount
+     * @extends OJST.ui.views.page.account.Abstract
      */
-    OJST.ui.views.PageAccountUser = Y.Base.create('viewsPageAccountUser', OJST.ui.views.PageAbstractAccount, [], {
+    OJST.ui.views.page.accounts.users.User = Y.Base.create('viewsPageAccountsUsersUser', OJST.ui.views.page.accounts.Abstract, [], {
 
         /** @override */
         getTabsTitle: function () {
@@ -120,11 +120,10 @@ YUI.add(OJST.modules.views.PageAccountUser, function (Y) {
 
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.views.PageAbstract,
-        OJST.modules.models.User,
-        OJST.modules.widgets.form.Form,
-        OJST.modules.widgets.form.TextField,
-        OJST.modules.widgets.form.ListField
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.views.page.accounts.Abstract,
+    OJST.ns.models.User,
+    OJST.ns.widgets.form.Form,
+    OJST.ns.widgets.form.TextField,
+    OJST.ns.widgets.form.ListField
+]});

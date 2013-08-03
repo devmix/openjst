@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.widgets.Alerts, function (Y) {
+YUI.add(OJST.ns.widgets.Alerts, function (Y) {
     "use strict";
 
     var confirmDialog, alertDialog;
@@ -125,7 +125,6 @@ YUI.add(OJST.modules.widgets.Alerts, function (Y) {
         }
     };
 
-}, OJST.VERSION, {
-    requires: [
-        'panel'
-    ]});
+}, OJST.VERSION, {requires: [
+    'panel'
+]});

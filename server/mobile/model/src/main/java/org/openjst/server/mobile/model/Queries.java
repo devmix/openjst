@@ -35,6 +35,10 @@ public final class Queries {
         public static final String FIND_ACCOUNT_BY_API_KEY = PREFIX + "findAccountByApiKey";
         public static final String GET_LIST_OF = PREFIX + "getListOf";
         public static final String GET_COUNT_OF = PREFIX + "getCountOf";
+        public static final String SET_ONLINE_STATUS = PREFIX + "setOnlineStatus";
+        public static final String SET_OFFLINE_STATUS = PREFIX + "setOfflineStatus";
+        public static final String GET_ONLINE_COUNT_OF = PREFIX + "getOnlineCountOf";
+        public static final String GET_ONLINE_LIST_OF = PREFIX + "getOnlineListOf";
 
         private Account() {
         }
@@ -66,8 +70,11 @@ public final class Queries {
         public static final String GET_CLIENT_ID_OF_ACCOUNT_BY_AUTH_ID = PREFIX + "getClientIdOfAccountByAuthId";
         public static final String FIND_CACHED_SECRET_KEY_OF = PREFIX + "findCachedSecretKeyOf";
         public static final String FIND_BY_ACCOUNT_AND_CLIENT_NAME = PREFIX + "findByAccountAndClientId";
-        public static final String CHANGE_STATUS_OFFLINE_FOR_ALL = PREFIX + "changeStatusOfflineForAll";
-        public static final String CHANGE_STATUS_ONLINE = PREFIX + "changeStatusOnline";
+        public static final String SET_OFFLINE_STATUS_FOR_ALL = PREFIX + "setOfflineStatusForAll";
+        public static final String SET_ONLINE_STATUS = PREFIX + "setOnlineStatus";
+        public static final String SET_OFFLINE_STATUS = PREFIX + "setOfflineStatus";
+        public static final String GET_ONLINE_LIST_OF = PREFIX + "getOnlineListOf";
+        public static final String GET_ONLINE_COUNT_OF = PREFIX + "getOnlineCountOf";
 
         private Client() {
         }

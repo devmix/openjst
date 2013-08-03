@@ -226,7 +226,7 @@ public class ServerSessionsHandler extends SimpleChannelHandler {
 
         NettyUtils.writeDownstream(ctx, PacketsFactory.newAuthResponsePacket(packet.getPacketId(), ProtocolResponseStatus.OK));
 
-        eventsProducer.queue(new ConnectEvent(session));
+        eventsProducer.queue(new ConnectEvent(session, channel.getRemoteAddress().toString()));
 
         for (final MessageEvent message : this.bufferedMessages) {
             ctx.sendDownstream(message);

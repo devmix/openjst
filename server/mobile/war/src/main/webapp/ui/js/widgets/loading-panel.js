@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $, WidgetStdMod*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.widgets.LoadingPanel, function (Y) {
+YUI.add(OJST.ns.widgets.LoadingPanel, function (Y) {
     "use strict";
 
     /**
@@ -54,7 +54,6 @@ YUI.add(OJST.modules.widgets.LoadingPanel, function (Y) {
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        'panel'
-    ]});
+}, OJST.VERSION, {requires: [
+    'panel'
+]});

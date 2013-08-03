@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.widgets.AbstractView, function (Y) {
+YUI.add(OJST.ns.widgets.AbstractView, function (Y) {
     "use strict";
 
     var STR = {
@@ -143,8 +143,7 @@ YUI.add(OJST.modules.widgets.AbstractView, function (Y) {
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.layouts.Border,
-        'view'
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.layouts.Border,
+    'view'
+]});

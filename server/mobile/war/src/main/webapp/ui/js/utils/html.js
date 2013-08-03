@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.utils.Html, function (Y) {
+YUI.add(OJST.ns.utils.Html, function (Y) {
     "use strict";
 
     var scrollBarWidth;

@@ -64,7 +64,7 @@ public class CompileMojo extends AbstractMojo {
 
         final ManifestType manifestConfig;
         try {
-            manifestConfig = ManifestUtils. parse(manifestFile);
+            manifestConfig = ManifestUtils.parse(manifestFile);
         } catch (Exception e) {
             throw new MojoExecutionException("Error while read manifest", e);
         }

@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.widgets.NavigationBar, function (Y) {
+YUI.add(OJST.ns.widgets.NavigationBar, function (Y) {
     "use strict";
 
     var CLASS = {
@@ -314,7 +314,7 @@ YUI.add(OJST.modules.widgets.NavigationBar, function (Y) {
 
         CONTENT_TEMPLATE: '<div class="nav-collapse collapse navbar-responsive-collapse"></div>',
 
-        BRAND_TEMPLATE: '<a class="brand" href="#">{brand}</a>',
+        BRAND_TEMPLATE: '<a class="brand" href="/">{brand}</a>',
 
         /** @override */
         renderUI: function () {
@@ -341,7 +341,6 @@ YUI.add(OJST.modules.widgets.NavigationBar, function (Y) {
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        'escape', 'widget', 'widget-child', 'widget-parent'
-    ]});
+}, OJST.VERSION, {requires: [
+    'escape', 'widget', 'widget-child', 'widget-parent'
+]});

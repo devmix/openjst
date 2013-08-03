@@ -30,7 +30,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface ModelAccessRestriction {
 
-
     boolean requireAuthorized() default true;
 
     boolean requireAdministrator() default false;

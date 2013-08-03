@@ -26,13 +26,13 @@ import org.openjst.server.commons.network.Actor;
  */
 public interface NetworkService {
 
-    void clientConnected(Actor<Long> actor, ProtocolType protocolType);
+    void clientConnected(Actor<Long> actor, ProtocolType protocolType, String host);
 
     void clientDisconnected(Actor<Long> actor, ProtocolType protocolType);
 
     void clientRPCForwardTo(Long accountId, Long clientId, RPCMessageFormat format, byte[] data);
 
-    void serverConnected(Actor<Long> actor, ProtocolType protocolType);
+    void serverConnected(Actor<Long> actor, ProtocolType protocolType, String remoteHost);
 
     void serverDisconnect(Actor<Long> actor, ProtocolType protocolType);
 

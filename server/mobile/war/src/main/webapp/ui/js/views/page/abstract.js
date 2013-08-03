@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.views.PageAbstract, function (Y) {
+YUI.add(OJST.ns.views.page.Abstract, function (Y) {
     "use strict";
 
     var TPL = {
@@ -29,12 +29,12 @@ YUI.add(OJST.modules.views.PageAbstract, function (Y) {
     };
 
     /**
-     * @class PageAbstract
-     * @namespace OJST.ui.views
+     * @class Abstract
+     * @namespace OJST.ui.views.page
      * @constructor
      * @extends OJST.ui.views.AbstractView
      */
-    OJST.ui.views.PageAbstract = Y.Base.create('viewsPageAbstract', OJST.ui.widgets.AbstractView, [], {
+    OJST.ui.views.page.Abstract = Y.Base.create('viewsPageAbstract', OJST.ui.widgets.AbstractView, [], {
 
             /** @override */
             initializer: function () {
@@ -136,7 +136,7 @@ YUI.add(OJST.modules.views.PageAbstract, function (Y) {
             },
 
             /**
-             * @return {OJST.ui.views.PageAbstract}
+             * @return { OJST.ui.views.page.Abstract}
              * @protected
              */
             render: function () {
@@ -248,12 +248,11 @@ YUI.add(OJST.modules.views.PageAbstract, function (Y) {
         }
     );
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.widgets.Container,
-        OJST.modules.widgets.LoadingPanel,
-        OJST.modules.widgets.Breadcrumbs,
-        OJST.modules.widgets.Sidebar,
-        OJST.modules.widgets.AbstractView,
-        'view', 'button', 'anim'
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.widgets.Container,
+    OJST.ns.widgets.LoadingPanel,
+    OJST.ns.widgets.Breadcrumbs,
+    OJST.ns.widgets.Sidebar,
+    OJST.ns.widgets.AbstractView,
+    'view', 'button', 'anim'
+]});

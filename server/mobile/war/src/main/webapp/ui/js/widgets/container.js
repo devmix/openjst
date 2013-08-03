@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.widgets.Container, function (Y) {
+YUI.add(OJST.ns.widgets.Container, function (Y) {
     "use strict";
 
     /**
@@ -110,7 +110,6 @@ YUI.add(OJST.modules.widgets.Container, function (Y) {
     });
 
 
-}, OJST.VERSION, {
-    requires: [
-        'view', 'widget', 'node'
-    ]});
+}, OJST.VERSION, {requires: [
+    'view', 'widget', 'node'
+]});

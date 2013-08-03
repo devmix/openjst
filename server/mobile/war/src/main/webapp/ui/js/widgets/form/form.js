@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.widgets.form.Form, function (Y) {
+YUI.add(OJST.ns.widgets.form.Form, function (Y) {
     "use strict";
 
     var EVT = {
@@ -354,9 +354,8 @@ YUI.add(OJST.modules.widgets.form.Form, function (Y) {
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.widgets.AbstractWidget,
-        OJST.modules.widgets.Alerts,
-        'widget', 'widget-child', 'widget-parent'
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.widgets.AbstractWidget,
+    OJST.ns.widgets.Alerts,
+    'widget', 'widget-child', 'widget-parent'
+]});

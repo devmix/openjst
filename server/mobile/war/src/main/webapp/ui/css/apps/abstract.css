@@ -19,6 +19,20 @@
  * @author Sergey Grachev
  */
 
+body,
+input,
+button,
+select,
+textarea {
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    float: inherit;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
 .yui3-app .navbar {
     margin-bottom: 0;
 }

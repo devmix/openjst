@@ -49,13 +49,13 @@ public final class Validators {
             return this;
         }
 
-        log.info("");
-        log.info("Initialize validators...");
-
         for (final ValidatorType item : validators.getValidator()) {
             final String type = item.getType();
             if (item.isSkip()) {
-                log.info("  Validators " + type + " skipped");
+                if (log.isDebugEnabled()) {
+                    log.debug("  Validators " + type + " skipped");
+                }
+                continue;
             }
 
             final ResourceType resourceType = ResourceType.of(item.getFor());

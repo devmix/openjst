@@ -19,12 +19,14 @@ package org.openjst.server.mobile.dao.impl;
 
 import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.AbstractEJB;
+import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.model.Account;
 import org.openjst.server.mobile.model.Queries;
 import org.openjst.server.mobile.model.dto.AccountAuthenticationObj;
+import org.openjst.server.mobile.model.dto.AccountConnectionObj;
 import org.openjst.server.mobile.mq.model.AccountModel;
 import org.openjst.server.mobile.mq.queries.AccountQuery;
 
@@ -32,6 +34,9 @@ import javax.ejb.Stateless;
 import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import java.util.List;
+
+import static org.openjst.server.commons.mq.queries.VoidQuery.*;
+import static org.openjst.server.mobile.model.Queries.Account.*;
 
 /**
  * @author Sergey Grachev
@@ -45,7 +50,7 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
     @Override
     public Account findById(final long id) {
         try {
-            return (Account) em.createNamedQuery(Queries.Account.FIND_BY_ID).setParameter("id", id).getSingleResult();
+            return (Account) em.createNamedQuery(FIND_BY_ID).setParameter("id", id).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -61,7 +66,7 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
     @Override
     public List<Account> getListOf(final ModelQuery<VoidQuery.Filter, AccountQuery.Order, VoidQuery.Search> query) {
         //noinspection unchecked
-        return em.createNamedQuery(Queries.Account.GET_LIST_OF)
+        return em.createNamedQuery(GET_LIST_OF)
                 .setFirstResult(query.getStartIndex())
                 .setMaxResults(query.getPageSize())
                 .getResultList();
@@ -69,7 +74,7 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
 
     @Override
     public long getCountOf(final ModelQuery<VoidQuery.Filter, AccountQuery.Order, VoidQuery.Search> query) {
-        return (Long) em.createNamedQuery(Queries.Account.GET_COUNT_OF)
+        return (Long) em.createNamedQuery(GET_COUNT_OF)
                 .getSingleResult();
     }
 
@@ -83,11 +88,44 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
         em.remove(account);
     }
 
+    @Override
+    public void setOfflineStatus(final Long accountId) {
+        em.createNamedQuery(SET_OFFLINE_STATUS)
+                .setParameter("accountId", accountId)
+                .executeUpdate();
+    }
+
+    @Override
+    public void setOnlineStatus(final Long accountId, final ProtocolType protocolType, final String remoteHost) {
+        em.createNamedQuery(SET_ONLINE_STATUS)
+                .setParameter("accountId", accountId)
+                .setParameter("protocolType", protocolType)
+                .setParameter("host", remoteHost)
+                .executeUpdate();
+    }
+
+    @Override
+    public long getOnlineCountOf(final ModelQuery<Filter, Order, Search> query) {
+        return (Long) em.createNamedQuery(GET_ONLINE_COUNT_OF)
+                .setFirstResult(query.getStartIndex())
+                .setMaxResults(query.getPageSize())
+                .getSingleResult();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<AccountConnectionObj> getOnlineListOf(final ModelQuery<Filter, Order, Search> query) {
+        return em.createNamedQuery(Queries.Account.GET_ONLINE_LIST_OF)
+                .setFirstResult(query.getStartIndex())
+                .setMaxResults(query.getPageSize())
+                .getResultList();
+    }
+
     @Nullable
     @Override
     public Account findSystemAccount() {
         @SuppressWarnings("unchecked")
-        final List<Account> accounts = em.createNamedQuery(Queries.Account.FIND_SYSTEM).getResultList();
+        final List<Account> accounts = em.createNamedQuery(FIND_SYSTEM).getResultList();
         return accounts.isEmpty() ? null : accounts.get(0);
     }
 
@@ -95,7 +133,7 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
     @Nullable
     public AccountAuthenticationObj findAccountByApiKey(final String apiKey) {
         try {
-            return (AccountAuthenticationObj) em.createNamedQuery(Queries.Account.FIND_ACCOUNT_BY_API_KEY)
+            return (AccountAuthenticationObj) em.createNamedQuery(FIND_ACCOUNT_BY_API_KEY)
                     .setParameter("apiKey", apiKey).getSingleResult();
         } catch (NoResultException e) {
             return null;
@@ -106,7 +144,7 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
     @Override
     public Account findByAuthId(final String authId) {
         try {
-            return (Account) em.createNamedQuery(Queries.Account.FIND_BY_AUTH_ID).setParameter("authId", authId).getSingleResult();
+            return (Account) em.createNamedQuery(FIND_BY_AUTH_ID).setParameter("authId", authId).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }

@@ -183,6 +183,9 @@ public final class ManifestResources {
         final boolean joinToSingleFile = joinAs != null;
         for (final Resource resource : resources) {
             if (joinToSingleFile) {
+                if (log.isDebugEnabled()) {
+                    log.debug("  join " + resource.getFile().getAbsolutePath());
+                }
                 final String content = resource.getContent();
                 FileUtils.fileAppend(joinAs.getFile().getAbsolutePath(), content + "\n");
             }

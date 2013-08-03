@@ -215,9 +215,9 @@ public class BasicProtocolServiceImpl implements BasicProtocolService<Actor<Long
         LOG.info("onConnect {}", event);
 
         if (event.getSession() instanceof ClientSession) {
-            networkService.clientConnected((ClientSession) event.getSession(), ProtocolType.BASIC);
+            networkService.clientConnected((ClientSession) event.getSession(), ProtocolType.BASIC, event.getRemoteHost());
         } else {
-            networkService.serverConnected((ServerSession) event.getSession(), ProtocolType.BASIC);
+            networkService.serverConnected((ServerSession) event.getSession(), ProtocolType.BASIC, event.getRemoteHost());
         }
     }
 

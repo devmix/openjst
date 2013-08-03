@@ -21,113 +21,69 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true, stupid: true*/
-YUI.add(OJST.modules.apps.ManagementConsole, function (Y) {
+YUI.add(OJST.ns.apps.ManagementConsole, function (Y) {
     "use strict";
 
+    /**
+     * @class ManagementConsole
+     * @namespace OJST.ui.apps
+     * @constructor
+     * @extends OJST.ui.apps.Abstract
+     */
     OJST.ui.apps.ManagementConsole = Y.Base.create('appsManagementConsole', OJST.ui.apps.Abstract, [], {
-        views: {
-            ManagementConsole: {
-                type: OJST.ui.views.PageManagementConsole
-            },
-            Accounts: {
-                type: OJST.ui.views.PageAccounts
-            },
-            Account: {
-                type: OJST.ui.views.PageAccount,
-                parent: 'Accounts'
-            },
-            AccountUsers: {
-                type: OJST.ui.views.PageAccountUsers,
-                parent: 'Accounts'
-            },
-            AccountUser: {
-                type: OJST.ui.views.PageAccountUser,
-                parent: 'AccountUsers'
-            }
-        },
+
         transitions: {
             navigate: 'slideRight',
             toChild: 'slideLeft',
             toParent: 'slideRight'
-        },
-
-        /**
-         * @param {Object} cfg
-         * @protected
-         */
-        initializer: function (cfg) {
-            this.set('brand', OJST.i18n.label('brand'));
-            this.set('navigation', {
-                buttons: [
-                    {
-                        label: OJST.i18n.label('home'),
-                        route: '/'
-                    },
-                    {
-                        label: OJST.i18n.label('accounts'),
-                        route: '/accounts'
-                    }
-                ],
-                menuLabel: OJST.session.getUser().getName(),
-                menu: [
-                    OJST.session.getUser().getRole(),
-                    {label: OJST.i18n.label('changePassword'), handler: function () {
-                        console.log('TODO Change password...');
-                    }},
-                    {label: OJST.i18n.label('changeSettings'), handler: function () {
-                        console.log('TODO Change settings...');
-                    }},
-                    '-',
-                    {label: OJST.i18n.label('logout'), handler: function () {
-                        Y.io('ui-api/session/logout', {
-                            method: 'POST',
-                            on: {
-                                complete: function () {
-                                    window.location.reload();
-                                }
-                            }
-                        });
-                    }}
-                ]
-            });
-        },
-
-        _changeTab: function (index) {
-            this.set('tabIndex', index);
-            this.get('navigationBar').item(0).activate(index + 1, true);
-        },
-
-        showManagementConsole: function (req) {
-            this._changeTab(0);
-            this.showView('ManagementConsole', req.params);
-        },
-        showAccounts: function (req) {
-            this._changeTab(1);
-            this.showView('Accounts', req.params);
-        },
-        showAccount: function (req) {
-            this._changeTab(1);
-            this.showView('Account', req.params);
-        },
-        showAccountUsers: function (req) {
-            this._changeTab(1);
-            this.showView('AccountUsers', req.params);
-        },
-        showAccountUser: function (req) {
-            this._changeTab(1);
-            this.showView('AccountUser', req.params);
         }
 
     }, {
         ATTRS: {
-            routes: {
+            brand: {
+                value: OJST.i18n.label('brand')
+            },
+            pages: {
                 value: [
-                    {path: '/accounts', callbacks: 'showAccounts'},
-                    {path: '/accounts/:accountId', callbacks: 'showAccount'},
-                    {path: '/accounts/:accountId/users', callbacks: 'showAccountUsers'},
-                    {path: '/accounts/:accountId/users/:userId', callbacks: 'showAccountUser'},
-                    {path: '*', callbacks: 'showManagementConsole'}
+                    ['*', OJST.ui.views.page.ManagementConsole, OJST.i18n.label('home')],
+                    ['/accounts', OJST.ui.views.page.accounts.List, OJST.i18n.label('accounts'), [
+                        [':accountId', OJST.ui.views.page.accounts.Account],
+                        [':accountId/users', OJST.ui.views.page.accounts.users.List, [
+                            [':userId', OJST.ui.views.page.accounts.users.User]
+                        ]]
+                    ]],
+                    ['/dashboard', OJST.ui.views.page.dashboard.connections.Summary, OJST.i18n.label('dashboard'), [
+                        ['connections', OJST.ui.views.page.dashboard.connections.Summary, [
+                            ['accounts', OJST.ui.views.page.dashboard.connections.Accounts],
+                            ['clients', OJST.ui.views.page.dashboard.connections.Clients]
+                        ]]
+                    ]]
                 ]
+            },
+            menu: {
+                value: {
+                    menuLabel: OJST.session.getUser().getName(),
+                    menu: [
+                        OJST.session.getUser().getRole(),
+                        {label: OJST.i18n.label('changePassword'), handler: function () {
+                            console.log('TODO Change password...');
+                        }},
+                        {label: OJST.i18n.label('changeSettings'), handler: function () {
+                            console.log('TODO Change settings...');
+                        }},
+                        '-',
+                        {label: OJST.i18n.label('logout'), handler: function () {
+                            Y.io('ui-api/session/logout', {
+                                method: 'POST',
+                                on: {
+                                    complete: function () {
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        }}
+                    ]
+                }
             },
             tabView: {
                 writeOnce: 'initOnly'
@@ -139,17 +95,17 @@ YUI.add(OJST.modules.apps.ManagementConsole, function (Y) {
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.libs.Select2,
-        OJST.libs.Bootstrap,
-        OJST.modules.utils.Framework,
-        OJST.modules.utils.Html,
-        OJST.modules.apps.Abstract,
-        OJST.modules.views.PageManagementConsole,
-        OJST.modules.views.PageAccounts,
-        OJST.modules.views.PageAccount,
-        OJST.modules.views.PageAccountUsers,
-        OJST.modules.views.PageAccountUser,
-        'io-base'
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.utils.Framework,
+    OJST.ns.utils.Html,
+    OJST.ns.apps.Abstract,
+    OJST.ns.views.page.ManagementConsole,
+    OJST.ns.views.page.accounts.List,
+    OJST.ns.views.page.accounts.Account,
+    OJST.ns.views.page.accounts.users.List,
+    OJST.ns.views.page.accounts.users.User,
+    OJST.ns.views.page.dashboard.connections.Summary,
+    OJST.ns.views.page.dashboard.connections.Accounts,
+    OJST.ns.views.page.dashboard.connections.Clients,
+    'io-base'
+]});

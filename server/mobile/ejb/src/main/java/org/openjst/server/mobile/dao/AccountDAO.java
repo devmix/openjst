@@ -18,14 +18,18 @@
 package org.openjst.server.mobile.dao;
 
 import org.jetbrains.annotations.Nullable;
+import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.mobile.model.Account;
 import org.openjst.server.mobile.model.dto.AccountAuthenticationObj;
+import org.openjst.server.mobile.model.dto.AccountConnectionObj;
 import org.openjst.server.mobile.mq.model.AccountModel;
 import org.openjst.server.mobile.mq.queries.AccountQuery;
 
 import java.util.List;
+
+import static org.openjst.server.commons.mq.queries.VoidQuery.*;
 
 /**
  * @author Sergey Grachev
@@ -53,4 +57,12 @@ public interface AccountDAO {
     Account update(Account account, AccountModel model);
 
     void delete(Long id);
+
+    void setOnlineStatus(Long accountId, ProtocolType protocolType, String remoteHost);
+
+    void setOfflineStatus(Long accountId);
+
+    long getOnlineCountOf(ModelQuery<Filter, Order, Search> query);
+
+    List<AccountConnectionObj> getOnlineListOf(ModelQuery<Filter, Order, Search> query);
 }

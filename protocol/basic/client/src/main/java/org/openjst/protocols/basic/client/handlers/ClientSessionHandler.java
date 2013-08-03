@@ -179,7 +179,7 @@ public final class ClientSessionHandler extends SimpleChannelHandler {
         this.clientContext.setSession(session);
         this.clientContext.setChannel(ctx.getChannel());
 
-        eventsProducer.queue(new ConnectEvent(this.clientContext.getSession()));
+        eventsProducer.queue(new ConnectEvent(this.clientContext.getSession(), ctx.getChannel().getRemoteAddress().toString()));
 
         for (final MessageEvent message : this.bufferedMessages) {
             ctx.sendDownstream(message);

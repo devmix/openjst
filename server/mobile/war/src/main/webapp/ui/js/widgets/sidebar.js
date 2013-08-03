@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.widgets.Sidebar, function (Y) {
+YUI.add(OJST.ns.widgets.Sidebar, function (Y) {
     "use strict";
 
     var ALIGN = {
@@ -238,9 +238,8 @@ YUI.add(OJST.modules.widgets.Sidebar, function (Y) {
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        'widget',
-        'widget-child',
-        'widget-parent'
-    ]});
+}, OJST.VERSION, {requires: [
+    'widget',
+    'widget-child',
+    'widget-parent'
+]});

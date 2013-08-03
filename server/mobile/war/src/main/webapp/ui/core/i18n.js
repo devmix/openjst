@@ -53,7 +53,7 @@
      * @public
      */
     I18n.prototype.label = function (key) {
-        return this._data[GROUP_WEB_UI_LABEL + '.' + key];
+        return this._data[GROUP_WEB_UI_LABEL + '.' + key] || key;
     };
 
     /**

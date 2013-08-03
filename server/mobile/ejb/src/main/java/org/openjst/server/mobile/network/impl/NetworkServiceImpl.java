@@ -115,20 +115,23 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public void clientConnected(final Actor<Long> actor, final ProtocolType protocolType) {
-        clientDAO.changeStatusOnline(actor.getId(), true);
+    public void clientConnected(final Actor<Long> actor, final ProtocolType protocolType, final String host) {
+        clientDAO.setOnlineStatus(actor.getId(), protocolType, host);
         clientsMsgRouter.connected(actor, protocolType);
         clientsMsgProducer.checkMessagesFor(actor);
     }
 
     @Override
     public void clientDisconnected(final Actor<Long> actor, final ProtocolType protocolType) {
-        clientDAO.changeStatusOnline(actor.getId(), false);
         clientsMsgRouter.disconnected(actor, protocolType);
+        if (!clientsMsgRouter.isConnected(actor)) {
+            clientDAO.setOfflineStatus(actor.getId());
+        }
     }
 
     @Override
-    public void serverConnected(final Actor<Long> actor, final ProtocolType protocolType) {
+    public void serverConnected(final Actor<Long> actor, final ProtocolType protocolType, final String remoteHost) {
+        accountDAO.setOnlineStatus(actor.getId(), protocolType, remoteHost);
         serversMsgRouter.connected(actor, protocolType);
         serversMsgProducer.checkMessagesFor(actor);
     }
@@ -136,5 +139,8 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public void serverDisconnect(final Actor<Long> actor, final ProtocolType protocolType) {
         serversMsgRouter.disconnected(actor, protocolType);
+        if (!serversMsgRouter.isConnected(actor)) {
+            accountDAO.setOfflineStatus(actor.getId());
+        }
     }
 }

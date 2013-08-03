@@ -41,7 +41,7 @@
         <groups>
             <group name="openjst" comboServiceUrl="ui-api/assets/ui-combo?">
                 <namespaces>
-                    <namespace>modules</namespace>
+                    <namespace>ns</namespace>
                     <namespace>libs</namespace>
                 </namespaces>
             </group>
@@ -53,7 +53,7 @@
             <entry>core.js</entry>
         </core>
 
-        <modules namespace="modules">
+        <modules namespace="ns">
             <sources root="js"/>
             <styles root="css"/>
         </modules>

@@ -19,8 +19,15 @@ package org.openjst.server.mobile.dao;
 
 import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.protocols.auth.SecretKey;
+import org.openjst.server.commons.model.types.ProtocolType;
+import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.mobile.model.Client;
 import org.openjst.server.mobile.model.dto.ClientAuthenticationObj;
+import org.openjst.server.mobile.model.dto.ClientConnectionObj;
+
+import java.util.List;
+
+import static org.openjst.server.commons.mq.queries.VoidQuery.*;
 
 /**
  * @author Sergey Grachev
@@ -33,11 +40,17 @@ public interface ClientDAO {
     @Nullable
     Client findByAccountAndClientId(String accountId, String clientId);
 
-    void changeStatusOfflineForAll();
+    void setOnlineStatus(Long clientId, ProtocolType protocolType, String host);
 
-    void changeStatusOnline(Long clientId, boolean isOnline);
+    void setOfflineStatus(Long clientId);
+
+    void setOfflineStatusForAll();
 
     Client synchronizeClient(String accountId, String clientId, boolean cache, SecretKey secretKey);
 
     Long getOrCreateClientId(Long accountId, String clientId);
+
+    long getOnlineCountOf(ModelQuery<Filter, Order, Search> query);
+
+    List<ClientConnectionObj> getOnlineListOf(ModelQuery<Filter, Order, Search> query);
 }

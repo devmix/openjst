@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.utils.Framework, function (Y) {
+YUI.add(OJST.ns.utils.Framework, function (Y) {
     "use strict";
 
     var Lang = Y.Lang;

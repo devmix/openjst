@@ -46,13 +46,13 @@ public final class Compressors {
             return this;
         }
 
-        log.info("");
-        log.info("Initialize compressors...");
-
         for (final CompressorType item : compressors.getCompressor()) {
             final String type = item.getType();
             if (item.isSkip()) {
-                log.info("\tCompressor " + type + " skipped");
+                if (log.isDebugEnabled()) {
+                    log.debug("\tCompressor " + type + " skipped");
+                }
+                continue;
             }
 
             final ResourceType resourceType = ResourceType.of(item.getFor());

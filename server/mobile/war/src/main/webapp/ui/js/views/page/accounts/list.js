@@ -21,29 +21,27 @@
 
 /*global YUI, OJST*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.views.PageAccountUsers, function (Y) {
+YUI.add(OJST.ns.views.page.accounts.List, function (Y) {
     "use strict";
 
     /**
-     * @class PageAccountUsers
-     * @namespace OJST.ui.views
+     * @class List
+     * @namespace OJST.ui.views.page.accounts
      * @constructor
-     * @extends OJST.ui.views.PageAbstractAccount
+     * @extends  OJST.ui.views.page.Abstract
      */
-    OJST.ui.views.PageAccountUsers = Y.Base.create('viewsPageAccountUsers', OJST.ui.views.PageAbstractAccount, [], {
+    OJST.ui.views.page.accounts.List = Y.Base.create('viewsPageAccountsList', OJST.ui.views.page.Abstract, [], {
 
         /** @override */
         createForm: function () {
-            var accountId = this.get('accountId'),
-                list = new OJST.ui.models.UserList({ accountId: accountId });
-
+            var list = new OJST.ui.models.AccountList({persistentId: 'pageAccounts'});
             return new OJST.ui.widgets.form.Grid({
                 autoLoad: true,
                 data: list,
                 columns: [
-                    { name: "authId", label: OJST.i18n.label('authId'), width: 150},
+                    { name: "authId", label: OJST.i18n.label('account-id'), width: 150},
                     { name: "name", label: OJST.i18n.label('name'), fill: true },
-                    { name: "actions", label: "Actions", html: true, width: 50,
+                    { name: "actions", label: OJST.i18n.label('actions'), html: true, width: 50,
                         render: function (v, m) {
                             return '<div style="text-align:center; white-space: nowrap;">'
                                 + '<i class="icon-trash" modelId="' + m.get('id') + '"></i>'
@@ -53,21 +51,23 @@ YUI.add(OJST.modules.views.PageAccountUsers, function (Y) {
                 ],
                 buttons: [
                     {
-                        label: OJST.i18n.label('add'),
+//                        label: OJST.i18n.label('add'),
+                        icon: 'plus',
                         handler: function () {
-                            OJST.app.saveRoute('/accounts/' + accountId + '/users/');
+                            OJST.app.saveRoute('/accounts/');
                         },
                         scope: this
                     }
                 ],
                 on: {
                     'row-select': function (model) {
-                        OJST.app.saveRoute('/accounts/' + accountId + '/users/' + model.get('id'));
+                        OJST.app.saveRoute('/accounts/' + model.get('id'));
                     }
                 },
                 delegates: {
                     'click:i.icon-trash': function (e) {
-                        OJST.ui.widgets.Alerts.confirm(OJST.i18n.label('confirm'), OJST.i18n.msg('removeUser'), function (button) {
+                        e.preventDefault();
+                        OJST.ui.widgets.Alerts.confirm(OJST.i18n.label('confirm'), OJST.i18n.msg('removeAccount'), function (button) {
                             if ('yes' === button) {
                                 var record = this.getModel(e.target.getAttribute('modelId'));
                                 if (record) {
@@ -79,12 +79,11 @@ YUI.add(OJST.modules.views.PageAccountUsers, function (Y) {
                 }
             });
         }
-
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.views.PageAbstractAccount,
-        OJST.modules.models.User,
-        OJST.modules.widgets.Alerts
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.views.page.Abstract,
+    OJST.ns.widgets.form.Grid,
+    OJST.ns.models.Account,
+    OJST.ns.widgets.Alerts
+]});

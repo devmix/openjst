@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.apps.Abstract, function (Y) {
+YUI.add(OJST.ns.apps.Abstract, function (Y) {
     "use strict";
 
     var CLASS = {
@@ -42,15 +42,25 @@ YUI.add(OJST.modules.apps.Abstract, function (Y) {
         /** @override */
         initializer: function (cfg) {
             OJST.app.assignYUIApplication(this);
+
+            this.views = {};
+
+            /**
+             * @type {{route: string, label: string}[]}
+             * @private
+             */
+            this._buttons = [];
             /**
              * @type {Y.EventHandle[]}
              * @private
              */
             this._subscribers = [];
 
-            this._subscribers.push(this.after('activeViewChange', this._onAfterActiveViewChange, this));
-            this._subscribers.push(Y.before(this._onBeforeRender, this, 'render'));
-            this._subscribers.push(Y.after(this._onAfterRender, this, 'render'));
+            this.subscribe(this.after('activeViewChange', this._onAfterActiveViewChange, this));
+            this.subscribe(Y.before(this._onBeforeRender, this, 'render'));
+            this.subscribe(Y.after(this._onAfterRender, this, 'render'));
+
+            this._initializePages();
         },
 
         /** @override */
@@ -58,6 +68,14 @@ YUI.add(OJST.modules.apps.Abstract, function (Y) {
             OJST.ui.utils.Framework.detach(this._subscribers);
             delete this._subscribers;
             OJST.app.assignYUIApplication(null);
+        },
+
+        /**
+         * @param {Y.EventHandle} handler
+         * @public
+         */
+        subscribe: function (handler) {
+            this._subscribers.push(handler);
         },
 
         /**
@@ -82,18 +100,81 @@ YUI.add(OJST.modules.apps.Abstract, function (Y) {
         },
 
         /**
+         * @param {number} index
+         * @private
+         */
+        _onChangeTab: function (index) {
+            this.set('tabIndex', index);
+            this.get('navigationBar').item(0).activate(index + 1, true);
+        },
+
+        /**
+         * @param {number} tabIndex
+         * @param {{path: string, callbacks: function}[]} routes
+         * @param {string} root
+         * @param {string} path
+         * @param {function} clazz
+         * @param {function} parentClazz
+         * @param {object[]} subPages
+         * @private
+         */
+        _addPage: function (tabIndex, routes, root, path, clazz, parentClazz, subPages) {
+            var i, length, page,
+                viewName = clazz.NAME,
+                thisPath = path.charAt(0) === '/' || path === '*' ? path : root + '/' + path,
+                route = {
+                    path: thisPath,
+                    callbacks: function (request) {
+                        this._onChangeTab(tabIndex);
+                        this.showView(viewName, request.params);
+                    }
+                };
+
+            this.views[viewName] = {
+                type: clazz,
+                parent: parentClazz ? parentClazz.NAME : undefined
+            };
+
+            if ('*' === path) {
+                routes.push(route);
+            } else {
+                routes.splice(0, 0, route);
+            }
+
+            if (subPages && subPages.length > 0) {
+                for (i = 0, length = subPages.length; i < length; i++) {
+                    page = subPages[i];
+                    this._addPage(tabIndex, routes, thisPath, page[0], page[1], clazz, page.length > 2 ? page[2] : undefined);
+                }
+            }
+        },
+
+        /**
+         * @private
+         */
+        _initializePages: function () {
+            var i, length, page, pages = this.get('pages'), routes = [];
+            for (i = 0, length = pages.length; i < length; i++) {
+                page = pages[i];
+                this._buttons.push({route: page[0], label: page[2]});
+                this._addPage(i, routes, null, page[0], page[1], null, page.length > 3 ? page[3] : undefined);
+            }
+            this.set('routes', routes);
+        },
+
+        /**
          * @param {Y.Node} container
          * @param {Y.Node} viewContainer
-         * @param {Object} navigationCfg
+         * @param {Object} menuCfg
          * @return {OJST.ui.widgets.NavigationBar}
          * @private
          */
-        _createNavigationBar: function (container, viewContainer, navigationCfg) {
+        _createNavigationBar: function (container, viewContainer, menuCfg) {
             var buttons = [], menuItems = [], navigationBar;
 
-            if (navigationCfg.buttons && navigationCfg.buttons.length > 0) {
+            if (this._buttons && this._buttons.length > 0) {
                 buttons.push({ kind: '-' });
-                Y.each(navigationCfg.buttons, function (button) {
+                Y.each(this._buttons, function (button) {
                     buttons.push({
                         label: button.label,
                         handler: button.handler || (button.route ? function () {
@@ -105,8 +186,8 @@ YUI.add(OJST.modules.apps.Abstract, function (Y) {
                 buttons.push({ kind: '-' });
             }
 
-            if (navigationCfg.menu && navigationCfg.menu.length > 0) {
-                Y.each(navigationCfg.menu, function (menu) {
+            if (menuCfg.menu && menuCfg.menu.length > 0) {
+                Y.each(menuCfg.menu, function (menu) {
                     if (menu === '-') {
                         menuItems.push({ kind: '-' });
                     } else if (Y.Lang.isString(menu)) {
@@ -131,7 +212,7 @@ YUI.add(OJST.modules.apps.Abstract, function (Y) {
                             { kind: '-' },
                             {
                                 childType: OJST.ui.widgets.NavigationBarDropDownMenu,
-                                label: navigationCfg.menuLabel,
+                                label: menuCfg.menuLabel,
                                 children: menuItems
                             }
                         ]
@@ -158,17 +239,13 @@ YUI.add(OJST.modules.apps.Abstract, function (Y) {
          */
         _onBeforeRender: function () {
             var container = this.get('container'),
-                viewContainer = this.get('viewContainer'),
-                navigation = this.get('navigation');
+                viewContainer = this.get('viewContainer');
 
             viewContainer.addClass(CLASS.CONTAINER);
 
             this._fluid = this.get('fluid');
 
-            if (navigation) {
-                this.set('navigationBar', this._createNavigationBar(container, viewContainer, navigation));
-            }
-
+            this.set('navigationBar', this._createNavigationBar(container, viewContainer, this.get('menu')));
             this.set('footer', this._createFooter(container, viewContainer));
         },
 
@@ -262,6 +339,12 @@ YUI.add(OJST.modules.apps.Abstract, function (Y) {
             },
             footer: {
             },
+            pages: {
+                validator: Y.Lang.isArray
+            },
+            menu: {
+                validator: Y.Lang.isObject
+            },
             navigationBar: {
                 validator: function (v) {
                     return v instanceof OJST.ui.widgets.NavigationBar;
@@ -276,8 +359,7 @@ YUI.add(OJST.modules.apps.Abstract, function (Y) {
 
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.widgets.NavigationBar,
-        'app'
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.widgets.NavigationBar,
+    'app'
+]});

@@ -21,12 +21,13 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
+YUI.add(OJST.ns.widgets.form.Grid, function (Y) {
     "use strict";
 
     var STR = {
             page: OJST.i18n.label('page'),
-            size: OJST.i18n.label('size')
+            size: OJST.i18n.label('size'),
+            refresh: OJST.i18n.label('refresh')
         },
         TPL = {
             HEADER: '<table class="header"><thead><tr></tr></thead></table>',
@@ -40,16 +41,18 @@ YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
 
             FOOTER: '<div class="footer"></div>',
 
-            PAGING_SIZE_TITLE: '<li><a tabindex="-1" href="javascript:void(0)" pageSize="-1"><b>{title}</b></a></li>',
+            PAGING_SIZE_TITLE: '<li><span><b>{title}</b></span></li>',
             PAGING_SIZE_ELEMENT: '<li {clazz}><a tabindex="-1" href="javascript:void(0)" pageSize="{size}">{size}</a></li>',
             PAGING_SIZE: '<span class="pagination pagination-small pagination-right" style="float:right">&nbsp;<ul>{sizes}</ul></span>',
 
-            PAGING_INDEX_TITLE: '<li><a href="javascript:void(0)" pageIndex="-1"><b>{title}</b></a></li>',
+            PAGING_INDEX_TITLE: '<li><span><b>{title}</b></span></li>',
             PAGING_INDEX_ELEMENT: '<li {clazz}><a href="javascript:void(0)" pageIndex="{index}">{index}</a></li>',
             PAGING_INDEX_DIVIDER: '<li class="disabled"><a href="javascript:void(0)" pageIndex="-2">...</a></li>',
             PAGING_INDEX: '<span class="pagination pagination-small pagination-right" style="float:right"><ul>{indexes}</ul></span>',
 
-            BUTTON: '<button class="btn btn-small" type="button" index="{index}">{label}</button>'
+            BUTTONS: '<span class="btn-toolbar"><span class="btn-group dropup">{buttons}</span></span>',
+            BUTTON: '<button class="btn btn-small" type="button" index="{index}">{icon}{label}</button>',
+            BUTTON_ICON: '<i class="icon-{name}"></i> '
         },
         EMPTY_DATA = {
             startIndex: 0,
@@ -76,6 +79,46 @@ YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
         getTableCellFixedWidth: function () {
             var width = this.get('width');
             return width && width > 1 ? width + 'px' : 'auto';
+        },
+        /**
+         * @return {boolean}
+         */
+        hasRender: function () {
+            return !!this.get('render');
+        },
+        /**
+         * @return {boolean}
+         */
+        hasFormat: function () {
+            return !!this.get('format');
+        },
+        /**
+         * @return {boolean}
+         */
+        allowHtml: function () {
+            return !!this.get('html');
+        },
+        /**
+         * @param {*} v
+         * @return {string}
+         */
+        format: function (v) {
+            var format = this.get('format');
+            if (format) {
+                if (Y.Lang.isDate(v)) {
+                    return Y.Date.format(v, {format: format});
+                }
+            }
+            return v;
+        },
+        /**
+         * @param {*} v
+         * @param {Y.Model} m
+         * @return {*}
+         */
+        render: function (v, m) {
+            var render = this.get('render');
+            return render ? render(v, m) : v;
         }
 
     }, {
@@ -103,6 +146,12 @@ YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
             },
             width: {
                 validator: Y.Lang.isNumber
+            },
+            render: {
+                validator: Y.Lang.isFunction
+            },
+            format: {
+                validator: Y.Lang.isString
             }
         }
     });
@@ -166,6 +215,11 @@ YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
              * @private
              */
             this._pageIndexesNode = undefined;
+            /**
+             * @type {{label: string, icon: string, handler: function. scope: object}[]}
+             * @private
+             */
+            this._buttons = undefined;
 
             this.set('layout', 'border');
             this._initializeColumns();
@@ -301,11 +355,10 @@ YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
                 this.subscribe(this._buttonsNode.delegate('click', function (e) {
                     //noinspection JSPotentiallyInvalidUsageOfThis
                     var index = parseInt(e.target.getAttribute('index'), 10),
-                        buttons = this.get('buttons'),
                         button;
 
-                    if (index !== -1 && index < buttons.length) {
-                        button = buttons[index];
+                    if (this._buttons && index !== -1 && index < this._buttons.length) {
+                        button = this._buttons[index];
                         if (button.handler) {
                             e.preventDefault();
                             button.handler.call(button.scope || this);
@@ -357,7 +410,9 @@ YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
                     label: column.labelHtml ? column.label : escape(column.label),
                     fill: column.fill,
                     html: column.html,
-                    width: parseFloat(column.width)
+                    width: parseFloat(column.width),
+                    render: column.render,
+                    format: column.format
                 }));
             }, this);
         },
@@ -471,6 +526,14 @@ YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
         },
 
         /**
+         * @return {Y.Node}
+         * @private
+         */
+        _renderControlsNode: function () {
+            return Y.Node.create(TPL.PAGING_CONTROLS);
+        },
+
+        /**
          * @param {Object} data
          * @return {Node}
          * @private
@@ -545,17 +608,35 @@ YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
          * @private
          */
         _renderButtons: function () {
-            var buttons = this.get('buttons'),
-                buttonsHtml = [];
+            var buttons = this.get('buttons') || [],
+                buttonsHtml = [],
+                showButtonsText = this.get('showButtonsText');
+
+            buttons.push({
+                label: showButtonsText ? STR.refresh : '',
+                icon: 'refresh',
+                handler: function () {
+                    var data = this.get('data');
+                    if (data) {
+                        this.mask();
+                        data.load();
+                    }
+                },
+                scope: this
+            });
 
             if (buttons && buttons.length > 0) {
                 Y.each(buttons, function (button) {
                     buttonsHtml.push(Y.Lang.sub(TPL.BUTTON, {
                         index: buttonsHtml.length,
-                        label: button.label
+                        label: (showButtonsText ? button.label : '') || '',
+                        icon: button.icon ? sub(TPL.BUTTON_ICON, {name: button.icon}) : ''
                     }));
                 }, this);
-                return Y.Node.create(buttonsHtml.join(''));
+
+                this._buttons = buttons;
+
+                return Y.Node.create(sub(TPL.BUTTONS, {buttons: buttonsHtml.join('')}));
             }
 
             return undefined;
@@ -594,14 +675,22 @@ YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
         _renderRowCells: function (model) {
             var rendered = [];
 
-            Y.each(this.get('columns'), function (column) {
-                var modelValue = model.get(column.name),
-                    renderedValue = column.render ? column.render(model.get(column.name), model) : modelValue;
+            Y.each(this._columns, function (column) {
+                var columnName = column.get('name'),
+                    modelValue = model.get(columnName),
+                    renderedValue = modelValue,
+                    formatter;
+
+                if (column.hasRender()) {
+                    renderedValue = column.render(modelValue, model);
+                } else if (column.hasFormat()) {
+                    renderedValue = column.format(modelValue);
+                }
 
                 rendered.push(sub(TPL.BODY_ROW_CELL, {
-                    content: column.html ? renderedValue : escape(renderedValue)
+                    content: column.allowHtml() ? renderedValue : escape(renderedValue)
                 }));
-            });
+            }, this);
 
             return rendered.join('');
         },
@@ -693,13 +782,16 @@ YUI.add(OJST.modules.widgets.form.Grid, function (Y) {
             },
             pageSizes: {
                 validator: Y.Lang.isArray
+            },
+            showButtonsText: {
+                validator: Y.Lang.isBoolean,
+                value: false
             }
         }
     });
 
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.widgets.AbstractWidget,
-        'escape', 'widget', 'widget-child'
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.widgets.AbstractWidget,
+    'escape', 'widget', 'widget-child', 'datatype'
+]});

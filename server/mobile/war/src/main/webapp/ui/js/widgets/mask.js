@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.widgets.Mask, function (Y) {
+YUI.add(OJST.ns.widgets.Mask, function (Y) {
     "use strict";
 
     /**
@@ -142,7 +142,6 @@ YUI.add(OJST.modules.widgets.Mask, function (Y) {
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        'base'
-    ]});
+}, OJST.VERSION, {requires: [
+    'base'
+]});

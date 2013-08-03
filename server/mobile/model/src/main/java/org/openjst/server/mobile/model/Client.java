@@ -19,34 +19,54 @@ package org.openjst.server.mobile.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.openjst.server.commons.model.AbstractIdEntity;
+import org.openjst.server.commons.model.types.ProtocolType;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Date;
 
+import static org.openjst.server.mobile.model.Queries.Client.*;
+
 /**
  * @author Sergey Grachev
  */
 @NamedQueries({
-        @NamedQuery(name = Queries.Client.GET_CLIENT_ID_OF_ACCOUNT_BY_AUTH_ID,
+        @NamedQuery(name = GET_CLIENT_ID_OF_ACCOUNT_BY_AUTH_ID,
                 query = "select e.id from Client e where e.account.id = :accountId and e.authId = :clientId"),
 
-        @NamedQuery(name = Queries.Client.FIND_CACHED_SECRET_KEY_OF,
+        @NamedQuery(name = FIND_CACHED_SECRET_KEY_OF,
                 query = "select new org.openjst.server.mobile.model.dto.ClientAuthenticationObj(" +
                         "   e.account.id, e.id, e.password, e.passwordSalt" +
                         ") from Client e" +
                         " where e.allowServerAuthentication = true " +
                         "   and e.authId = :clientId and e.account.authId = :accountId"),
 
-        @NamedQuery(name = Queries.Client.FIND_BY_ACCOUNT_AND_CLIENT_NAME,
+        @NamedQuery(name = FIND_BY_ACCOUNT_AND_CLIENT_NAME,
                 query = "select e from Client e where e.id = :clientId and e.account.authId = :accountId"),
 
-        @NamedQuery(name = Queries.Client.CHANGE_STATUS_OFFLINE_FOR_ALL,
+        @NamedQuery(name = SET_OFFLINE_STATUS_FOR_ALL,
                 query = "update Client e set e.online = false"),
 
-        @NamedQuery(name = Queries.Client.CHANGE_STATUS_ONLINE,
-                query = "update Client e set e.online = :isOnline where e.id = :clientId")
+        @NamedQuery(name = SET_OFFLINE_STATUS,
+                query = "update Client e set e.online = false where e.id = :clientId"),
+
+        @NamedQuery(name = SET_ONLINE_STATUS,
+                query = "update Client e" +
+                        " set e.online = true," +
+                        "   e.lastOnlineTime = current_timestamp," +
+                        "   e.lastProtocolType = :protocolType," +
+                        "   e.lastRemoteHost = :host" +
+                        " where e.id = :clientId"),
+
+        @NamedQuery(name = GET_ONLINE_LIST_OF,
+                query = "select new org.openjst.server.mobile.model.dto.ClientConnectionObj(" +
+                        "   e.id, a.id, e.authId, e.name, e.lastOnlineTime, e.lastProtocolType, e.lastRemoteHost" +
+                        ")from Client e join e.account a" +
+                        " where e.online = true"),
+
+        @NamedQuery(name = GET_ONLINE_COUNT_OF,
+                query = "select count(e.id) from Client e where e.online = true")
 })
 @Entity
 @Table(name = Client.TABLE,
@@ -68,6 +88,8 @@ public class Client extends AbstractIdEntity {
     public static final String COLUMN_LAST_CLIENT_TYPE = "last_client_type";
     public static final String COLUMN_LAST_PROTOCOL_TYPE = "last_protocol_type";
     public static final String COLUMN_LAST_SYNC_TIME = "last_sync_time";
+    public static final String COLUMN_LAST_ONLINE_TIME = "last_online_time";
+    public static final String COLUMN_LAST_REMOTE_HOST = "last_remote_host";
 
     public static final int DEFAULT_SALT_SIZE = 255;
 
@@ -108,10 +130,16 @@ public class Client extends AbstractIdEntity {
     private String lastClientType;
 
     @Column(name = COLUMN_LAST_PROTOCOL_TYPE)
-    private String lastProtocolType;
+    private ProtocolType lastProtocolType;
 
     @Column(name = COLUMN_LAST_SYNC_TIME)
     private Date lastSyncTime = new Date();
+
+    @Column(name = COLUMN_LAST_ONLINE_TIME)
+    private Date lastOnlineTime;
+
+    @Column(name = COLUMN_LAST_REMOTE_HOST)
+    private String lastRemoteHost;
 
     public Account getAccount() {
         return account;
@@ -193,11 +221,11 @@ public class Client extends AbstractIdEntity {
         this.lastClientType = lastClientType;
     }
 
-    public String getLastProtocolType() {
+    public ProtocolType getLastProtocolType() {
         return lastProtocolType;
     }
 
-    public void setLastProtocolType(final String lastProtocolType) {
+    public void setLastProtocolType(final ProtocolType lastProtocolType) {
         this.lastProtocolType = lastProtocolType;
     }
 
@@ -207,5 +235,21 @@ public class Client extends AbstractIdEntity {
 
     public void setLastSyncTime(final Date lastSyncTime) {
         this.lastSyncTime = lastSyncTime;
+    }
+
+    public Date getLastOnlineTime() {
+        return lastOnlineTime;
+    }
+
+    public void setLastOnlineTime(final Date lastOnlineTime) {
+        this.lastOnlineTime = lastOnlineTime;
+    }
+
+    public String getLastRemoteHost() {
+        return lastRemoteHost;
+    }
+
+    public void setLastRemoteHost(final String lastRemoteHost) {
+        this.lastRemoteHost = lastRemoteHost;
     }
 }

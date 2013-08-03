@@ -21,16 +21,16 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.views.PageAccount, function (Y) {
+YUI.add(OJST.ns.views.page.accounts.Account, function (Y) {
     "use strict";
 
     /**
-     * @class PageAccount
-     * @namespace OJST.ui.views
+     * @class Account
+     * @namespace OJST.ui.views.page.accounts
      * @constructor
-     * @extends OJST.ui.views.PageAbstractAccount
+     * @extends OJST.ui.views.page.accounts.Abstract
      */
-    OJST.ui.views.PageAccount = Y.Base.create('viewsPageAccount', OJST.ui.views.PageAbstractAccount, [], {
+    OJST.ui.views.page.accounts.Account = Y.Base.create('viewsPageAccountsAccount', OJST.ui.views.page.accounts.Abstract, [], {
 
         /** @override */
         isNewModel: function () {
@@ -85,11 +85,10 @@ YUI.add(OJST.modules.views.PageAccount, function (Y) {
 
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.views.PageAbstractAccount,
-        OJST.modules.models.Account,
-        OJST.modules.widgets.form.Form,
-        OJST.modules.widgets.form.TextField,
-        OJST.modules.widgets.Alerts
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.views.page.accounts.Abstract,
+    OJST.ns.models.Account,
+    OJST.ns.widgets.form.Form,
+    OJST.ns.widgets.form.TextField,
+    OJST.ns.widgets.Alerts
+]});

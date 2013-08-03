@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.widgets.form.Field, function (Y) {
+YUI.add(OJST.ns.widgets.form.Field, function (Y) {
     "use strict";
 
     var CLS = {
@@ -166,7 +166,6 @@ YUI.add(OJST.modules.widgets.form.Field, function (Y) {
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        'widget', 'widget-child'
-    ]});
+}, OJST.VERSION, {requires: [
+    'widget', 'widget-child'
+]});

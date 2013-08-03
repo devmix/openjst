@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true*/
-YUI.add(OJST.modules.layouts.Border, function (Y) {
+YUI.add(OJST.ns.layouts.Border, function (Y) {
     "use strict";
 
     var isArray = Y.Lang.isArray,
@@ -367,7 +367,6 @@ YUI.add(OJST.modules.layouts.Border, function (Y) {
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        'view', 'widget', 'node'
-    ]});
+}, OJST.VERSION, {requires: [
+    'view', 'widget', 'node'
+]});

@@ -21,7 +21,7 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true, stupid: true*/
-YUI.add(OJST.modules.widgets.form.TextField, function (Y) {
+YUI.add(OJST.ns.widgets.form.TextField, function (Y) {
     "use strict";
 
     /**
@@ -96,7 +96,6 @@ YUI.add(OJST.modules.widgets.form.TextField, function (Y) {
         }
     });
 
-}, OJST.VERSION, {
-    requires: [
-        OJST.modules.widgets.form.Field
-    ]});
+}, OJST.VERSION, {requires: [
+    OJST.ns.widgets.form.Field
+]});
