@@ -26,6 +26,9 @@ YUI.add(OJST.ns.models.Base, function (Y) {
 
     var DEFAULT_PAGE_SIZE = 15,
         COOKIE_GROUP = 'modelList',
+        COOKIE_OPTIONS = {
+            expires: new Date(32503680000000) // 3000-01-01 00:00:0000
+        },
         RESULT_ARGS = {
             START_INDEX: 'startIndex',
             TOTAL: 'total',
@@ -204,7 +207,7 @@ YUI.add(OJST.ns.models.Base, function (Y) {
          */
         _loadState: function () {
             var id = this.get('persistentId'),
-                data = OJST.ui.utils.Framework.isValue(id) ? Y.Cookie.getSubs(COOKIE_GROUP + '.' + id) : undefined;
+                data = OJST.ui.utils.Framework.isValue(id) ? Y.Cookie.getSubs(COOKIE_GROUP + '.' + id, COOKIE_OPTIONS) : undefined;
             if (data) {
                 if (data[QUERY_ARGS.START_INDEX]) {
                     this.set(QUERY_ARGS.START_INDEX, parseInt(data[QUERY_ARGS.START_INDEX], 10));
@@ -227,7 +230,7 @@ YUI.add(OJST.ns.models.Base, function (Y) {
             if (key) {
                 var id = this.get('persistentId');
                 if (id) {
-                    Y.Cookie.setSub(COOKIE_GROUP + '.' + id, key, value);
+                    Y.Cookie.setSub(COOKIE_GROUP + '.' + id, key, value, COOKIE_OPTIONS);
                 }
             }
         },

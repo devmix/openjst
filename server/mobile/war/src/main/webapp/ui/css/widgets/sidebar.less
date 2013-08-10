@@ -20,51 +20,48 @@
  */
 
 div.yui3-sidebar {
-    border-top: 1px solid #D4D4D4;
-    border-left: 1px solid #D4D4D4;
-    border-right: 1px solid #D4D4D4;
+  border-top: 1px solid #D4D4D4;
+  border-left: 1px solid #D4D4D4;
+  border-right: 1px solid #D4D4D4;
+  background-color: #FEFEFE;
+  background-image: linear-gradient(to bottom, #FFFFFF, #F5F5F5);
 
-    background-color: #FEFEFE;
-    background-image: linear-gradient(to bottom, #FFFFFF, #F5F5F5);
-}
-
-div.yui3-sidebar div.header {
+  div.header {
     font-weight: 700;
     color: #777777;
-
     background-color: #F2F2F2;
     background-image: linear-gradient(to bottom, #FFFFFF, #F2F2F2);
     background-repeat: repeat-x;
     border-bottom: 1px solid #D4D4D4;
-
     height: 20px;
     padding: 5px 6px 4px 6px;
-}
+  }
 
-div.yui3-sidebar ul.yui3-sidebar-content {
+  ul.yui3-sidebar-content {
     list-style: none outside none;
     margin: 0;
-}
 
-div.yui3-sidebar ul.yui3-sidebar-content > .yui3-sidebaritem > a {
-    border-bottom: 1px solid #D4D4D4;
-    color: #777777;
-    text-shadow: 0 1px 0 #FFFFFF;
-    display: block;
-    outline: 0 none;
-    padding: 5px 6px 4px 6px;
-    cursor: pointer;
-    text-decoration: none;
-    font-weight: 200;
-}
+    > .yui3-sidebaritem > a {
+      border-bottom: 1px solid #D4D4D4;
+      color: #777777;
+      text-shadow: 0 1px 0 #FFFFFF;
+      display: block;
+      outline: 0 none;
+      padding: 5px 6px 4px 6px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 200;
 
-div.yui3-sidebar ul.yui3-sidebar-content > .yui3-sidebaritem > a.active {
-    background-color: #F0F0F0;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
-    color: #555555;
-    font-weight: bold;
-}
+      &.active {
+        background-color: #F0F0F0;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
+        color: #555555;
+        font-weight: bold;
+      }
 
-div.yui3-sidebar ul.yui3-sidebar-content > .yui3-sidebaritem > a:hover {
-    color: #555555;
+      &:hover {
+        color: #555555;
+      }
+    }
+  }
 }

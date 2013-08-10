@@ -1,0 +1,89 @@
+/*
+ * Copyright (C) 2013 OpenJST Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @author Sergey Grachev
+ */
+
+@border: 1px solid #D4D4D4;
+
+.gradient() {
+  background-color: #FAFAFA;
+  background-image: linear-gradient(to bottom, #FFFFFF, #F2F2F2);
+  background-repeat: repeat-x;
+}
+
+.yui3-widgetsformgrid {
+  margin: 4px 4px 4px 4px;
+  border: @border;
+
+  table {
+    &.header {
+      table-layout: fixed;
+
+      > thead > tr {
+        .gradient;
+
+        > th {
+          overflow: hidden;
+          white-space: nowrap;
+          border-left: @border;
+          border-bottom: @border;
+          padding: 4px 5px;
+          text-align: left;
+
+          &:first-child {
+            border-left: 0 none;
+          }
+        }
+      }
+    }
+    &.body {
+      table-layout: fixed;
+
+      > tbody > tr {
+        border-bottom: @border;
+
+        &:last-child {
+          border-bottom: 0 none;
+        }
+
+        > td {
+          overflow: hidden;
+          white-space: nowrap;
+          border-left: @border;
+          padding: 4px 5px;
+
+          &:first-child {
+            border-left: 0 none;
+          }
+        }
+      }
+    }
+  }
+
+  > div.footer {
+    .gradient;
+    height: auto;
+    padding: 4px 4px 0 4px;
+    border-top: @border;
+
+    .pagination {
+      margin: 0;
+    }
+  }
+}

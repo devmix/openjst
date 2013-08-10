@@ -53,6 +53,7 @@
     <xs:complexType name="manifestType">
         <xs:sequence>
             <xs:element type="ns:parametersType" name="parameters"/>
+            <xs:element type="ns:compilersType" name="compilers" minOccurs="0"/>
             <xs:element type="ns:compressorsType" name="compressors" minOccurs="0"/>
             <xs:element type="ns:validatorsType" name="validators" minOccurs="0"/>
             <xs:element type="ns:frameworkType" name="framework" minOccurs="0"/>
@@ -125,6 +126,25 @@
                 <xs:attribute type="xs:string" name="name" use="required"/>
             </xs:extension>
         </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="compilersType">
+        <xs:sequence>
+            <xs:element type="ns:compilerType" name="compiler" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="compilerType">
+        <xs:sequence>
+            <xs:element type="ns:optionsType" name="options" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="less"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute type="xs:boolean" name="skip" use="optional" default="false"/>
     </xs:complexType>
 
     <xs:complexType name="compressorsType">

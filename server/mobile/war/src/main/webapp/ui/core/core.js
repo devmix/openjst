@@ -57,8 +57,10 @@
     OJST.framework.skin = 'sam';
 
     if (OJST.preferences.useDebugScripts()) {
-        OJST.framework.filter = 'raw';
-        OJST.framework.groups.openjst.filter = 'raw';
+        OJST.framework.filter = OJST.framework.groups.openjst.filter = {
+            searchExp: '-min\\.',
+            replaceStr: '.'
+        };
     }
 
     OJST.framework.maxURLLength = 0xFFFF;

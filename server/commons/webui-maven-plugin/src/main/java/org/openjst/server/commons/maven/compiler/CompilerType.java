@@ -15,31 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.commons.maven;
+package org.openjst.server.commons.maven.compiler;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.testng.annotations.Test;
+import org.jetbrains.annotations.Nullable;
+import org.mozilla.javascript.ContextFactory;
+import org.openjst.server.commons.maven.utils.OptionGroup;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * @author Sergey Grachev
  */
-public final class CompileMojoTest extends AbstractMojoTest {
-
-    @Test(groups = "manual")
-    public void test() throws IOException, MojoFailureException, MojoExecutionException {
-        final File resourcesPath = makeTempResourcesDirectory();
-        try {
-            final CompileMojo mojo = new CompileMojo(new File(resourcesPath, "manifest.xml"));
-            mojo.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            FileUtils.deleteDirectory(resourcesPath);
+public enum CompilerType {
+    LESS {
+        @Override
+        public Compiler newInstance(final ContextFactory ctxFactory, final OptionGroup config) {
+            return new LessCompiler();
         }
+    };
+
+    public abstract Compiler newInstance(ContextFactory ctxFactory, OptionGroup config);
+
+    @Nullable
+    public CompilerType typeOf(final File file) {
+        if (file.toString().toLowerCase().lastIndexOf(".less") != -1) {
+            return LESS;
+        }
+        return null;
     }
 }

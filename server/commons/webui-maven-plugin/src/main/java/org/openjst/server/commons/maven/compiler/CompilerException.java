@@ -15,34 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package org.openjst.server.commons.maven.compiler;
+
 /**
  * @author Sergey Grachev
  */
+public final class CompilerException extends Exception {
+    private static final long serialVersionUID = -1764944457526852125L;
 
-body,
-input,
-button,
-select,
-textarea {
-    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-    float: inherit;
+    public CompilerException(final Throwable cause) {
+        super(cause);
+    }
 }
-
-html, body {
-    height: 100%;
-    overflow: hidden;
-}
-
-.yui3-app .navbar {
-    margin-bottom: 0;
-}
-
-.yui3-app .yui3-app-views {
-    font-size: 12px;
-    font-weight: 400;
-    font-style: normal;
-    font-size-adjust: none;
-    text-decoration: none;
-    line-height: 17px;
-}
-

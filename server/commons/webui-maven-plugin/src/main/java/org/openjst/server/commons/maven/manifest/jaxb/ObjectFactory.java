@@ -1,4 +1,3 @@
-
 package org.openjst.server.commons.maven.manifest.jaxb;
 
 import javax.xml.bind.JAXBElement;
@@ -8,18 +7,17 @@ import javax.xml.namespace.QName;
 
 
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the org.openjst.server.commons.maven.manifest.jaxb package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
+ * This object contains factory methods for each
+ * Java content interface and Java element interface
+ * generated in the org.openjst.server.commons.maven.manifest.jaxb package.
+ * <p>An ObjectFactory allows you to programatically
+ * construct new instances of the Java representation
+ * for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces
+ * and classes representing the binding of schema
+ * type definitions, element declarations and model
+ * groups.  Factory methods for each of these are
  * provided in this class.
- * 
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -28,14 +26,12 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.openjst.server.commons.maven.manifest.jaxb
-     * 
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link ManifestType }
-     * 
      */
     public ManifestType createManifestType() {
         return new ManifestType();
@@ -43,7 +39,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ParametersType }
-     * 
      */
     public ParametersType createParametersType() {
         return new ParametersType();
@@ -51,7 +46,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FrameworkGroupNamespacesType }
-     * 
      */
     public FrameworkGroupNamespacesType createFrameworkGroupNamespacesType() {
         return new FrameworkGroupNamespacesType();
@@ -59,7 +53,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SourcesType }
-     * 
      */
     public SourcesType createSourcesType() {
         return new SourcesType();
@@ -67,7 +60,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link LibrariesType }
-     * 
      */
     public LibrariesType createLibrariesType() {
         return new LibrariesType();
@@ -75,7 +67,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FrameworkType }
-     * 
      */
     public FrameworkType createFrameworkType() {
         return new FrameworkType();
@@ -83,7 +74,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link IncludesType }
-     * 
      */
     public IncludesType createIncludesType() {
         return new IncludesType();
@@ -91,7 +81,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link CompressorsType }
-     * 
      */
     public CompressorsType createCompressorsType() {
         return new CompressorsType();
@@ -99,7 +88,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FrameworkGroupsType }
-     * 
      */
     public FrameworkGroupsType createFrameworkGroupsType() {
         return new FrameworkGroupsType();
@@ -107,7 +95,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ModulesType }
-     * 
      */
     public ModulesType createModulesType() {
         return new ModulesType();
@@ -115,7 +102,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ExcludesType }
-     * 
      */
     public ExcludesType createExcludesType() {
         return new ExcludesType();
@@ -123,7 +109,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link OptionType }
-     * 
      */
     public OptionType createOptionType() {
         return new OptionType();
@@ -131,7 +116,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FrameworkGroupType }
-     * 
      */
     public FrameworkGroupType createFrameworkGroupType() {
         return new FrameworkGroupType();
@@ -139,15 +123,20 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link CompressorType }
-     * 
      */
     public CompressorType createCompressorType() {
         return new CompressorType();
     }
 
     /**
+     * Create an instance of {@link CompilerType }
+     */
+    public CompilerType createCompilerType() {
+        return new CompilerType();
+    }
+
+    /**
      * Create an instance of {@link ResourcesType }
-     * 
      */
     public ResourcesType createResourcesType() {
         return new ResourcesType();
@@ -155,7 +144,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ValidatorsType }
-     * 
      */
     public ValidatorsType createValidatorsType() {
         return new ValidatorsType();
@@ -163,7 +151,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link LibraryType }
-     * 
      */
     public LibraryType createLibraryType() {
         return new LibraryType();
@@ -171,7 +158,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link StylesWithRootType }
-     * 
      */
     public StylesWithRootType createStylesWithRootType() {
         return new StylesWithRootType();
@@ -179,7 +165,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ValidatorType }
-     * 
      */
     public ValidatorType createValidatorType() {
         return new ValidatorType();
@@ -187,7 +172,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link OptionsType }
-     * 
      */
     public OptionsType createOptionsType() {
         return new OptionsType();
@@ -195,7 +179,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SourcesWithRootType }
-     * 
      */
     public SourcesWithRootType createSourcesWithRootType() {
         return new SourcesWithRootType();
@@ -203,7 +186,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link StylesType }
-     * 
      */
     public StylesType createStylesType() {
         return new StylesType();
@@ -211,15 +193,20 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link FrameworkCoreGroupType }
-     * 
      */
     public FrameworkCoreGroupType createFrameworkCoreGroupType() {
         return new FrameworkCoreGroupType();
     }
 
     /**
+     * Create an instance of {@link CompilersType }
+     */
+    public CompilersType createCompilersType() {
+        return new CompilersType();
+    }
+
+    /**
      * Create an instance of {@link CoreType }
-     * 
      */
     public CoreType createCoreType() {
         return new CoreType();
@@ -227,7 +214,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ManifestType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://openjst.org/xml/ns/web-ui/manifest", name = "manifest")
     public JAXBElement<ManifestType> createManifest(ManifestType value) {

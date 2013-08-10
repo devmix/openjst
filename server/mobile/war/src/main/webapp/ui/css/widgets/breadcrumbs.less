@@ -20,59 +20,51 @@
  */
 
 .yui3-widgetsbreadcrumbs {
-    border-top: 1px solid #D4D4D4;
-    border-bottom: 1px solid #D4D4D4;
-    border-right: 1px solid #D4D4D4;
+  border-top: 1px solid #D4D4D4;
+  border-bottom: 1px solid #D4D4D4;
+  border-right: 1px solid #D4D4D4;
+  background-color: #F0F0F0;
+  background-image: linear-gradient(to bottom, #FFFFFF, #F2F2F2);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
+  overflow: hidden;
+  padding-left: 4px;
+  height: 29px;
+  text-shadow: 0 1px 1px #FAFAFA, 0 -1px 1px #ECECEC;
 
-    background-color: #F0F0F0;
-    background-image: linear-gradient(to bottom, #FFFFFF, #F2F2F2);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
-
-    overflow: hidden;
-    padding-left: 4px;
-
-    height: 29px;
-
-    text-shadow: 0 1px 1px #FAFAFA, 0 -1px 1px #ECECEC;
-}
-
-.yui3-widgetsbreadcrumbs > div.tab {
+  > div.tab {
     display: inline;
     float: right;
     border-left: 1px solid #D4D4D4;
     text-align: center;
     height: 100%;
-}
 
-.yui3-widgetsbreadcrumbs > div.title {
+    > a {
+      background-image: linear-gradient(to bottom, #FFFFFF, #F2F2F2);
+      padding: 5px 6px 4px 6px;
+      display: block;
+      text-decoration: none;
+      color: #aaaaaa;
+      cursor: pointer;
+      min-width: 50px;
+
+      &:hover {
+        background-image: linear-gradient(to bottom, #FFFFFF, #FAFAFA);
+        color: #555555;
+      }
+
+      &:active {
+        background-color: #F0F0F0;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
+      }
+    }
+  }
+
+  > div.title {
     float: left;
     border-left: 0;
     font-weight: 700;
     display: inline;
     padding: 5px 6px 4px 6px;
     color: #777777;
-}
-
-.yui3-widgetsbreadcrumbs > div.tab > a {
-    background-image: linear-gradient(to bottom, #FFFFFF, #F2F2F2);
-    padding: 5px 6px 4px 6px;
-    display: block;
-
-    text-decoration: none;
-
-    color: #aaaaaa;
-    cursor: pointer;
-
-    min-width: 50px;
-}
-
-.yui3-widgetsbreadcrumbs > div.tab > a:hover {
-    background-image: linear-gradient(to bottom, #FFFFFF, #FAFAFA);
-    color: #555555;
-
-}
-
-.yui3-widgetsbreadcrumbs > div.tab > a:active {
-    background-color: #F0F0F0;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
+  }
 }

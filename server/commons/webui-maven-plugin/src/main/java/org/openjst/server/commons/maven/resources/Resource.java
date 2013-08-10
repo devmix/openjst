@@ -93,4 +93,8 @@ public abstract class Resource {
 
         return s;
     }
+
+    public File getBaseDir() {
+        return baseDir;
+    }
 }

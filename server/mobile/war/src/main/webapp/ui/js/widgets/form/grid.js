@@ -629,7 +629,7 @@ YUI.add(OJST.ns.widgets.form.Grid, function (Y) {
                 Y.each(buttons, function (button) {
                     buttonsHtml.push(Y.Lang.sub(TPL.BUTTON, {
                         index: buttonsHtml.length,
-                        label: (showButtonsText ? button.label : '') || '',
+                        label: showButtonsText ? button.label || '' : '',
                         icon: button.icon ? sub(TPL.BUTTON_ICON, {name: button.icon}) : ''
                     }));
                 }, this);

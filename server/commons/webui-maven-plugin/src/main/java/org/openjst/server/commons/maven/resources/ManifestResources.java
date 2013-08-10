@@ -20,18 +20,19 @@ package org.openjst.server.commons.maven.resources;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.FileUtils;
 import org.jetbrains.annotations.Nullable;
+import org.openjst.commons.dto.tuples.Pair;
+import org.openjst.server.commons.maven.compiler.Compiler;
+import org.openjst.server.commons.maven.compiler.Compilers;
 import org.openjst.server.commons.maven.compression.Compressor;
 import org.openjst.server.commons.maven.compression.Compressors;
 import org.openjst.server.commons.maven.manifest.jaxb.ResourcesType;
+import org.openjst.server.commons.maven.utils.ManifestUtils;
 import org.openjst.server.commons.maven.validation.Validator;
 import org.openjst.server.commons.maven.validation.Validators;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Sergey Grachev
@@ -70,6 +71,55 @@ public final class ManifestResources {
 
     public ModuleResources getModuleResources() {
         return moduleResources;
+    }
+
+    public boolean compileResourcesOfModules(final Compilers compilers) {
+        if (moduleResources.isEmpty()) {
+            return false;
+        }
+
+        log.info("");
+        log.info("Compile resources of modules...");
+
+        final Map<String, List<String>> issues = new LinkedHashMap<String, List<String>>();
+
+        compile(compilers, moduleResources.getResources(), issues);
+        compile(compilers, moduleResources.getStyleResources(), issues);
+
+        printCompileResult(issues);
+
+        return issues.isEmpty();
+    }
+
+    private void compile(final Compilers compilers, final Set<ModuleResource> resources, final Map<String, List<String>> issues) {
+        final Set<ModuleResource> compiledFiles = new LinkedHashSet<ModuleResource>();
+        for (final Compiler compiler : compilers.getList()) {
+            for (final ModuleResource resource : new HashSet<ModuleResource>(resources)) {
+                if (!compiler.isSupportedSource(resource.getFile())) {
+                    continue;
+                }
+
+                if (log.isDebugEnabled()) {
+                    log.debug(String.format("  Compile resource %s", resource.getFile()));
+                }
+
+                final Pair<Set<File>, List<String>> result = compiler.compile(resource.getFile());
+
+                if (result.first() != null) {
+                    for (final File compiledFile : result.first()) {
+                        resources.add(new ModuleResource(resource.getBaseDir(),
+                                ManifestUtils.relativePath(resource.getBaseDir(), compiledFile)));
+                    }
+                }
+
+                if (result.second() != null && !result.second().isEmpty()) {
+                    issues.put(resource.getRelativePath(), result.second());
+                }
+
+                resources.remove(resource);
+            }
+        }
+        resources.addAll(compiledFiles);
     }
 
     public boolean validateResourcesOfBootstrap(final Validators validators) throws IOException {
@@ -234,6 +284,15 @@ public final class ManifestResources {
     }
 
     private void printValidationResult(final Map<String, List<String>> issues) {
+        for (final Map.Entry<String, List<String>> entry : issues.entrySet()) {
+            log.error(String.format("  %s:", entry.getKey()));
+            for (final String issue : entry.getValue()) {
+                log.error("    " + issue);
+            }
+        }
+    }
+
+    private void printCompileResult(final Map<String, List<String>> issues) {
         for (final Map.Entry<String, List<String>> entry : issues.entrySet()) {
             log.error(String.format("  %s:", entry.getKey()));
             for (final String issue : entry.getValue()) {

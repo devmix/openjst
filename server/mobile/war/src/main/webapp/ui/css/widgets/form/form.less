@@ -1,0 +1,99 @@
+/*
+ * Copyright (C) 2013 OpenJST Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @author Sergey Grachev
+ */
+
+.yui3-widgetsform {
+  > form {
+    padding: 8px;
+    margin: 0;
+
+    label {
+      font-size: 12px;
+    }
+
+    &.form-horizontal .control-label {
+      text-align: left;
+    }
+
+    .control-group {
+      margin-bottom: 8px;
+    }
+  }
+
+  > div {
+    padding: 4px 8px 4px 8px;
+
+    > button {
+      margin-left: 8px;
+      float: right;
+    }
+  }
+
+  .alert {
+    margin-bottom: 0;
+    padding: 2px 8px;
+    font-weight: bold;
+  }
+
+  .yui3-form-field label.required {
+    font-weight: bold;
+  }
+
+  .invalid {
+    textarea:focus,
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="datetime"]:focus,
+    input[type="datetime-local"]:focus,
+    input[type="date"]:focus,
+    input[type="month"]:focus,
+    input[type="time"]:focus,
+    input[type="week"]:focus,
+    input[type="number"]:focus,
+    input[type="email"]:focus,
+    input[type="url"]:focus,
+    input[type="search"]:focus,
+    input[type="tel"]:focus,
+    input[type="color"]:focus,
+    .uneditable-input:focus {
+      border-color: rgba(255, 0, 0, 0.80);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(255, 0, 0, 0.6);
+    }
+
+    textarea,
+    input[type="text"],
+    input[type="password"],
+    input[type="datetime"],
+    input[type="datetime-local"],
+    input[type="date"],
+    input[type="month"],
+    input[type="time"],
+    input[type="week"],
+    input[type="number"],
+    input[type="email"],
+    input[type="url"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="color"],
+    .uneditable-input {
+      border: 1px solid #ff0000;
+    }
+  }
+}

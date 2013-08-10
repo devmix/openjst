@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Set;
 
 import static org.openjst.server.mobile.web.UIAssets.*;
@@ -49,6 +50,13 @@ import static org.openjst.server.mobile.web.UIAssets.*;
 public class AssetsImpl implements Assets {
 
     private static final String CACHE_COMMON_JS = "common.js";
+    private static final Comparator<String> RESOURCE_COMPARATOR = new Comparator<String>() {
+        @SuppressWarnings("ComparatorMethodParameterNotUsed")
+        @Override
+        public int compare(final String o1, final String o2) {
+            return o1.indexOf("lib/") == 0 ? -1 : 0;
+        }
+    };
 
     @EJB
     private CacheService cacheService;
@@ -144,6 +152,8 @@ public class AssetsImpl implements Assets {
         final boolean isCss = resources.length > 0 && resources[0].toLowerCase().endsWith(".css");
         final String content;
         if (!preferences.getBoolean(Preferences.UI.SCRIPTS_CACHE) || !cache.containsKey(cacheKey)) {
+            // hack, YUI does not sort correctly modules
+            Arrays.sort(resources, 0, resources.length, RESOURCE_COMPARATOR);
             content = WebAssetsAggregator.newInstance(servletContext, root).addResources(resources)
                     .aggregate(isCss ? "\n" : ";\n");
             cache.put(cacheKey, content);

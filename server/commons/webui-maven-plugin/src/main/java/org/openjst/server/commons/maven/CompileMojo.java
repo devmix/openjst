@@ -23,6 +23,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.openjst.server.commons.maven.compiler.Compilers;
 import org.openjst.server.commons.maven.compression.Compressors;
 import org.openjst.server.commons.maven.manifest.Manifest;
 import org.openjst.server.commons.maven.manifest.jaxb.ManifestType;
@@ -80,6 +81,15 @@ public class CompileMojo extends AbstractMojo {
 
         sleep();
 
+        final Compilers compilers;
+        try {
+            compilers = new Compilers(getLog()).initialize(manifestConfig.getCompilers());
+        } catch (Exception e) {
+            throw new MojoExecutionException("Error while initialize compressors", e);
+        }
+
+        sleep();
+
         final Validators validators;
         try {
             validators = new Validators(getLog()).initialize(manifestConfig.getValidators());
@@ -94,6 +104,16 @@ public class CompileMojo extends AbstractMojo {
             resources.scan(manifestConfig.getResources());
         } catch (Exception e) {
             throw new MojoExecutionException("Error while scan resources", e);
+        }
+
+        sleep();
+
+        try {
+            if (!resources.compileResourcesOfModules(compilers)) {
+                throw new MojoExecutionException("Error while compile resources of modules");
+            }
+        } catch (Exception e) {
+            throw new MojoExecutionException("Error while compressing resources of modules", e);
         }
 
         sleep();

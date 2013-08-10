@@ -63,7 +63,8 @@ public final class ManifestUtils {
             return name;
         }
 
-        final StringBuilder sb = new StringBuilder(name.replaceAll(Patterns.STRING_EXT_REPLACE, "").replaceAll("/", "."));
+        final StringBuilder sb = new StringBuilder(name.replaceAll(Patterns.REPLACE_EXTENSION_OF_MODULE_FILE, "")
+                .replaceAll("/", "."));
         int i;
         while ((i = sb.lastIndexOf("-")) > -1) {
             sb.replace(i, i + 2, "" + Character.toUpperCase(sb.charAt(i + 1)));

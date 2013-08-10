@@ -24,7 +24,8 @@ import java.util.regex.Pattern;
  */
 public final class Patterns {
 
-    public static final String STRING_EXT_REPLACE = "\\.\\w{2,3}$";
+    public static final String REPLACE_EXTENSION = "\\.\\w+$";
+    public static final String REPLACE_EXTENSION_OF_MODULE_FILE = "\\.\\w{2,3}$";
     public static final Pattern COMPRESSED = Pattern.compile(".*[-\\.]?min\\.\\w{2,3}");
     public static final Pattern JS_MODULE_FILE_NAME = Pattern.compile("(/?[a-z\\d](?:-[a-z\\d])*[a-z\\d]*(?:[\\.js])?)*");
     public static final Pattern CSS_MODULE_FILE_NAME = Pattern.compile("(/?[a-z\\d](?:-[a-z\\d])*[a-z\\d]*(?:[\\.css])?)*");

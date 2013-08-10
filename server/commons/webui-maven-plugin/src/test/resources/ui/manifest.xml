@@ -25,6 +25,15 @@
         <namespace>X</namespace>
     </parameters>
 
+    <compilers>
+        <compiler type="less">
+            <options>
+                <option name="param1">value1</option>
+                <option name="param2">value2</option>
+            </options>
+        </compiler>
+    </compilers>
+
     <compressors>
         <compressor type="uglifyjs" for="JavaScript">
             <options>
@@ -68,7 +77,11 @@
 
         <modules namespace="modules">
             <sources root="js"/>
-            <styles root="css"/>
+            <styles root="css">
+                <excludes>
+                    <exclude>**/import.*.less</exclude>
+                </excludes>
+            </styles>
         </modules>
 
         <libraries root="lib" namespace="libs">

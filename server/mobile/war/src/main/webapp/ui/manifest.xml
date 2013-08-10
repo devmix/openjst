@@ -27,6 +27,10 @@
         <namespace>OJST</namespace>
     </parameters>
 
+    <compilers>
+        <compiler type="less"/>
+    </compilers>
+
     <compressors>
         <compressor type="uglifyjs" for="JavaScript"/>
         <compressor type="yui" for="CSS"/>
@@ -55,7 +59,11 @@
 
         <modules namespace="ns">
             <sources root="js"/>
-            <styles root="css"/>
+            <styles root="css">
+                <excludes>
+                    <exclude>**/import.*.less</exclude>
+                </excludes>
+            </styles>
         </modules>
 
         <libraries root="lib" namespace="libs">
