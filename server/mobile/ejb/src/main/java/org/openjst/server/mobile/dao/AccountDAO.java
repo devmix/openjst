@@ -65,4 +65,8 @@ public interface AccountDAO {
     long getOnlineCountOf(ModelQuery<Filter, Order, Search> query);
 
     List<AccountConnectionObj> getOnlineListOf(ModelQuery<Filter, Order, Search> query);
+
+    int getCountOfClients(long accountId);
+
+    int getCountOfUsers(long accountId);
 }

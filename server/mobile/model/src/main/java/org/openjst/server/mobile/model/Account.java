@@ -61,6 +61,9 @@ import static org.openjst.server.mobile.model.Queries.Account.*;
                         "   e.lastRemoteHost = :host" +
                         " where e.id = :accountId"),
 
+        @NamedQuery(name = SET_OFFLINE_STATUS,
+                query = "update Account e set e.online = false where e.id = :accountId"),
+
         @NamedQuery(name = GET_ONLINE_LIST_OF,
                 query = "select new org.openjst.server.mobile.model.dto.AccountConnectionObj(" +
                         "   e.id, e.authId, e.name, e.lastOnlineTime, e.lastProtocolType, e.lastRemoteHost" +
@@ -68,7 +71,13 @@ import static org.openjst.server.mobile.model.Queries.Account.*;
                         " where e.online = true"),
 
         @NamedQuery(name = GET_ONLINE_COUNT_OF,
-                query = "select count(e.id) from Account e where e.online = true")
+                query = "select count(e.id) from Account e where e.online = true"),
+
+        @NamedQuery(name = GET_COUNT_OF_CLIENTS,
+                query = "select count(e) from Client e where e.account.id = :accountId"),
+
+        @NamedQuery(name = GET_COUNT_OF_USERS,
+                query = "select count(e) from User e where e.account.id = :accountId")
 })
 @Entity
 @Table(name = Account.TABLE)
@@ -116,6 +125,12 @@ public class Account extends AbstractIdEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
     private Collection<User> users;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
+    private Collection<Client> clients;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.REMOVE)
+    private Collection<RPCMessage> rpcMessages;
+
     public String getAuthId() {
         return authId;
     }
@@ -134,10 +149,6 @@ public class Account extends AbstractIdEntity {
 
     public Collection<User> getUsers() {
         return users;
-    }
-
-    public void setUsers(final Collection<User> users) {
-        this.users = users;
     }
 
     public boolean isSystem() {
@@ -186,5 +197,13 @@ public class Account extends AbstractIdEntity {
 
     public void setLastRemoteHost(final String lastRemoteHost) {
         this.lastRemoteHost = lastRemoteHost;
+    }
+
+    public Collection<Client> getClients() {
+        return clients;
+    }
+
+    public Collection<RPCMessage> getRpcMessages() {
+        return rpcMessages;
     }
 }

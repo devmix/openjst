@@ -15,28 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.mobile.web.rest;
-
-import org.jboss.resteasy.annotations.Form;
-import org.openjst.server.commons.mq.QueryListParams;
-import org.openjst.server.commons.mq.results.QueryListResult;
-import org.openjst.server.mobile.model.dto.AccountConnectionObj;
-import org.openjst.server.mobile.model.dto.ClientConnectionObj;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-
 /**
  * @author Sergey Grachev
  */
-@Path("/dashboard/connections")
-public interface Connections {
 
-    @GET
-    @Path("/clients")
-    QueryListResult<ClientConnectionObj> clientList(@Form QueryListParams parameters);
+@font: Arial, "Helvetica Neue", Helvetica, sans-serif;
+@border-color: #D4D4D4;
+@background-color-panel: #FEFEFE;
+@text-color-panel: #777777;
 
-    @GET
-    @Path("/accounts")
-    QueryListResult<AccountConnectionObj> accountList(@Form QueryListParams parameters);
-}
+@blocks-border-line: 1px solid @border-color;

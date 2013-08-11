@@ -15,8 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.commons.mq;
+package org.openjst.server.commons.mq.results;
 
+
+import org.openjst.server.commons.mq.IMapping;
+import org.openjst.server.commons.mq.ModelQuery;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,22 +27,15 @@ import java.util.List;
 /**
  * @author Sergey Grachev
  */
-public final class QueryResult<M> {
-
-    private static final QueryResult<?> INTERNAL_SERVER_ERROR = new QueryResult<Object>(Status.INTERNAL_SERVER_ERROR);
-    private static final QueryResult<?> NOT_EXISTS = new QueryResult<Object>(Status.NOT_EXISTS);
-    private static final QueryResult<?> NOT_UNIQUE = new QueryResult<Object>(Status.NOT_UNIQUE);
-    private static final QueryResult<?> OK = new QueryResult<Object>(Status.OK);
+public final class QueryListResult<M> extends AbstractResult<M> {
 
     private final List<M> list;
     private final int startIndex;
     private final long total;
     private final int pageSize;
-    private final Status status;
-    private final Object errorData;
 
-    public QueryResult(final List<M> list, final int startIndex, final long total, final Status status, final int pageSize,
-                       final Object errorData) {
+    private QueryListResult(final List<M> list, final int startIndex, final long total, final Result.Status status, final int pageSize,
+                            final Object errorData) {
         this.list = list;
         this.startIndex = startIndex;
         this.total = total;
@@ -47,39 +43,6 @@ public final class QueryResult<M> {
         this.pageSize = pageSize;
         this.errorData = errorData;
     }
-
-    private QueryResult(final Status status) {
-        this(null, 0, 0, status, ModelQuery.DEFAULT_PAGE_SIZE, null);
-    }
-
-    private QueryResult(final Status status, final Object errorData) {
-        this(null, 0, 0, status, ModelQuery.DEFAULT_PAGE_SIZE, errorData);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <M> QueryResult<M> notExists() {
-        return (QueryResult<M>) NOT_EXISTS;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <M> QueryResult<M> notUnique() {
-        return (QueryResult<M>) NOT_UNIQUE;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <M> QueryResult<M> ok() {
-        return (QueryResult<M>) OK;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <M> QueryResult<M> internalServerError() {
-        return (QueryResult<M>) INTERNAL_SERVER_ERROR;
-    }
-
-    public static Object notUnique(final String[] fields) {
-        return new QueryResult<Object>(Status.NOT_UNIQUE, fields);
-    }
-
 
     public List<M> getList() {
         return list;
@@ -93,16 +56,8 @@ public final class QueryResult<M> {
         return total;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
     public int getPageSize() {
         return pageSize;
-    }
-
-    public Object getErrorData() {
-        return errorData;
     }
 
     public static final class Builder<M> {
@@ -111,7 +66,7 @@ public final class QueryResult<M> {
         private final int startIndex;
         private final int pageSize;
         private long total;
-        private Status status = Status.OK;
+        private Result.Status status = Result.Status.OK;
 
         private Builder(final int startIndex, final int pageSize) {
             this.startIndex = startIndex;
@@ -146,7 +101,7 @@ public final class QueryResult<M> {
             return this;
         }
 
-        public Builder<M> status(final Status status) {
+        public Builder<M> status(final Result.Status status) {
             this.status = status;
             return this;
         }
@@ -163,18 +118,8 @@ public final class QueryResult<M> {
             return this;
         }
 
-        public QueryResult<M> build() {
-            return new QueryResult<M>(list, startIndex, total, status, pageSize, null);
+        public QueryListResult<M> build() {
+            return new QueryListResult<M>(list, startIndex, total, status, pageSize, null);
         }
-    }
-
-    // TODO errors
-    // TODO messages
-
-    public static enum Status {
-        OK,
-        NOT_UNIQUE,
-        NOT_EXISTS,
-        INTERNAL_SERVER_ERROR
     }
 }

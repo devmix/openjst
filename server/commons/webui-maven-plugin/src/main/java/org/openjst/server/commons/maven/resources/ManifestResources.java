@@ -27,6 +27,7 @@ import org.openjst.server.commons.maven.compression.Compressor;
 import org.openjst.server.commons.maven.compression.Compressors;
 import org.openjst.server.commons.maven.manifest.jaxb.ResourcesType;
 import org.openjst.server.commons.maven.utils.ManifestUtils;
+import org.openjst.server.commons.maven.utils.Patterns;
 import org.openjst.server.commons.maven.validation.Validator;
 import org.openjst.server.commons.maven.validation.Validators;
 
@@ -232,12 +233,13 @@ public final class ManifestResources {
 
         final boolean joinToSingleFile = joinAs != null;
         for (final Resource resource : resources) {
+            final boolean isJs = Patterns.JS.matcher(resource.getFile().getAbsolutePath()).matches();
             if (joinToSingleFile) {
                 if (log.isDebugEnabled()) {
                     log.debug("  join " + resource.getFile().getAbsolutePath());
                 }
                 final String content = resource.getContent();
-                FileUtils.fileAppend(joinAs.getFile().getAbsolutePath(), content + "\n");
+                FileUtils.fileAppend(joinAs.getFile().getAbsolutePath(), content + (isJs ? ';' : "") + '\n');
             }
 
             String content;
@@ -251,7 +253,7 @@ public final class ManifestResources {
             }
 
             if (joinToSingleFile) {
-                FileUtils.fileAppend(joinAs.getCompressedFile().getAbsolutePath(), content + "\n");
+                FileUtils.fileAppend(joinAs.getCompressedFile().getAbsolutePath(), content + (isJs ? ';' : "") + '\n');
             } else {
                 resource.writeCompressed(content);
                 printCompressResult(resource, resource.getCompressedFile().length(), resource.getFile().length());

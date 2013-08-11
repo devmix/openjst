@@ -122,17 +122,28 @@ YUI.add(OJST.ns.views.page.Abstract, function (Y) {
 
             /**
              * @return {boolean|undefined}
+             * @protected
              */
             isNewModel: function () {
                 return undefined;
             },
 
             /**
-             *
              * @return {string}
+             * @protected
              */
             getTabsTitle: function () {
                 return undefined;
+            },
+
+            /**
+             * @return {string}
+             * @protected
+             */
+            getFormTitle: function () {
+                var isNewModel = this.isNewModel();
+                return Y.Lang.isValue(isNewModel)
+                    ? (isNewModel ? OJST.i18n.label('create') : OJST.i18n.label('edit')) : null;
             },
 
             /**
@@ -142,18 +153,16 @@ YUI.add(OJST.ns.views.page.Abstract, function (Y) {
             render: function () {
                 var container = this.get('container'),
                     layout = this.get('layout'),
-                    isNewModel = this.isNewModel(),
                     breadcrumbs = this.createBreadcrumbs(),
-                    breadcrumbTitle = (breadcrumbs && breadcrumbs.title)
-                        || (Y.Lang.isValue(isNewModel) ? (isNewModel ? OJST.i18n.label('create') : OJST.i18n.label('edit')) : null),
+                    formTitle = this.getFormTitle(),
                     tabs = this.createTabs(),
                     breadcrumbsCfg, tabsCfg;
 
                 this._form = this.createForm();
 
-                if (breadcrumbTitle || (breadcrumbs && breadcrumbs.items && breadcrumbs.items.length > 0)) {
+                if (formTitle || (breadcrumbs && breadcrumbs.items && breadcrumbs.items.length > 0)) {
                     breadcrumbsCfg = {
-                        title: breadcrumbTitle,
+                        title: formTitle,
                         children: []
                     };
 

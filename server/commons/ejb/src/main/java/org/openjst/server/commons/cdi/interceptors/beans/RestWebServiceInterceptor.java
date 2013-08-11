@@ -20,9 +20,10 @@ package org.openjst.server.commons.cdi.interceptors.beans;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openjst.server.commons.cdi.beans.GlobalSession;
 import org.openjst.server.commons.cdi.interceptors.UIService;
-import org.openjst.server.commons.mq.QueryResult;
 import org.openjst.server.commons.mq.access.ModelAccessRestriction;
 import org.openjst.server.commons.mq.mapping.ExceptionMapping;
+import org.openjst.server.commons.mq.results.QuerySingleResult;
+import org.openjst.server.commons.mq.results.Result;
 
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -50,20 +51,21 @@ public final class RestWebServiceInterceptor implements Serializable {
         try {
             return ctx.proceed();
         } catch (Exception e) {
-            final ExceptionMapping mapping = ctx.getMethod().getAnnotation(ExceptionMapping.class);
+            if (QuerySingleResult.class.isAssignableFrom(ctx.getMethod().getReturnType())) {
+                final ExceptionMapping mapping = ctx.getMethod().getAnnotation(ExceptionMapping.class);
 
-            final int i = ExceptionUtils.indexOfThrowable(e, PersistenceException.class);
-            if (i > -1) {
-                final String message = ExceptionUtils.getThrowables(e)[i].getMessage().toLowerCase();
-                if (message.contains("constraintviolationexception")) {
-                    if (message.contains("unique") && mapping != null && mapping.unique()) {
-                        return QueryResult.notUnique(mapping.uniqueFields());
+                final int i = ExceptionUtils.indexOfThrowable(e, PersistenceException.class);
+                if (i > -1) {
+                    final String message = ExceptionUtils.getThrowables(e)[i].getMessage().toLowerCase();
+                    if (message.contains("constraintviolationexception")) {
+                        if (message.contains("unique") && mapping != null && mapping.unique()) {
+                            return Result.notUnique(mapping.uniqueFields());
+                        }
+                        return Result.notUnique();
                     }
-                    return QueryResult.notUnique();
                 }
             }
-
-            return QueryResult.internalServerError();
+            throw e;
         }
     }
 

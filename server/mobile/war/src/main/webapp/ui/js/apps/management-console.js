@@ -50,7 +50,8 @@ YUI.add(OJST.ns.apps.ManagementConsole, function (Y) {
                         [':accountId', OJST.ui.views.page.accounts.Account],
                         [':accountId/users', OJST.ui.views.page.accounts.users.List, [
                             [':userId', OJST.ui.views.page.accounts.users.User]
-                        ]]
+                        ]],
+                        [':accountId/summary', OJST.ui.views.page.accounts.Summary]
                     ]],
                     ['/dashboard', OJST.ui.views.page.dashboard.connections.Summary, OJST.i18n.label('dashboard'), [
                         ['connections', OJST.ui.views.page.dashboard.connections.Summary, [
@@ -102,6 +103,7 @@ YUI.add(OJST.ns.apps.ManagementConsole, function (Y) {
     OJST.ns.views.page.ManagementConsole,
     OJST.ns.views.page.accounts.List,
     OJST.ns.views.page.accounts.Account,
+    OJST.ns.views.page.accounts.Summary,
     OJST.ns.views.page.accounts.users.List,
     OJST.ns.views.page.accounts.users.User,
     OJST.ns.views.page.dashboard.connections.Summary,

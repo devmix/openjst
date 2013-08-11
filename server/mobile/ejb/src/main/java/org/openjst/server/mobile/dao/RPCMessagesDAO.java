@@ -30,4 +30,12 @@ public interface RPCMessagesDAO<R extends Actor<?>, M extends Message<?>> extend
     void createForwardToClient(Long accountId, Long clientId, RPCMessageFormat format, byte[] data);
 
     void createForwardToServer(Long accountId, Long clientId, RPCMessageFormat format, byte[] data);
+
+    int getCountFromClients(long accountId);
+
+    int getCountFromServer(long accountId);
+
+    int getCountDeliveredToClients(long accountId);
+
+    int getCountDeliveredToServer(long accountId);
 }

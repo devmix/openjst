@@ -89,7 +89,7 @@ YUI.add(OJST.ns.models.Base, function (Y) {
                 if (this._lastOperationFailed) {
                     this._fireServerError(result);
                 } else {
-                    return result.list && result.list.length > 0 ? result.list[0] : undefined;
+                    return result.value;
                 }
             } catch (e) {
                 this._lastOperationFailed = true;

@@ -17,21 +17,28 @@
 
 package org.openjst.server.mobile.web.rest.impl;
 
+import org.openjst.commons.checksum.MD5;
+import org.openjst.commons.encodings.Base64;
 import org.openjst.server.commons.cdi.interceptors.UIService;
 import org.openjst.server.commons.mq.IOrder;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.QueryListParams;
-import org.openjst.server.commons.mq.QueryResult;
 import org.openjst.server.commons.mq.access.ModelAccessRestriction;
 import org.openjst.server.commons.mq.mapping.ExceptionMapping;
 import org.openjst.server.commons.mq.queries.VoidQuery;
+import org.openjst.server.commons.mq.results.QueryListResult;
+import org.openjst.server.commons.mq.results.QuerySingleResult;
+import org.openjst.server.commons.mq.results.Result;
 import org.openjst.server.mobile.dao.AccountDAO;
+import org.openjst.server.mobile.dao.RPCMessagesDAO;
 import org.openjst.server.mobile.model.Account;
 import org.openjst.server.mobile.mq.model.AccountModel;
+import org.openjst.server.mobile.mq.model.AccountSummaryModel;
 import org.openjst.server.mobile.mq.queries.AccountQuery;
 import org.openjst.server.mobile.web.rest.Accounts;
 
 import javax.inject.Inject;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Sergey Grachev
@@ -40,49 +47,81 @@ import javax.inject.Inject;
 @ModelAccessRestriction(requireAdministrator = true)
 public class AccountsImpl implements Accounts {
 
+    private static final AtomicLong API_KEY_COUNTER = new AtomicLong(0);
+
     @Inject
     private AccountDAO accountDAO;
 
+    @Inject
+    private RPCMessagesDAO rpcMessagesDAO;
+
     @Override
-    public QueryResult<AccountModel> list(final QueryListParams parameters) {
+    public QueryListResult<AccountModel> list(final QueryListParams parameters) {
         final ModelQuery<VoidQuery.Filter, AccountQuery.Order, VoidQuery.Search> query = ModelQuery.Builder.newInstance(parameters)
                 .orderBy(AccountQuery.Order.NAME, IOrder.Type.ASC)
                 .build();
 
-        return QueryResult.Builder.<AccountModel>newInstanceFor(query)
+        return QueryListResult.Builder.<AccountModel>newInstanceFor(query)
                 .total(accountDAO.getCountOf(query))
                 .convert(accountDAO.getListOf(query), AccountModel.ACCOUNT_TO_MODEL)
                 .build();
     }
 
-    @ExceptionMapping(unique = true, uniqueFields = "authId")
+    @ExceptionMapping(unique = true, uniqueFields = {"authId", "apiKey"})
     @Override
-    public QueryResult<AccountModel> create(final AccountModel model) {
+    public QuerySingleResult<AccountModel> create(final AccountModel model) {
         return read(accountDAO.create(model).getId());
     }
 
     @Override
-    public QueryResult<AccountModel> read(final Long id) {
+    public QuerySingleResult<AccountModel> read(final Long id) {
         final Account e = accountDAO.findById(id);
         if (e == null) {
-            return QueryResult.notExists();
+            return Result.notExists();
         }
-        return QueryResult.Builder.<AccountModel>newInstance().convert(e, AccountModel.ACCOUNT_TO_MODEL).build();
+        return QuerySingleResult.Builder.<AccountModel>newInstance().convert(e, AccountModel.ACCOUNT_TO_MODEL).build();
     }
 
-    @ExceptionMapping(unique = true, uniqueFields = "authId")
+    @ExceptionMapping(unique = true, uniqueFields = {"authId", "apiKey"})
     @Override
-    public QueryResult<AccountModel> update(final Long id, final AccountModel model) {
+    public QuerySingleResult<AccountModel> update(final Long id, final AccountModel model) {
         final Account entity = accountDAO.findById(id);
         if (entity == null) {
-            return QueryResult.notExists();
+            return Result.notExists();
         }
         return read(accountDAO.update(entity, model).getId());
     }
 
     @Override
-    public QueryResult<AccountModel> delete(final Long id) {
+    public QuerySingleResult<AccountModel> delete(final Long id) {
         accountDAO.delete(id);
-        return QueryResult.ok();
+        return Result.ok();
+    }
+
+    @Override
+    public QuerySingleResult<String> generateAccountAPIKey(final Long accountId) {
+        final String account = String.valueOf(accountId) + '-' + System.nanoTime() + '-' + API_KEY_COUNTER.getAndIncrement();
+        final String key = Base64.encodeToString(MD5.checksum(account.getBytes()), false).replaceAll("=", "");
+        return QuerySingleResult.Builder.<String>newInstance().value(key).build();
+    }
+
+    @Override
+    public QuerySingleResult<AccountSummaryModel> getSummary(final Long accountId) {
+        final Account e = accountDAO.findById(accountId);
+        if (e == null) {
+            return Result.notExists();
+        }
+
+        final AccountSummaryModel model = AccountSummaryModel.ACCOUNT_TO_MODEL.map(e);
+
+        model.setClientsCount(accountDAO.getCountOfClients(e.getId()));
+        model.setUsersCount(accountDAO.getCountOfUsers(e.getId()));
+
+        model.setMessagesFromClient(rpcMessagesDAO.getCountFromClients(e.getId()));
+        model.setMessagesFromServer(rpcMessagesDAO.getCountFromServer(e.getId()));
+        model.setMessagesToClient(rpcMessagesDAO.getCountDeliveredToClients(e.getId()));
+        model.setMessagesToServer(rpcMessagesDAO.getCountDeliveredToServer(e.getId()));
+
+        return QuerySingleResult.Builder.<AccountSummaryModel>newInstance().value(model).build();
     }
 }

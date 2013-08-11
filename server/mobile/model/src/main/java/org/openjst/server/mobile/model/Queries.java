@@ -39,6 +39,8 @@ public final class Queries {
         public static final String SET_OFFLINE_STATUS = PREFIX + "setOfflineStatus";
         public static final String GET_ONLINE_COUNT_OF = PREFIX + "getOnlineCountOf";
         public static final String GET_ONLINE_LIST_OF = PREFIX + "getOnlineListOf";
+        public static final String GET_COUNT_OF_CLIENTS = PREFIX + "getCountOfClients";
+        public static final String GET_COUNT_OF_USERS = PREFIX + "getCountOfUsers";
 
         private Account() {
         }
@@ -86,6 +88,10 @@ public final class Queries {
         public static final String PREFIX = "RPCMessage.";
         public static final String GET_NOT_DELIVERED_TO_CLIENTS = PREFIX + "getNotDeliveredToClients";
         public static final String GET_NOT_DELIVERED_TO_SERVERS = PREFIX + "getNotDeliveredToServers";
+        public static final String GET_COUNT_FROM_CLIENTS = PREFIX + "getCountFromClients";
+        public static final String GET_COUNT_DELIVERED_TO_SERVER = PREFIX + "getCountDeliveredToServer";
+        public static final String GET_COUNT_FROM_SERVER = PREFIX + "getCountFromServer";
+        public static final String GET_COUNT_DELIVERED_TO_CLIENTS = PREFIX + "getCountDeliveredToClients";
         public static final String DELIVERY_SUCCESS = PREFIX + "deliverySuccess";
         public static final String DELIVERY_FAIL = PREFIX + "deliveryFail";
         public static final String FILTER_CLIENTS_WITH_NOT_DELIVERED_MESSAGES = PREFIX + "filterClientsWithNotDeliveredMessages";

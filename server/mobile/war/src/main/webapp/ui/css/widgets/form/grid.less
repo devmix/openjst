@@ -14,12 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
  * @author Sergey Grachev
  */
-
-@border: 1px solid #D4D4D4;
+@import "../../import.vars";
 
 .gradient() {
   background-color: #FAFAFA;
@@ -29,7 +27,7 @@
 
 .yui3-widgetsformgrid {
   margin: 4px 4px 4px 4px;
-  border: @border;
+  border: @blocks-border-line;
 
   table {
     &.header {
@@ -41,8 +39,8 @@
         > th {
           overflow: hidden;
           white-space: nowrap;
-          border-left: @border;
-          border-bottom: @border;
+          border-left: @blocks-border-line;
+          border-bottom: @blocks-border-line;
           padding: 4px 5px;
           text-align: left;
 
@@ -56,7 +54,7 @@
       table-layout: fixed;
 
       > tbody > tr {
-        border-bottom: @border;
+        border-bottom: @blocks-border-line;
 
         &:last-child {
           border-bottom: 0 none;
@@ -65,7 +63,7 @@
         > td {
           overflow: hidden;
           white-space: nowrap;
-          border-left: @border;
+          border-left: @blocks-border-line;
           padding: 4px 5px;
 
           &:first-child {
@@ -80,7 +78,7 @@
     .gradient;
     height: auto;
     padding: 4px 4px 0 4px;
-    border-top: @border;
+    border-top: @blocks-border-line;
 
     .pagination {
       margin: 0;

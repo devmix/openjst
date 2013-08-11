@@ -57,6 +57,11 @@ YUI.add(OJST.ns.views.page.accounts.Abstract, function (Y) {
                         active: this instanceof OJST.ui.views.page.accounts.users.User,
                         visible: !this.isNewModel() && this instanceof OJST.ui.views.page.accounts.users.User,
                         level: 1
+                    },
+
+                    {label: OJST.i18n.label('summary'), route: '/accounts/' + accountId + '/summary',
+                        active: this instanceof OJST.ui.views.page.accounts.Summary,
+                        visible: !this.isNewModel()
                     }
                 ]
             };

@@ -25,7 +25,7 @@ YUI.add(OJST.ns.widgets.AbstractView, function (Y) {
     "use strict";
 
     var STR = {
-        LOADING: OJST.i18n.msg('LOADING')
+        LOADING: OJST.i18n.msg('loading')
     };
 
     /**
@@ -114,7 +114,7 @@ YUI.add(OJST.ns.widgets.AbstractView, function (Y) {
          */
         mask: function () {
             if (!this._mask) {
-                this._mask = new OJST.ui.widgets.Mask({ node: this.get(OJST.STATIC.BBX), message: STR.LOADING });
+                this._mask = new OJST.ui.widgets.Mask({ node: this.get(OJST.STATIC.CONTAINER), message: STR.LOADING });
             }
             this._mask.show();
         },

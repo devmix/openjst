@@ -18,6 +18,8 @@
 package org.openjst.server.commons.mq;
 
 import org.jboss.resteasy.annotations.Form;
+import org.openjst.server.commons.mq.results.QueryListResult;
+import org.openjst.server.commons.mq.results.QuerySingleResult;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -31,22 +33,22 @@ public interface IRestCrud<M, LP> {
 
     @GET
     @Path("/")
-    QueryResult<M> list(@Form LP parameters);
+    QueryListResult<M> list(@Form LP parameters);
 
     @POST
     @Path("/")
-    QueryResult<M> create(M model);
+    QuerySingleResult<M> create(M model);
 
     @GET
     @Path("/{id}")
-    QueryResult<M> read(@PathParam("id") Long id);
+    QuerySingleResult<M> read(@PathParam("id") Long id);
 
     @PUT
     @Path("/{id}")
-    QueryResult<M> update(@PathParam("id") Long id, M model);
+    QuerySingleResult<M> update(@PathParam("id") Long id, M model);
 
     @DELETE
     @Path("/{id}")
     @Consumes(MediaType.TEXT_PLAIN)
-    QueryResult<M> delete(@PathParam("id") Long id);
+    QuerySingleResult<M> delete(@PathParam("id") Long id);
 }

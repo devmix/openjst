@@ -40,7 +40,7 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
      * @extends Y.Widget
      * @uses Y.WidgetChild
      */
-    OJST.ui.widgets.form.Field = Y.Base.create('form-field', Y.Widget, [Y.WidgetChild], {
+    OJST.ui.widgets.form.Field = Y.Base.create('form-field', OJST.ui.widgets.AbstractWidget, [Y.WidgetChild], {
 
         CONTENT_TEMPLATE: null,
         BOUNDING_TEMPLATE: '<div class="control-group"></div>',
@@ -88,6 +88,7 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
             this.set('controlId', controlId);
         },
 
+        /** @override */
         bindUI: function () {
             this.subscribe(this.on('focus', function () {
                 this.validate();
@@ -167,5 +168,6 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
     });
 
 }, OJST.VERSION, {requires: [
-    'widget', 'widget-child'
+    OJST.ns.widgets.AbstractWidget,
+    'widget-child'
 ]});

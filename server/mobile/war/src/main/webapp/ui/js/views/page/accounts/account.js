@@ -60,6 +60,22 @@ YUI.add(OJST.ns.views.page.accounts.Account, function (Y) {
                         name: 'authId',
                         label: OJST.i18n.label('authId'),
                         required: true
+                    },
+                    {
+                        type: OJST.ui.widgets.form.TextField,
+                        name: 'apiKey',
+                        label: OJST.i18n.label('apiKey'),
+                        required: true,
+                        trigger: {
+                            icon: 'retweet',
+                            handler: function (field) {
+                                OJST.ui.api.Security.generateAccountAPIKey(id, function (apiKey, isSuccess) {
+                                    if (isSuccess) {
+                                        field.set('value', apiKey);
+                                    }
+                                });
+                            }
+                        }
                     }
                 ],
                 on: {
@@ -86,8 +102,9 @@ YUI.add(OJST.ns.views.page.accounts.Account, function (Y) {
     });
 
 }, OJST.VERSION, {requires: [
-    OJST.ns.views.page.accounts.Abstract,
+    OJST.ns.api.Security,
     OJST.ns.models.Account,
+    OJST.ns.views.page.accounts.Abstract,
     OJST.ns.widgets.form.Form,
     OJST.ns.widgets.form.TextField,
     OJST.ns.widgets.Alerts

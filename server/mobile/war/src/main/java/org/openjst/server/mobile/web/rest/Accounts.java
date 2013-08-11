@@ -19,14 +19,25 @@ package org.openjst.server.mobile.web.rest;
 
 import org.openjst.server.commons.mq.IRestCrud;
 import org.openjst.server.commons.mq.QueryListParams;
+import org.openjst.server.commons.mq.results.QuerySingleResult;
 import org.openjst.server.mobile.mq.model.AccountModel;
+import org.openjst.server.mobile.mq.model.AccountSummaryModel;
 
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
 /**
  * @author Sergey Grachev
  */
 @Path("/accounts")
+@Produces(MediaType.APPLICATION_JSON)
 public interface Accounts extends IRestCrud<AccountModel, QueryListParams> {
 
+    @POST
+    @Path("/generateAccountAPIKey")
+    QuerySingleResult<String> generateAccountAPIKey(@FormParam("accountId") Long accountId);
+
+    @GET
+    @Path("/{id}/summary")
+    QuerySingleResult<AccountSummaryModel> getSummary(@PathParam("id") Long accountId);
 }

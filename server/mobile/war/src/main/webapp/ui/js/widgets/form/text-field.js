@@ -24,6 +24,13 @@
 YUI.add(OJST.ns.widgets.form.TextField, function (Y) {
     "use strict";
 
+    var TPL = {
+        INPUT: '<input class="input-block-level" placeholder="{placeholder}" type="{type}" id="{id}" name="{name}">',
+        TRIGGER: '<div class="input-append"></div>',
+        TRIGGER_BUTTON: '<button class="btn" type="button">{label}</button>',
+        TRIGGER_ICON: '<i class="icon-{name}"></i>'
+    };
+
     /**
      * @class TextField
      * @namespace OJST.ui.widgets.form
@@ -32,14 +39,35 @@ YUI.add(OJST.ns.widgets.form.TextField, function (Y) {
      */
     OJST.ui.widgets.form.TextField = Y.Base.create('widgetsFormTextField', OJST.ui.widgets.form.Field, [], {
 
+        /** @override */
+        initializer: function () {
+            /**
+             * @type {Y.Node}
+             * @private
+             */
+            this._control = undefined;
+            /**
+             * @type {Y.Node}
+             * @private
+             */
+            this._trigger = undefined;
+            /**
+             * @type {Y.Node}
+             * @private
+             */
+            this._triggerBtn = undefined;
+        },
+
+        /** @override */
         renderUI: function () {
             OJST.ui.widgets.form.TextField.superclass.renderUI.apply(this, arguments);
 
-            var id = this.get('id');
+            var id = this.get('id'),
+                trigger = this.get('trigger'),
+                node;
 
-            //noinspection JSValidateTypes
             this._control = Y.Node.create(Y.Lang.sub(
-                '<input class="input-block-level" placeholder="{placeholder}" type="{type}" id="{id}" name="{name}">',
+                TPL.INPUT,
                 {
                     id: id,
                     name: this.get('name') || id,
@@ -48,9 +76,42 @@ YUI.add(OJST.ns.widgets.form.TextField, function (Y) {
                 }
             ));
 
-            this.get('value'); // set default value
+            if (trigger) {
+                this._triggerBtn = Y.Node.create(Y.Lang.sub(TPL.TRIGGER_BUTTON, {
+                    label: (trigger.icon ? Y.Lang.sub(TPL.TRIGGER_ICON, {name: trigger.icon}) : '')
+                        + (trigger.label ? (trigger.icon ? ' ' : '') + trigger.label : '')
+                }));
+                this._trigger = Y.Node.create(TPL.TRIGGER);
+                this._trigger.appendChild(this._control);
+                this._trigger.appendChild(this._triggerBtn);
+                node = this._trigger;
+            } else {
+                node = this._control;
+            }
 
-            this.get('controlsContainer').append(this._control);
+            this.get('value'); // set default value
+            this.get('controlsContainer').append(node);
+        },
+
+        /** @override */
+        bindUI: function () {
+            OJST.ui.widgets.form.TextField.superclass.bindUI.apply(this, arguments);
+
+            var trigger = this.get('trigger');
+            if (this._triggerBtn && trigger && trigger.handler) {
+                this.subscribe(this._triggerBtn.on('click', function () {
+                    trigger.handler.call(trigger.scope || this, this);
+                }, this));
+            }
+        },
+
+        /** @override */
+        syncSize: function () {
+            OJST.ui.widgets.form.TextField.superclass.syncSize.apply(this, arguments);
+            if (this._trigger) {
+                var container = this.get('controlsContainer');
+                this._control.setStyle('width', container.get('offsetWidth') - this._triggerBtn.get('offsetWidth'));
+            }
         },
 
         /** @override */
@@ -58,31 +119,24 @@ YUI.add(OJST.ns.widgets.form.TextField, function (Y) {
             this._control.focus();
         },
 
-//        /** @override */
-//        validate: function() {
-//            if (!OJST.ui.widgets.form.TextField.superclass.validate.apply(this, arguments)) {
-//                return false;
-//            }
-//        },
-
+        /**
+         * @returns {Y.Node}
+         * @public
+         */
         getValueNode: function () {
             return this._control;
-        },
-
-        _valueSetter: function (value) {
-            this._control.set('value', value);
-            return value;
-        },
-
-        _valueGetter: function () {
-            return this._control.get('value');
         }
 
     }, {
         ATTRS: {
             value: {
-                getter: '_valueGetter',
-                setter: '_valueSetter'
+                getter: function () {
+                    return this._control.get('value');
+                },
+                setter: function (value) {
+                    this._control.set('value', value);
+                    return value;
+                }
             },
             placeholder: {
                 writeOnce: 'initOnly',
@@ -92,10 +146,15 @@ YUI.add(OJST.ns.widgets.form.TextField, function (Y) {
                 value: false,
                 writeOnce: 'initOnly',
                 validator: Y.Lang.isBoolean
+            },
+            trigger: {
+                validator: Y.Lang.isObject,
+                writeOnce: 'initOnly'
             }
         }
     });
 
 }, OJST.VERSION, {requires: [
+    OJST.ns.utils.Html,
     OJST.ns.widgets.form.Field
 ]});

@@ -21,8 +21,8 @@ import org.jboss.resteasy.annotations.Form;
 import org.openjst.server.commons.cdi.interceptors.UIService;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.QueryListParams;
-import org.openjst.server.commons.mq.QueryResult;
 import org.openjst.server.commons.mq.access.ModelAccessRestriction;
+import org.openjst.server.commons.mq.results.QueryListResult;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.dao.ClientDAO;
 import org.openjst.server.mobile.model.dto.AccountConnectionObj;
@@ -47,18 +47,18 @@ public class ConnectionsImpl implements Connections {
     private AccountDAO accountDAO;
 
     @Override
-    public QueryResult<ClientConnectionObj> clientList(@Form final QueryListParams parameters) {
+    public QueryListResult<ClientConnectionObj> clientList(@Form final QueryListParams parameters) {
         final ModelQuery<Filter, Order, Search> query = ModelQuery.Builder.newInstance(parameters).build();
-        return QueryResult.Builder.<ClientConnectionObj>newInstanceFor(query)
+        return QueryListResult.Builder.<ClientConnectionObj>newInstanceFor(query)
                 .total(clientDAO.getOnlineCountOf(query))
                 .add(clientDAO.getOnlineListOf(query))
                 .build();
     }
 
     @Override
-    public QueryResult<AccountConnectionObj> accountList(@Form final QueryListParams parameters) {
+    public QueryListResult<AccountConnectionObj> accountList(@Form final QueryListParams parameters) {
         final ModelQuery<Filter, Order, Search> query = ModelQuery.Builder.newInstance(parameters).build();
-        return QueryResult.Builder.<AccountConnectionObj>newInstanceFor(query)
+        return QueryListResult.Builder.<AccountConnectionObj>newInstanceFor(query)
                 .total(accountDAO.getOnlineCountOf(query))
                 .add(accountDAO.getOnlineListOf(query))
                 .build();

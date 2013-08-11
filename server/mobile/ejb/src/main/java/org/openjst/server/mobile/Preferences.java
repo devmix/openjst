@@ -43,8 +43,7 @@ public final class Preferences {
 
         SCRIPTS_CACHE("ui.scripts.cache", PreferenceType.BOOLEAN, true),
         SCRIPTS_DEBUG("ui.scripts.debug", PreferenceType.BOOLEAN, false),
-        SCRIPTS_COMBINE("ui.scripts.combine", PreferenceType.BOOLEAN, true),
-        SCRIPTS_USE_CONSOLE_OUTPUT("ui.scripts.log.useConsoleOutput", PreferenceType.BOOLEAN, false);
+        SCRIPTS_COMBINE("ui.scripts.combine", PreferenceType.BOOLEAN, true);
 
         //<editor-fold desc="implementation">
         private final String name;

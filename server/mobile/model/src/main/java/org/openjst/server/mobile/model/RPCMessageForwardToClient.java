@@ -22,22 +22,31 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import static org.openjst.server.mobile.model.Queries.RPCMessage.*;
+
 /**
  * @author Sergey Grachev
  */
 @NamedQueries({
-        @NamedQuery(name = Queries.RPCMessage.GET_NOT_DELIVERED_TO_CLIENTS,
+        @NamedQuery(name = GET_NOT_DELIVERED_TO_CLIENTS,
                 query = "select new org.openjst.server.mobile.model.dto.RPCMessageObj(" +
                         "   e.id, e.format, e.data, a.authId, c.authId " +
                         ")from RPCMessageForwardToClient e join e.account a join e.client c" +
                         " where c.id = :recipientId and (e.state is null or e.state not in (:successStates))" +
                         " order by e.created asc"),
 
-        @NamedQuery(name = Queries.RPCMessage.FILTER_CLIENTS_WITH_NOT_DELIVERED_MESSAGES,
+        @NamedQuery(name = FILTER_CLIENTS_WITH_NOT_DELIVERED_MESSAGES,
                 query = "select distinct new org.openjst.server.mobile.model.dto.SimpleActorObj(" +
                         "   c.id, c.authId " +
                         ")from RPCMessageForwardToClient e join e.client c" +
-                        " where e.account.id in (:recipients) and (e.state is null or e.state not in (:successStates))")
+                        " where e.account.id in (:recipients) and (e.state is null or e.state not in (:successStates))"),
+
+        @NamedQuery(name = GET_COUNT_FROM_SERVER,
+                query = "select count(e) from RPCMessageForwardToClient e where e.account.id = :accountId"),
+
+        @NamedQuery(name = GET_COUNT_DELIVERED_TO_CLIENTS,
+                query = "select count(e) from RPCMessageForwardToClient e" +
+                        " where e.account.id = :accountId and e.state in (:state)")
 })
 @Entity
 @DiscriminatorValue(value = "1")

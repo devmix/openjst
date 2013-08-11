@@ -38,7 +38,7 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
      * @uses Y.WidgetChild
      * @uses Y.WidgetParent
      */
-    OJST.ui.widgets.form.FormFields = Y.Base.create('widgetsFormFields', Y.Widget, [Y.WidgetParent, Y.WidgetChild], {
+    OJST.ui.widgets.form.FormFields = Y.Base.create('widgetsFormFields', OJST.ui.widgets.AbstractWidget, [Y.WidgetParent, Y.WidgetChild], {
 
         BOUNDING_TEMPLATE: '<form></form>',
         CONTENT_TEMPLATE: null,
@@ -49,6 +49,16 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
             if (this.get('horizontal')) {
                 bbx.addClass('form-horizontal');
             }
+        },
+
+        /** @override */
+        syncSize: function () {
+            OJST.ui.widgets.form.FormFields.superclass.syncSize.apply(this, arguments);
+            this.each(function (item, index) {
+                if (item.syncSize) {
+                    item.syncSize();
+                }
+            });
         }
 
     }, {
@@ -105,10 +115,8 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
 
         /** @override */
         destructor: function () {
-            delete this._fields;
-            delete this._saveBtn;
-            delete this._closeBtn;
-            delete this._alertMessageNode;
+            this._saveBtn.destroy();
+            this._closeBtn.destroy();
         },
 
         /** @override */
@@ -357,5 +365,5 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
 }, OJST.VERSION, {requires: [
     OJST.ns.widgets.AbstractWidget,
     OJST.ns.widgets.Alerts,
-    'widget', 'widget-child', 'widget-parent'
+    'widget-child', 'widget-parent'
 ]});

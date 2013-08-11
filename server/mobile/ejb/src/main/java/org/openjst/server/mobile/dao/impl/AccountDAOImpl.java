@@ -24,7 +24,6 @@ import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.model.Account;
-import org.openjst.server.mobile.model.Queries;
 import org.openjst.server.mobile.model.dto.AccountAuthenticationObj;
 import org.openjst.server.mobile.model.dto.AccountConnectionObj;
 import org.openjst.server.mobile.mq.model.AccountModel;
@@ -60,7 +59,18 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
     public Account update(final Account account, final AccountModel model) {
         account.setAuthId(model.getAuthId());
         account.setName(model.getName());
+        account.setApiKey(model.getApiKey());
         return em.merge(account);
+    }
+
+    @Override
+    public Account create(final AccountModel model) {
+        final Account e = new Account();
+        e.setAuthId(model.getAuthId());
+        e.setName(model.getName());
+        e.setApiKey(model.getApiKey());
+        em.persist(e);
+        return e;
     }
 
     @Override
@@ -115,7 +125,7 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
     @Override
     @SuppressWarnings("unchecked")
     public List<AccountConnectionObj> getOnlineListOf(final ModelQuery<Filter, Order, Search> query) {
-        return em.createNamedQuery(Queries.Account.GET_ONLINE_LIST_OF)
+        return em.createNamedQuery(GET_ONLINE_LIST_OF)
                 .setFirstResult(query.getStartIndex())
                 .setMaxResults(query.getPageSize())
                 .getResultList();
@@ -151,11 +161,16 @@ public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
     }
 
     @Override
-    public Account create(final AccountModel model) {
-        final Account e = new Account();
-        e.setAuthId(model.getAuthId());
-        e.setName(model.getName());
-        em.persist(e);
-        return e;
+    public int getCountOfClients(final long accountId) {
+        return ((Long) em.createNamedQuery(GET_COUNT_OF_CLIENTS)
+                .setParameter("accountId", accountId)
+                .getSingleResult()).intValue();
+    }
+
+    @Override
+    public int getCountOfUsers(final long accountId) {
+        return ((Long) em.createNamedQuery(GET_COUNT_OF_USERS)
+                .setParameter("accountId", accountId)
+                .getSingleResult()).intValue();
     }
 }

@@ -29,10 +29,11 @@ public final class AccountModel extends AbstractEntityModel {
     public static final IMapping<Account, AccountModel> ACCOUNT_TO_MODEL = new IMapping<Account, AccountModel>() {
         @Override
         public AccountModel map(final Account value) {
-            return new AccountModel(value.getId(), value.getAuthId(), value.getName());
+            return new AccountModel(value.getId(), value.getAuthId(), value.getName(), value.getApiKey());
         }
     };
 
+    private String apiKey;
     private String authId;
     private String name;
 
@@ -40,14 +41,11 @@ public final class AccountModel extends AbstractEntityModel {
     public AccountModel() {
     }
 
-    private AccountModel(final long id, final String authId, final String name) {
+    private AccountModel(final long id, final String authId, final String name, final String apiKey) {
+        this.apiKey = apiKey;
         this.id = id;
         this.authId = authId;
         this.name = name;
-    }
-
-    public static AccountModel newInstance(final long id, final String authId, final String name) {
-        return new AccountModel(id, authId, name);
     }
 
     public String getAuthId() {
@@ -56,6 +54,10 @@ public final class AccountModel extends AbstractEntityModel {
 
     public String getName() {
         return name;
+    }
+
+    public String getApiKey() {
+        return apiKey;
     }
 
     @Override

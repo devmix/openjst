@@ -20,9 +20,11 @@ package org.openjst.server.mobile.web.rest.impl;
 import org.openjst.server.commons.cdi.interceptors.UIService;
 import org.openjst.server.commons.mq.IOrder;
 import org.openjst.server.commons.mq.ModelQuery;
-import org.openjst.server.commons.mq.QueryResult;
 import org.openjst.server.commons.mq.mapping.ExceptionMapping;
 import org.openjst.server.commons.mq.queries.VoidQuery;
+import org.openjst.server.commons.mq.results.QueryListResult;
+import org.openjst.server.commons.mq.results.QuerySingleResult;
+import org.openjst.server.commons.mq.results.Result;
 import org.openjst.server.mobile.dao.UserDAO;
 import org.openjst.server.mobile.model.User;
 import org.openjst.server.mobile.mq.model.UserModel;
@@ -41,13 +43,13 @@ public class UsersImpl implements Users {
     private UserDAO userDAO;
 
     @Override
-    public QueryResult<UserModel> list(final ListParamsParameters parameters) {
+    public QueryListResult<UserModel> list(final ListParamsParameters parameters) {
         final ModelQuery<UserQuery.Filter, UserQuery.Order, VoidQuery.Search> query = ModelQuery.Builder.newInstance(parameters)
                 .filterBy(UserQuery.Filter.ACCOUNT_ID, parameters.accountId)
                 .orderBy(UserQuery.Order.NAME, IOrder.Type.ASC)
                 .build();
 
-        return QueryResult.Builder.<UserModel>newInstanceFor(query)
+        return QueryListResult.Builder.<UserModel>newInstanceFor(query)
                 .total(userDAO.getCountOf(query))
                 .convert(userDAO.getListOf(query), UserModel.USER_TO_MODEL)
                 .build();
@@ -55,32 +57,32 @@ public class UsersImpl implements Users {
 
     @ExceptionMapping(unique = true, uniqueFields = "authId")
     @Override
-    public QueryResult<UserModel> create(final UserModel model) {
+    public QuerySingleResult<UserModel> create(final UserModel model) {
         return read(userDAO.create(model).getId());
     }
 
     @Override
-    public QueryResult<UserModel> read(final Long id) {
+    public QuerySingleResult<UserModel> read(final Long id) {
         final User e = userDAO.findById(id);
         if (e == null) {
-            return QueryResult.notExists();
+            return Result.notExists();
         }
-        return QueryResult.Builder.<UserModel>newInstance().convert(e, UserModel.USER_TO_MODEL).build();
+        return QuerySingleResult.Builder.<UserModel>newInstance().convert(e, UserModel.USER_TO_MODEL).build();
     }
 
     @Override
-    public QueryResult<UserModel> update(final Long id, final UserModel model) {
+    public QuerySingleResult<UserModel> update(final Long id, final UserModel model) {
         final User entity = userDAO.findById(id);
         if (entity == null) {
-            return QueryResult.notExists();
+            return Result.notExists();
         }
         userDAO.update(entity, model);
         return read(id);
     }
 
     @Override
-    public QueryResult<UserModel> delete(final Long id) {
+    public QuerySingleResult<UserModel> delete(final Long id) {
         userDAO.delete(id);
-        return QueryResult.ok();
+        return Result.ok();
     }
 }

@@ -81,6 +81,10 @@ public class MobileApplicationMXBeanImpl extends AbstractMBean implements Mobile
     }
 
     private void initDemoData() {
+        // TODO remove
+        preferencesManager.setBoolean(Preferences.UI.SCRIPTS_CACHE, false);
+        preferencesManager.setBoolean(Preferences.UI.SCRIPTS_DEBUG, true);
+
         Account account = accountDAO.findSystemAccount();
         if (account != null) {
             return;
@@ -107,11 +111,6 @@ public class MobileApplicationMXBeanImpl extends AbstractMBean implements Mobile
         user.setLanguage(LanguageCode.EN);
         user.setSystem(true);
         em.persist(user);
-
-        // TODO remove
-
-        preferencesManager.setBoolean(Preferences.UI.SCRIPTS_CACHE, false);
-        preferencesManager.setBoolean(Preferences.UI.SCRIPTS_DEBUG, true);
 
         final Client client = new Client();
         client.setAccount(account);
