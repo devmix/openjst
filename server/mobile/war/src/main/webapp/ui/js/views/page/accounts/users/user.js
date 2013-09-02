@@ -52,7 +52,6 @@ YUI.add(OJST.ns.views.page.accounts.users.User, function (Y) {
                 model = new OJST.ui.models.User({ id: Number(userId) });
             }
             return new OJST.ui.widgets.form.Form({
-                horizontal: true,
                 model: model,
                 auto: true,
                 useDefaultButtons: true,

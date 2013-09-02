@@ -28,7 +28,7 @@ YUI.add(OJST.ns.apps.Abstract, function (Y) {
             CONTAINER: 'application'
         },
         TPL = {
-            FOOTER: '<footer id="footer"><div class="navbar"><div class="navbar-inner"></div></div></footer>'
+            FOOTER: '<footer id="footer"><nav class="navbar navbar-default"><div class="navbar-inner"></div></nav></footer>'
         };
 
     /**
@@ -105,7 +105,7 @@ YUI.add(OJST.ns.apps.Abstract, function (Y) {
          */
         _onChangeTab: function (index) {
             this.set('tabIndex', index);
-            this.get('navigationBar').item(0).activate(index + 1, true);
+            this.get('navigationBar').item(0).activate(index, true);
         },
 
         /**
@@ -166,14 +166,13 @@ YUI.add(OJST.ns.apps.Abstract, function (Y) {
          * @param {Y.Node} container
          * @param {Y.Node} viewContainer
          * @param {Object} menuCfg
-         * @return {OJST.ui.widgets.NavigationBar}
+         * @return {OJST.ui.widgets.toolbar.Navigation}
          * @private
          */
         _createNavigationBar: function (container, viewContainer, menuCfg) {
             var buttons = [], menuItems = [], navigationBar;
 
             if (this._buttons && this._buttons.length > 0) {
-                buttons.push({ kind: '-' });
                 Y.each(this._buttons, function (button) {
                     buttons.push({
                         label: button.label,
@@ -183,7 +182,6 @@ YUI.add(OJST.ns.apps.Abstract, function (Y) {
                         scope: this
                     });
                 }, this);
-                buttons.push({ kind: '-' });
             }
 
             if (menuCfg.menu && menuCfg.menu.length > 0) {
@@ -202,16 +200,15 @@ YUI.add(OJST.ns.apps.Abstract, function (Y) {
                 }, this);
             }
 
-            navigationBar = new OJST.ui.widgets.NavigationBar({
+            navigationBar = new OJST.ui.widgets.toolbar.Navigation({
                 brand: this.get('brand'),
                 children: [
                     { children: buttons },
                     {
                         align: 'right',
                         children: [
-                            { kind: '-' },
                             {
-                                childType: OJST.ui.widgets.NavigationBarDropDownMenu,
+                                childType: OJST.ui.widgets.toolbar.NavigationDropDownMenu,
                                 label: menuCfg.menuLabel,
                                 children: menuItems
                             }
@@ -347,7 +344,7 @@ YUI.add(OJST.ns.apps.Abstract, function (Y) {
             },
             navigationBar: {
                 validator: function (v) {
-                    return v instanceof OJST.ui.widgets.NavigationBar;
+                    return v instanceof OJST.ui.widgets.toolbar.Navigation;
                 }
             },
             fluid: {
@@ -360,6 +357,6 @@ YUI.add(OJST.ns.apps.Abstract, function (Y) {
     });
 
 }, OJST.VERSION, {requires: [
-    OJST.ns.widgets.NavigationBar,
+    OJST.ns.widgets.toolbar.Navigation,
     'app'
 ]});

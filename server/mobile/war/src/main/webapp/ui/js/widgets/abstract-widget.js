@@ -44,10 +44,15 @@ YUI.add(OJST.ns.widgets.AbstractWidget, function (Y) {
              */
             this._subscribers = [];
             /**
-             * @type {OJST.ui.widgets.Mask}
+             * @type {OJST.ui.widgets.notify.Mask}
              * @private
              */
             this._mask = undefined;
+            /**
+             * @type {OJST.ui.widgets.notify.Popup}
+             * @private
+             */
+            this._notification = undefined;
         },
 
         /** @override */
@@ -64,6 +69,19 @@ YUI.add(OJST.ns.widgets.AbstractWidget, function (Y) {
                 this._mask.destroy();
             }
             delete this._mask;
+
+            if (this._notification) {
+                this._notification.destroy();
+            }
+            delete this._notification;
+        },
+
+        /** @override */
+        renderUI: function () {
+            var padding = this.get('padding');
+            if (padding) {
+                this.get(OJST.STATIC.BBX).setStyle('padding', padding + 'px');
+            }
         },
 
         /**
@@ -77,6 +95,10 @@ YUI.add(OJST.ns.widgets.AbstractWidget, function (Y) {
 
             if (this._mask) {
                 this._mask.syncSize();
+            }
+
+            if (this._notification) {
+                this._notification.syncSize();
             }
         },
 
@@ -112,7 +134,7 @@ YUI.add(OJST.ns.widgets.AbstractWidget, function (Y) {
          */
         mask: function () {
             if (!this._mask) {
-                this._mask = new OJST.ui.widgets.Mask({ node: this.get(OJST.STATIC.BBX), message: STR.LOADING });
+                this._mask = new OJST.ui.widgets.notify.Mask({ node: this.get(OJST.STATIC.BBX), message: STR.LOADING });
             }
             this._mask.show();
         },
@@ -123,6 +145,29 @@ YUI.add(OJST.ns.widgets.AbstractWidget, function (Y) {
         unmask: function () {
             if (this._mask) {
                 this._mask.hide();
+            }
+        },
+
+        /**
+         * @param {string} message
+         * @param {'success'|'info'|'warning'|'danger'} type
+         * @param {number} hideDelay
+         * @public
+         */
+        showNotification: function (message, type, hideDelay) {
+            if (!this._notification) {
+                this._notification = new OJST.ui.widgets.notify.Popup({ parent: this.get(OJST.STATIC.BBX) });
+            }
+            this._notification.show(message, type, hideDelay);
+        },
+
+        /**
+         * @param {boolean} clearQueue
+         * @public
+         */
+        hideNotification: function (clearQueue) {
+            if (this._notification) {
+                this._notification.hide(clearQueue);
             }
         }
 
@@ -137,13 +182,17 @@ YUI.add(OJST.ns.widgets.AbstractWidget, function (Y) {
                             return Y.Attribute.INVALID_VALUE;
                     }
                 }
+            },
+            padding: {
+                validator: Y.Lang.isNumber
             }
         }
     });
 
 
 }, OJST.VERSION, {requires: [
-    OJST.ns.widgets.Mask,
+    OJST.ns.widgets.notify.Mask,
+    OJST.ns.widgets.notify.Popup,
     OJST.ns.layouts.Border,
     'widget', 'widget-child'
 ]});

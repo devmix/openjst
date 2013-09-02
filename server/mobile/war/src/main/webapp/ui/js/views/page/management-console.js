@@ -35,7 +35,7 @@ YUI.add(OJST.ns.views.page.ManagementConsole, function (Y) {
         /** @override */
         createForm: function () {
             return Y.Node.create(
-                '<div class="container-fluid"><div class="row-fluid">' +
+                '<div class="container"><div class="row">' +
                     '<section class="span12">' +
                     '   <div class="page-header">' +
                     '       <h1>Management Console</h1>' +

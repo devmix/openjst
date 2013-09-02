@@ -218,4 +218,16 @@
         </pluginManagement>
     </build>
 
+    <!--An exception has occurred in the compiler (1.6.0_45). Please file a bug at the
+    Java Developer Connection (http://java.sun.com/webapps/bugreport)  after checking the Bug Parade for duplicates.
+    Include your program and the following diagnostic in your report.  Thank you.
+    com.sun.tools.javac.code.Symbol$CompletionFailure: class file for javax.persistence.FetchType not found-->
+    <dependencies>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

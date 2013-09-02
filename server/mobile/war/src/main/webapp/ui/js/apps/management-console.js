@@ -58,6 +58,10 @@ YUI.add(OJST.ns.apps.ManagementConsole, function (Y) {
                             ['accounts', OJST.ui.views.page.dashboard.connections.Accounts],
                             ['clients', OJST.ui.views.page.dashboard.connections.Clients]
                         ]]
+                    ]],
+                    ['/settings', OJST.ui.views.page.settings.Interface, OJST.i18n.label('settings'), [
+                        ['interface', OJST.ui.views.page.settings.Interface],
+                        ['protocols', OJST.ui.views.page.settings.Protocols]
                     ]]
                 ]
             },
@@ -109,5 +113,7 @@ YUI.add(OJST.ns.apps.ManagementConsole, function (Y) {
     OJST.ns.views.page.dashboard.connections.Summary,
     OJST.ns.views.page.dashboard.connections.Accounts,
     OJST.ns.views.page.dashboard.connections.Clients,
+    OJST.ns.views.page.settings.Interface,
+    OJST.ns.views.page.settings.Protocols,
     'io-base'
 ]});

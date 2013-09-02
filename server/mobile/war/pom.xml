@@ -184,7 +184,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--other-->
+        <!--Jackson-->
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -196,6 +196,9 @@
             <artifactId>jackson-databind</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!--other-->
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

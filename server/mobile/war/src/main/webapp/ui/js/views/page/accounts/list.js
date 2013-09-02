@@ -44,7 +44,7 @@ YUI.add(OJST.ns.views.page.accounts.List, function (Y) {
                     { name: "actions", label: OJST.i18n.label('actions'), html: true, width: 50,
                         render: function (v, m) {
                             return '<div style="text-align:center; white-space: nowrap;">'
-                                + '<i class="icon-trash" modelId="' + m.get('id') + '"></i>'
+                                + '<i class="glyphicon glyphicon-trash" modelId="' + m.get('id') + '"></i>'
                                 + '</div>';
                         }
                     }
@@ -65,7 +65,7 @@ YUI.add(OJST.ns.views.page.accounts.List, function (Y) {
                     }
                 },
                 delegates: {
-                    'click:i.icon-trash': function (e) {
+                    'click:i.glyphicon-trash': function (e) {
                         e.preventDefault();
                         OJST.ui.widgets.Alerts.confirm(OJST.i18n.label('confirm'), OJST.i18n.msg('removeAccount'), function (button) {
                             if ('yes' === button) {

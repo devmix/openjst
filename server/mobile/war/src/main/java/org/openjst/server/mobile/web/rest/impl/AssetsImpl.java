@@ -23,10 +23,10 @@ import org.infinispan.Cache;
 import org.openjst.commons.dto.properties.GroupedProperties;
 import org.openjst.commons.dto.properties.PropertiesFactory;
 import org.openjst.commons.i18n.Language;
-import org.openjst.server.commons.services.PreferencesManager;
+import org.openjst.server.commons.services.SettingsManager;
 import org.openjst.server.commons.web.utils.WebAssetsAggregator;
 import org.openjst.server.mobile.I18n;
-import org.openjst.server.mobile.Preferences;
+import org.openjst.server.mobile.Settings;
 import org.openjst.server.mobile.cdi.beans.MobileSession;
 import org.openjst.server.mobile.mq.model.UIConfigModel;
 import org.openjst.server.mobile.services.CacheService;
@@ -62,7 +62,7 @@ public class AssetsImpl implements Assets {
     private CacheService cacheService;
 
     @EJB
-    private PreferencesManager preferences;
+    private SettingsManager preferences;
 
     @Inject
     private MobileSession session;
@@ -74,8 +74,8 @@ public class AssetsImpl implements Assets {
     @Override
     public Response coreJs(final ServletContext servletContext, final String cacheControl, final String pragma) {
         final Cache<String, String> cache = cacheService.getWebUI();
-        final boolean debug = preferences.getBoolean(Preferences.UI.SCRIPTS_DEBUG);
-        final boolean useCache = preferences.getBoolean(Preferences.UI.SCRIPTS_CACHE);
+        final boolean debug = preferences.getBoolean(Settings.UI.SCRIPTS_DEBUG);
+        final boolean useCache = preferences.getBoolean(Settings.UI.SCRIPTS_CACHE);
 
         final String commonJs;
         if (!useCache || !cache.containsKey(CACHE_COMMON_JS)) {
@@ -131,7 +131,7 @@ public class AssetsImpl implements Assets {
 
         final GroupedProperties<String, String, Object> properties = PropertiesFactory.newHashMapGroupedProperties();
         properties.ensureGroup("ui").ensureGroup("scripts")
-                .set("debug", preferences.get(Preferences.UI.SCRIPTS_DEBUG))
+                .set("debug", preferences.get(Settings.UI.SCRIPTS_DEBUG))
                 .set("combine", true);
 
         final UIConfigModel application = new UIConfigModel(this.session.getUser(), language.getAll(), properties);
@@ -151,7 +151,7 @@ public class AssetsImpl implements Assets {
 //        if (isRequireInvalidate(cacheControl, pragma) || !cache.containsKey(cacheKey)) {
         final boolean isCss = resources.length > 0 && resources[0].toLowerCase().endsWith(".css");
         final String content;
-        if (!preferences.getBoolean(Preferences.UI.SCRIPTS_CACHE) || !cache.containsKey(cacheKey)) {
+        if (!preferences.getBoolean(Settings.UI.SCRIPTS_CACHE) || !cache.containsKey(cacheKey)) {
             // hack, YUI does not sort correctly modules
             Arrays.sort(resources, 0, resources.length, RESOURCE_COMPARATOR);
             content = WebAssetsAggregator.newInstance(servletContext, root).addResources(resources)

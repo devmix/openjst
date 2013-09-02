@@ -37,9 +37,11 @@ YUI.add(OJST.ns.utils.Framework, function (Y) {
          * @static
          */
         detach: function (handlers) {
-            Y.each(!Lang.isArray(handlers) ? [handlers] : handlers, function (h) {
-                h.detach();
-            });
+            if (handlers) {
+                Y.each(!Lang.isArray(handlers) ? [handlers] : handlers, function (h) {
+                    h.detach();
+                });
+            }
         },
 
         /**

@@ -34,7 +34,7 @@
      * @param {Object} data
      */
     function I18n(data) {
-        this._data = data;
+        this._reverse = data;
     }
 
     /**
@@ -44,7 +44,7 @@
      * @public
      */
     I18n.prototype.localize = function (key, subKey) {
-        return this._data[subKey ? key + '.' + subKey : key];
+        return this._reverse[subKey ? key + '.' + subKey : key];
     };
 
     /**
@@ -53,7 +53,16 @@
      * @public
      */
     I18n.prototype.label = function (key) {
-        return this._data[GROUP_WEB_UI_LABEL + '.' + key] || key;
+        return this._reverse[GROUP_WEB_UI_LABEL + '.' + key] || key;
+    };
+
+    /**
+     * @param {string} key
+     * @return {string}
+     * @public
+     */
+    I18n.prototype.setting = function (key) {
+        return this._reverse[key] || key;
     };
 
     /**
@@ -62,7 +71,7 @@
      * @public
      */
     I18n.prototype.msg = function (key) {
-        return this._data[GROUP_WEB_UI_MSG + '.' + key];
+        return this._reverse[GROUP_WEB_UI_MSG + '.' + key];
     };
 
     OJST.core.I18n = I18n;

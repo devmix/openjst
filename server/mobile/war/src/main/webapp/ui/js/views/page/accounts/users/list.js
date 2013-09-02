@@ -46,7 +46,7 @@ YUI.add(OJST.ns.views.page.accounts.users.List, function (Y) {
                     { name: "actions", label: "Actions", html: true, width: 50,
                         render: function (v, m) {
                             return '<div style="text-align:center; white-space: nowrap;">'
-                                + '<i class="icon-trash" modelId="' + m.get('id') + '"></i>'
+                                + '<i class="glyphicon glyphicon-trash" modelId="' + m.get('id') + '"></i>'
                                 + '</div>';
                         }
                     }
@@ -67,7 +67,7 @@ YUI.add(OJST.ns.views.page.accounts.users.List, function (Y) {
                     }
                 },
                 delegates: {
-                    'click:i.icon-trash': function (e) {
+                    'click:i.glyphicon-trash': function (e) {
                         OJST.ui.widgets.Alerts.confirm(OJST.i18n.label('confirm'), OJST.i18n.msg('removeUser'), function (button) {
                             if ('yes' === button) {
                                 var record = this.getModel(e.target.getAttribute('modelId'));

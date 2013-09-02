@@ -88,7 +88,7 @@
                 <styles>
                     <includes>
                         <include>css/bootstrap.css</include>
-                        <include>css/bootstrap-responsive.css</include>
+                        <include>css/bootstrap-theme.css</include>
                     </includes>
                 </styles>
             </library>

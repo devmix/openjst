@@ -31,15 +31,20 @@
 
 <div class="container">
 
-    <form class="form-signin" method='post' action='j_security_check'>
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="input-block-level"
+    <form role="form" class="form-sign-in" method='post' action='j_security_check'>
+        <h2 class="heading">Please sign in</h2>
+        <input type="text"
+               class="form-control"
                placeholder="<%=getString("web.ui.label.id")%>"
                id='j_username' name='j_username'>
-        <input type="password" class="input-block-level"
-               placeholder="<%=getString("web.ui.label.password")%>" id='j_password'
+
+        <input type="password"
+               class="form-control"
+               placeholder="<%=getString("web.ui.label.password")%>"
+               id='j_password'
                name='j_password'>
-        <button class="btn btn-large btn-primary" type="submit">
+
+        <button class="btn btn-primary btn-lg" type="submit">
             <%=getString("web.ui.label.sing-in")%>
         </button>
     </form>

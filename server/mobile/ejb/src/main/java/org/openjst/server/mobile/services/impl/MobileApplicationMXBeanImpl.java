@@ -22,10 +22,10 @@ import org.openjst.commons.protocols.auth.SecretKeys;
 import org.openjst.server.commons.AbstractMBean;
 import org.openjst.server.commons.model.types.LanguageCode;
 import org.openjst.server.commons.model.types.RoleType;
-import org.openjst.server.commons.services.PreferencesManager;
+import org.openjst.server.commons.services.SettingsManager;
 import org.openjst.server.mobile.Environment;
 import org.openjst.server.mobile.I18n;
-import org.openjst.server.mobile.Preferences;
+import org.openjst.server.mobile.Settings;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.dao.UserDAO;
 import org.openjst.server.mobile.model.Account;
@@ -57,7 +57,7 @@ public class MobileApplicationMXBeanImpl extends AbstractMBean implements Mobile
     private UserDAO userDAO;
 
     @EJB
-    private PreferencesManager preferencesManager;
+    private SettingsManager settingsManager;
 
     @Override
     protected String getName() {
@@ -82,8 +82,8 @@ public class MobileApplicationMXBeanImpl extends AbstractMBean implements Mobile
 
     private void initDemoData() {
         // TODO remove
-        preferencesManager.setBoolean(Preferences.UI.SCRIPTS_CACHE, false);
-        preferencesManager.setBoolean(Preferences.UI.SCRIPTS_DEBUG, true);
+        settingsManager.setBoolean(Settings.UI.SCRIPTS_CACHE, false);
+        settingsManager.setBoolean(Settings.UI.SCRIPTS_DEBUG, true);
 
         Account account = accountDAO.findSystemAccount();
         if (account != null) {

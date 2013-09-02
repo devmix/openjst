@@ -33,8 +33,8 @@ import org.openjst.server.commons.model.types.MessageDeliveryState;
 import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.network.Actor;
 import org.openjst.server.commons.network.DeliveryResult;
-import org.openjst.server.commons.services.PreferencesManager;
-import org.openjst.server.mobile.Preferences;
+import org.openjst.server.commons.services.SettingsManager;
+import org.openjst.server.mobile.Settings;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.dao.ClientDAO;
 import org.openjst.server.mobile.model.Client;
@@ -68,7 +68,7 @@ public class BasicProtocolServiceImpl implements BasicProtocolService<Actor<Long
     private static final Logger LOG = LoggerFactory.getLogger(BasicProtocolService.class);
 
     @EJB
-    private PreferencesManager cfg;
+    private SettingsManager cfg;
 
     @EJB
     private ClientDAO clientDAO;
@@ -119,9 +119,9 @@ public class BasicProtocolServiceImpl implements BasicProtocolService<Actor<Long
     private void create() {
         try {
             server = new Server(
-                    cfg.getString(Preferences.APIBasic.HOST),
-                    cfg.getInteger(Preferences.APIBasic.CLIENTS_PORT),
-                    cfg.getInteger(Preferences.APIBasic.SERVERS_PORT));
+                    cfg.getString(Settings.APIBasic.HOST),
+                    cfg.getInteger(Settings.APIBasic.CLIENTS_PORT),
+                    cfg.getInteger(Settings.APIBasic.SERVERS_PORT));
             server.addListener(createListener());
             server.start();
         } catch (Exception e) {

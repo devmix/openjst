@@ -25,11 +25,14 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
     "use strict";
 
     var CLS = {
-            INVALID: 'invalid',
+            INVALID: 'has-error',
             REQUIRED: 'required'
         },
         TPL = {
-            LABEL: '<label class="control-label {requiredClass}" for="{controlId}">{label}</label>'
+            CONTROLS: '<div class="form-group">' +
+                '   <div class="input-group col-xs-12 col-sm-9 col-md-9 col-lg-9"></div>' +
+                '</div>',
+            LABEL: '<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label {requiredClass}" for="{controlId}">{label}</label>'
         },
         Framework = OJST.ui.utils.Framework;
 
@@ -43,7 +46,7 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
     OJST.ui.widgets.form.Field = Y.Base.create('form-field', OJST.ui.widgets.AbstractWidget, [Y.WidgetChild], {
 
         CONTENT_TEMPLATE: null,
-        BOUNDING_TEMPLATE: '<div class="control-group"></div>',
+        BOUNDING_TEMPLATE: TPL.CONTROLS,
 
         /** @override */
         initializer: function () {
@@ -73,7 +76,6 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
             var bbx = this.get(OJST.STATIC.BBX),
                 controlId = Y.guid(),
                 label = this.get('label'),
-                controlsContainer = Y.Node.create('<div class="controls"></div>'),
                 labelContainer = Y.Node.create(Y.Lang.sub(TPL.LABEL, {
                     controlId: controlId, label: label, requiredClass: this.get('required') ? CLS.REQUIRED : '' }));
 
@@ -81,9 +83,7 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
                 bbx.prepend(labelContainer);
             }
 
-            bbx.append(controlsContainer);
-
-            this.set('controlsContainer', controlsContainer);
+            this.set('controlsContainer', bbx.one('.input-group'));
             this.set('labelContainer', labelContainer);
             this.set('controlId', controlId);
         },
@@ -125,7 +125,7 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
          */
         markInvalid: function (msg) {
             this.get(OJST.STATIC.BBX).addClass(CLS.INVALID);
-            Framework.setToolTip(this.getValueNode(), msg, 'left');
+            Framework.setToolTip(this.getValueNode(), msg, 'bottom');
         },
 
         /**
@@ -134,6 +134,36 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
         clearInvalid: function () {
             this.get(OJST.STATIC.BBX).removeClass(CLS.INVALID);
             Framework.removeToolTip(this.getValueNode());
+        },
+
+        /**
+         * @return {boolean}
+         * @public
+         */
+        isBlank: function () {
+            return true;
+        },
+
+        /**
+         * @return {boolean}
+         * @public
+         */
+        isEnabled: function () {
+            return true;
+        },
+
+        /**
+         * @public
+         */
+        disable: function () {
+            return undefined;
+        },
+
+        /**
+         * @public
+         */
+        enable: function () {
+            return undefined;
         }
 
     }, {

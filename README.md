@@ -7,7 +7,7 @@
  * JBoss AS 7.1.1.Final
 
 ### Development:
- * Maven 3
+ * Maven 3 (3.0.5)
  * Android SDK (Platform 8)
  * Any Java EE 6 compliant IDE
 

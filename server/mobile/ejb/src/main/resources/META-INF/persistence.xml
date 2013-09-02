@@ -24,7 +24,7 @@
         <description>Persistence unit of mobile server</description>
         <jta-data-source>java:jboss/datasources/serverMobileDS</jta-data-source>
 
-        <class>org.openjst.server.commons.model.ServerPreference</class>
+        <class>org.openjst.server.commons.model.CommonSetting</class>
         <class>org.openjst.server.mobile.model.Account</class>
         <class>org.openjst.server.mobile.model.User</class>
         <class>org.openjst.server.mobile.model.Client</class>

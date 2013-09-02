@@ -31,53 +31,13 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
     };
 
     /**
-     * @class FormFields
-     * @namespace OJST.ui.widgets.form
-     * @constructor
-     * @extends Y.Widget
-     * @uses Y.WidgetChild
-     * @uses Y.WidgetParent
-     */
-    OJST.ui.widgets.form.FormFields = Y.Base.create('widgetsFormFields', OJST.ui.widgets.AbstractWidget, [Y.WidgetParent, Y.WidgetChild], {
-
-        BOUNDING_TEMPLATE: '<form></form>',
-        CONTENT_TEMPLATE: null,
-
-        /** @override */
-        renderUI: function () {
-            var bbx = this.get(OJST.STATIC.BBX);
-            if (this.get('horizontal')) {
-                bbx.addClass('form-horizontal');
-            }
-        },
-
-        /** @override */
-        syncSize: function () {
-            OJST.ui.widgets.form.FormFields.superclass.syncSize.apply(this, arguments);
-            this.each(function (item, index) {
-                if (item.syncSize) {
-                    item.syncSize();
-                }
-            });
-        }
-
-    }, {
-        ATTRS: {
-            horizontal: {
-                writeOnce: 'initOnly',
-                validator: Y.Lang.isBoolean
-            }
-        }
-    });
-
-    /**
      * @class Form
      * @namespace OJST.ui.widgets.form
      * @constructor
      * @extends OJST.ui.widgets.AbstractWidget
      * @uses Y.WidgetChild
      */
-    OJST.ui.widgets.form.Form = Y.Base.create('widgetsForm', OJST.ui.widgets.AbstractWidget, [Y.WidgetChild], {
+    OJST.ui.widgets.form.Form = Y.Base.create('widgets-form', OJST.ui.widgets.AbstractWidget, [Y.WidgetChild], {
 
         BOUNDING_TEMPLATE: '<div></div>',
         CONTENT_TEMPLATE: null,
@@ -90,33 +50,12 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
              */
             this._fields = undefined;
             /**
-             * @type {Y.Button}
-             * @private
-             */
-            this._saveBtn = undefined;
-            /**
-             * @type {Y.Button}
-             * @private
-             */
-            this._closeBtn = undefined;
-            /**
              * @type {boolean}
              * @private
              */
             this._isNew = true;
-            /**
-             * @type {Y.Node}
-             * @private
-             */
-            this._alertMessageNode = undefined;
 
             this.set('layout', 'border');
-        },
-
-        /** @override */
-        destructor: function () {
-            this._saveBtn.destroy();
-            this._closeBtn.destroy();
         },
 
         /** @override */
@@ -125,39 +64,39 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
                 children = this.get('children'),
                 buttons = this.get('buttons'),
                 layout = this.get('layout'),
-                useDefaultButtons = this.get('useDefaultButtons'),
-                buttonsPanel;
+                useDefaultButtons = this.get('useDefaultButtons');
 
             if (children && children.length > 0) {
                 this._fields = new OJST.ui.widgets.form.FormFields({
-                    children: children,
-                    horizontal: this.get('horizontal')
+                    children: children
                 });
                 layout.add({region: 'center', element: this._fields});
             }
 
             if ((buttons && buttons.length > 0) || useDefaultButtons) {
-                buttonsPanel = Y.Node.create('<div style="text-align:right"><div class="alert" style="display:none;float:left;"></div></div>');
-                this._alertMessageNode = buttonsPanel.one('div.alert');
                 if (useDefaultButtons) {
-                    this._closeBtn = new Y.Button({
-                        render: buttonsPanel,
-                        label: ('Close'),
-                        on: {
-                            click: Y.bind(function () {
-                                this.fire('close');
-                            }, this)
-                        }
-                    });
-                    this._saveBtn = new Y.Button({
-                        render: buttonsPanel,
-                        label: OJST.i18n.label('save'),
-                        on: {
-                            click: Y.bind(this._onSave, this)
-                        }
-                    });
+                    layout.add({region: 'bottom', element: new OJST.ui.widgets.toolbar.Controls({
+                        controls: [
+                            {
+                                label: OJST.i18n.label('close'),
+                                align: 'right',
+                                handler: function () {
+                                    this.fire('close');
+                                },
+                                scope: this
+                            },
+                            {
+                                label: OJST.i18n.label('save'),
+                                align: 'right',
+                                primary: true,
+                                handler: function () {
+                                    this._onSave();
+                                },
+                                scope: this
+                            }
+                        ]
+                    })});
                 }
-                layout.add({region: 'bottom', element: buttonsPanel});
             }
 
             layout.render(bbx);
@@ -263,7 +202,7 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
             var model = this.get('model');
 
             if (this.get('auto') && model) {
-                this._hideAlertMessage();
+                this.hideNotification(true);
                 if (this.updateModel(model)) {
                     this.mask();
                     model.save(Y.bind(function () {
@@ -271,13 +210,13 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
                         if (!model.isLastOperationFailed()) {
                             this.fire(this._isNew ? EVT.CREATE : EVT.UPDATE, model);
                             this._checkNew(model);
-                            this._showAlertMessage('Data has been successfully saved', 'success');
+                            this.showNotification(OJST.i18n.msg('successSaving'), 'success', 0);
                         } else {
-                            this._showAlertMessage('Error saving data!', 'error');
+                            this.showNotification(OJST.i18n.msg('errorSaving'), 'danger', 2000);
                         }
                     }, this));
                 } else {
-                    this._showAlertMessage('Some fields filled incorrect!', 'error');
+                    this.showNotification(OJST.i18n.msg('errorSomeFieldsFilledIncorrect'), 'danger', 1000);
                 }
             } else {
                 this.fire(EVT.UPDATE);
@@ -305,39 +244,10 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
             if (firstItem) {
                 firstItem.focus();
             }
-        },
-
-        /**
-         * @param {string} message
-         * @private
-         */
-        _showAlertMessage: function (message, type) {
-            if (this._alertMessageNode) {
-                this._alertMessageNode.setAttribute('class', '');
-                this._alertMessageNode.addClass('alert alert-' + type);
-                this._alertMessageNode.setStyle('display', 'block');
-                this._alertMessageNode.set('text', message);
-            } else {
-                OJST.ui.widgets.Alerts.alert(OJST.i18n.label('error', message));
-            }
-        },
-
-        /**
-         * @private
-         */
-        _hideAlertMessage: function () {
-            if (this._alertMessageNode) {
-                this._alertMessageNode.setStyle('display', 'none');
-                this._alertMessageNode.set('text', '');
-            }
         }
 
     }, {
         ATTRS: {
-            horizontal: {
-                writeOnce: 'initOnly',
-                validator: Y.Lang.isBoolean
-            },
             children: {
                 writeOnce: 'initOnly'
             },
@@ -364,6 +274,8 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
 
 }, OJST.VERSION, {requires: [
     OJST.ns.widgets.AbstractWidget,
+    OJST.ns.widgets.form.FormFields,
+    OJST.ns.widgets.toolbar.Controls,
     OJST.ns.widgets.Alerts,
-    'widget-child', 'widget-parent'
+    'widget-child'
 ]});

@@ -46,7 +46,7 @@ YUI.add(OJST.ns.widgets.AbstractView, function (Y) {
              */
             this._subscribers = [];
             /**
-             * @type {OJST.ui.widgets.Mask}
+             * @type {OJST.ui.widgets.notify.Mask}
              * @private
              */
             this._mask = undefined;
@@ -114,7 +114,7 @@ YUI.add(OJST.ns.widgets.AbstractView, function (Y) {
          */
         mask: function () {
             if (!this._mask) {
-                this._mask = new OJST.ui.widgets.Mask({ node: this.get(OJST.STATIC.CONTAINER), message: STR.LOADING });
+                this._mask = new OJST.ui.widgets.notify.Mask({ node: this.get(OJST.STATIC.CONTAINER), message: STR.LOADING });
             }
             this._mask.show();
         },
@@ -145,5 +145,6 @@ YUI.add(OJST.ns.widgets.AbstractView, function (Y) {
 
 }, OJST.VERSION, {requires: [
     OJST.ns.layouts.Border,
+    OJST.ns.widgets.notify.Mask,
     'view'
 ]});

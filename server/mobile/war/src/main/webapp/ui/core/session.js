@@ -31,7 +31,7 @@
      * @param {Object} data
      */
     function CoreAccount(data) {
-        this._data = data || {
+        this._reverse = data || {
             name: OJST.i18n.label('guest'),
             authId: 'guest',
             readOnly: true
@@ -42,19 +42,19 @@
      * @return {string}
      */
     CoreAccount.prototype.getAuthId = function () {
-        return this._data.authId;
+        return this._reverse.authId;
     };
     /**
      * @return {string}
      */
     CoreAccount.prototype.getName = function () {
-        return this._data.name;
+        return this._reverse.name;
     };
     /**
      * @return {boolean}
      */
     CoreAccount.prototype.isReadOnly = function () {
-        return this._data.readOnly;
+        return this._reverse.readOnly;
     };
 
     /**
@@ -64,7 +64,7 @@
      * @param {Object} data
      */
     function CoreUser(data) {
-        this._data = data || {
+        this._reverse = data || {
             name: OJST.i18n.label('guest'),
             authId: 'guest',
             role: 'guest',
@@ -77,31 +77,31 @@
      * @return {string}
      */
     CoreUser.prototype.getAuthId = function () {
-        return this._data.authId;
+        return this._reverse.authId;
     };
     /**
      * @return {string}
      */
     CoreUser.prototype.getName = function () {
-        return this._data.name;
+        return this._reverse.name;
     };
     /**
      * @return {boolean}
      */
     CoreUser.prototype.isReadOnly = function () {
-        return this._data.readOnly;
+        return this._reverse.readOnly;
     };
     /**
      * @return {string}
      */
     CoreUser.prototype.getRole = function () {
-        return this._data.role;
+        return this._reverse.role;
     };
     /**
      * @return {string}
      */
     CoreUser.prototype.getLanguage = function () {
-        return this._data.language;
+        return this._reverse.language;
     };
 
     /**

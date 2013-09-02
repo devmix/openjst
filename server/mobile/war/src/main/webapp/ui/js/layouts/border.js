@@ -207,37 +207,40 @@ YUI.add(OJST.ns.layouts.Border, function (Y) {
          */
         _syncSize: function () {
             var container = this.get('container'),
-                containerHeight = container.get('offsetHeight') - this._paddingY(container) - this._borderY(container),
-                containerWidth = container.get('offsetWidth') - this._paddingX(container) - this._borderX(container),
-                rightWidth = this._rightNode ? this._rightNode.get('offsetWidth') + this._marginX(this._rightNode) : 0,
-                leftWidth = this._leftNode ? this._leftNode.get('offsetWidth') + this._marginX(this._leftNode) : 0,
+                containerHeight = container.get('offsetHeight') - this._borderY(container) - this._paddingY(container),
+                containerWidth = container.get('offsetWidth') - this._borderX(container) - this._paddingX(container),
+                rightWidth, leftWidth, topHeight, bottomHeight, centerHeight, centerWidth;
 
-                topHeight = (this._topNode ? this._topNode.get('offsetHeight')
-                    + this._marginY(this._topNode) + this._paddingY(this._topNode) + this._borderY(this._topNode) : 0),
+            if (this._bottomNode) {
+                this._bottomNode.setStyle('width', (containerWidth - this._marginX(this._bottomNode) - this._borderX(this._bottomNode)) + 'px');
+            }
+            if (this._topNode) {
+                this._topNode.setStyle('width', (containerWidth - this._marginX(this._topNode) - this._borderX(this._topNode) ) + 'px');
+            }
+            if (this._leftNode) {
+                this._leftNode.setStyle('height', (containerHeight - this._marginY(this._leftNode) - this._borderY(this._leftNode)) + 'px');
+            }
+            if (this._rightNode) {
+                this._rightNode.setStyle('height', (containerHeight - this._marginY(this._rightNode) - this._borderY(this._topNode)) + 'px');
+            }
 
-                bottomHeight = this._bottomNode ? this._bottomNode.get('offsetHeight') + this._marginY(this._bottomNode) : 0,
+            rightWidth = this._rightNode ? this._rightNode.get('offsetWidth') + this._marginX(this._rightNode) : 0;
+            leftWidth = this._leftNode ? this._leftNode.get('offsetWidth') + this._marginX(this._leftNode) : 0;
 
-                centerHeight = containerHeight - topHeight - bottomHeight
-                    - this._marginY(this._centerNode) - this._paddingY(this._centerNode) - this._borderY(this._centerNode),
+            topHeight = (this._topNode ? this._topNode.get('offsetHeight')
+                + this._marginY(this._topNode) + this._borderY(this._topNode) : 0);
 
-                centerWidth = containerWidth - leftWidth - rightWidth
-                    - this._marginX(this._centerNode) - this._paddingX(this._centerNode) - this._borderX(this._centerNode);
+            bottomHeight = this._bottomNode ? this._bottomNode.get('offsetHeight')
+                + this._marginY(this._bottomNode) + this._borderY(this._bottomNode) : 0;
+
+            centerHeight = containerHeight - topHeight - bottomHeight
+                - this._marginY(this._centerNode) - this._borderY(this._centerNode);
+
+            centerWidth = containerWidth - leftWidth - rightWidth
+                - this._marginX(this._centerNode) - this._borderX(this._centerNode);
 
             this._centerNode.setStyle('width', centerWidth + 'px');
             this._centerNode.setStyle('height', centerHeight + 'px');
-
-            if (this._leftNode) {
-                this._leftNode.setStyle('height', (containerHeight - this._paddingY(this._leftNode)) + 'px');
-            }
-            if (this._rightNode) {
-                this._rightNode.setStyle('height', (containerHeight - this._paddingY(this._rightNode)) + 'px');
-            }
-            if (this._topNode) {
-                this._topNode.setStyle('width', (containerWidth - this._paddingX(this._topNode) - this._borderX(this._topNode) ) + 'px');
-            }
-            if (this._bottomNode) {
-                this._bottomNode.setStyle('width', (containerWidth - this._paddingX(this._bottomNode) - this._borderX(this._bottomNode)) + 'px');
-            }
 
             this._syncElementSize([this.get('top'), this.get('left'), this.get('right'), this.get('center'), this.get('bottom')]);
         },

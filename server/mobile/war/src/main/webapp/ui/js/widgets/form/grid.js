@@ -43,16 +43,20 @@ YUI.add(OJST.ns.widgets.form.Grid, function (Y) {
 
             PAGING_SIZE_TITLE: '<li><span><b>{title}</b></span></li>',
             PAGING_SIZE_ELEMENT: '<li {clazz}><a tabindex="-1" href="javascript:void(0)" pageSize="{size}">{size}</a></li>',
-            PAGING_SIZE: '<span class="pagination pagination-small pagination-right" style="float:right">&nbsp;<ul>{sizes}</ul></span>',
+            PAGING_SIZE_CONTENT: '<ul class="pagination pagination-sm">{sizes}</ul>',
+            PAGING_SIZE: '<span style="float:right">{content}</span>',
 
             PAGING_INDEX_TITLE: '<li><span><b>{title}</b></span></li>',
             PAGING_INDEX_ELEMENT: '<li {clazz}><a href="javascript:void(0)" pageIndex="{index}">{index}</a></li>',
             PAGING_INDEX_DIVIDER: '<li class="disabled"><a href="javascript:void(0)" pageIndex="-2">...</a></li>',
-            PAGING_INDEX: '<span class="pagination pagination-small pagination-right" style="float:right"><ul>{indexes}</ul></span>',
+            PAGING_INDEX_CONTENT: '<ul class="pagination pagination-sm">{indexes}</ul>',
+            PAGING_INDEX: '<span style="float:right">{content}</span>',
 
-            BUTTONS: '<span class="btn-toolbar"><span class="btn-group dropup">{buttons}</span></span>',
-            BUTTON: '<button class="btn btn-small" type="button" index="{index}">{icon}{label}</button>',
-            BUTTON_ICON: '<i class="icon-{name}"></i> '
+            PAGING_DIVIDER: '<span style="float:right">&nbsp;</span>',
+
+            BUTTONS: '<span class="btn-toolbar"><span class="btn-group btn-group-sm dropup">{buttons}</span></span>',
+            BUTTON: '<button class="btn btn-default" type="button" index="{index}">{icon}{label}</button>',
+            BUTTON_ICON: '<i class="glyphicon glyphicon-{name}"></i> '
         },
         EMPTY_DATA = {
             startIndex: 0,
@@ -474,12 +478,13 @@ YUI.add(OJST.ns.widgets.form.Grid, function (Y) {
             var container = Y.Node.create(TPL.FOOTER),
                 data = this._getModelListMeta();
 
-            this._pageSizesNode = this._renderPagingSizes(data);
-            this._pageIndexesNode = this._renderPagingIndexes(data);
+            this._pageSizesNode = Y.Node.create(sub(TPL.PAGING_SIZE, {content: this._renderPagingSizes(data)}));
+            this._pageIndexesNode = Y.Node.create(sub(TPL.PAGING_INDEX, {content: this._renderPagingIndexes(data)}));
             this._buttonsNode = this._renderButtons();
 
             container.append(this._buttonsNode);
             container.append(this._pageSizesNode);
+            container.append(Y.Node.create(TPL.PAGING_DIVIDER));
             container.append(this._pageIndexesNode);
 
             return container;
@@ -511,7 +516,7 @@ YUI.add(OJST.ns.widgets.form.Grid, function (Y) {
             columnCellsNode.each(function (columnNode) {
                 if (index < size) {
                     rowCellsNode.item(index++).setStyle('width',
-                        (parseInt(columnNode.getComputedStyle('width'), 10) + (index === size ? 1 : 0)) + 'px');
+                        (parseInt(columnNode.get('offsetWidth'), 10) + (index === size ? 1 : 0)) + 'px');
                 }
             }, this);
         },
@@ -555,7 +560,7 @@ YUI.add(OJST.ns.widgets.form.Grid, function (Y) {
                 }));
             });
 
-            return Y.Node.create(sub(TPL.PAGING_SIZE, { sizes: pageSizeHtml.join('') }));
+            return sub(TPL.PAGING_SIZE_CONTENT, { sizes: pageSizeHtml.join('') });
         },
 
         /**
@@ -600,7 +605,7 @@ YUI.add(OJST.ns.widgets.form.Grid, function (Y) {
                 }
             }
 
-            return Y.Node.create(sub(TPL.PAGING_INDEX, { indexes: pageIndexes.join('') }));
+            return sub(TPL.PAGING_INDEX_CONTENT, { indexes: pageIndexes.join('') });
         },
 
         /**
@@ -678,8 +683,7 @@ YUI.add(OJST.ns.widgets.form.Grid, function (Y) {
             Y.each(this._columns, function (column) {
                 var columnName = column.get('name'),
                     modelValue = model.get(columnName),
-                    renderedValue = modelValue,
-                    formatter;
+                    renderedValue = modelValue;
 
                 if (column.hasRender()) {
                     renderedValue = column.render(modelValue, model);

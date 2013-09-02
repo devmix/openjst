@@ -24,7 +24,9 @@
 YUI.add(OJST.ns.models.Base, function (Y) {
     "use strict";
 
-    var DEFAULT_PAGE_SIZE = 15,
+    var Classes = OJST.ui.utils.Classes,
+
+        DEFAULT_PAGE_SIZE = 15,
         COOKIE_GROUP = 'modelList',
         COOKIE_OPTIONS = {
             expires: new Date(32503680000000) // 3000-01-01 00:00:0000
@@ -51,6 +53,58 @@ YUI.add(OJST.ns.models.Base, function (Y) {
                 return Y.Date.parse(Y.Lang.isDate(v) ? v : new Date(v));
             }
         };
+
+    /**
+     * @param {*} obj
+     * @param {Function} clazz
+     * @param {boolean} [createInstance]
+     * @returns {*}
+     * @static
+     * @private
+     */
+    function convertObjectToModel(obj, clazz, createInstance) {
+        if (!Y.Lang.isValue(obj) || !Y.Lang.isFunction(clazz)) {
+            return obj;
+        }
+
+        var attributes = clazz.ATTRS, field, attribute, converter, modelType, i, length;
+
+        if (Y.Lang.isArray(obj)) {
+            for (i = 0, length = obj.length; i < length; i++) {
+                obj[i] = convertObjectToModel(obj[i], clazz, true);
+            }
+            return obj;
+        }
+
+        for (field in obj) {
+            if (obj.hasOwnProperty(field)) {
+                attribute = attributes[field];
+                if (attribute) {
+                    if (attribute.type) {
+                        converter = CONVERTERS[attribute.type];
+                        if (converter) {
+                            obj[field] = converter(obj[field], attribute.format);
+                        } else {
+                            /*jslint evil:true*/
+                            modelType = eval(attribute.type);
+                            /*jslint evil:false*/
+                            if (Y.Lang.isFunction(modelType) && Classes.isFunctionInstanceOf(modelType, Y.Model)) {
+                                obj[field] = convertObjectToModel(obj[field], modelType, true);
+
+                            } else {
+                                obj[field] = modelType(obj[field], attribute.format);
+                            }
+                        }
+                    } else if (attribute.converter && Y.Lang.isFunction(attribute.converter)) {
+                        obj[field] = attribute.converter(obj[field], attribute.format);
+                    }
+                }
+            }
+        }
+
+        /*jslint newcap:true*/
+        return createInstance ? new clazz(obj) : obj;
+    }
 
     /**
      * @type {{OK: string, NOT_UNIQUE: string, NOT_EXISTS: string, INTERNAL_SERVER_ERROR: string}}
@@ -89,7 +143,7 @@ YUI.add(OJST.ns.models.Base, function (Y) {
                 if (this._lastOperationFailed) {
                     this._fireServerError(result);
                 } else {
-                    return result.value;
+                    return convertObjectToModel(result.value, this.constructor, false);
                 }
             } catch (e) {
                 this._lastOperationFailed = true;
@@ -127,7 +181,6 @@ YUI.add(OJST.ns.models.Base, function (Y) {
 
             this.fire('error', { status: result.status, errorData: result.errorData, src: 'server' });
         }
-
     }, {
         ATTRS: {
             readOnly: {
@@ -148,12 +201,6 @@ YUI.add(OJST.ns.models.Base, function (Y) {
 
         /** @override */
         initializer: function () {
-            /**
-             * @type {{string: {type: string, format: string, converter: function}}}
-             * @private
-             */
-            this._fieldTypes = this._getTypesOfModelFields();
-
             this._loadState();
         },
 
@@ -236,46 +283,15 @@ YUI.add(OJST.ns.models.Base, function (Y) {
         },
 
         /**
-         * @type {{string: {type: string, format: string, converter: function}}}
-         * @private
-         */
-        _getTypesOfModelFields: function () {
-            var types = {};
-            if (this.model) {
-                Y.each(this.model.ATTRS, function (v, k) {
-                    if (v.type || v.converter) {
-                        types[k] = {type: v.type, format: v.format, converter: v.converter};
-                    }
-                });
-            }
-            return types;
-        },
-
-        /**
          * @param {object[]} list
          * @return {object[]}
          * @private
          */
         _convertValues: function (list) {
-            if (!this._fieldTypes || this._fieldTypes.length === 0) {
-                return [];
-            }
-
-            var i, length, model, field, c;
+            var i, length;
             for (i = 0, length = list.length; i < length; i++) {
-                model = list[i];
-                for (field in this._fieldTypes) {
-                    if (this._fieldTypes.hasOwnProperty(field) && model.hasOwnProperty(field)) {
-                        c = this._fieldTypes[field];
-                        if (c.type && CONVERTERS[c.type]) {
-                            model[field] = CONVERTERS[c.type](model[field], c.format);
-                        } else if (c.converter && Y.Lang.isFunction(c.converter)) {
-                            model[field] = c.converter(model[field], c.format);
-                        }
-                    }
-                }
+                list[i] = convertObjectToModel(list[i], this.model, false);
             }
-
             return list;
         }
 
@@ -317,5 +333,6 @@ YUI.add(OJST.ns.models.Base, function (Y) {
 
 }, OJST.VERSION, {requires: [
     OJST.ns.utils.Framework,
+    OJST.ns.utils.Classes,
     'cookie', 'model', 'model-list', 'model-sync-rest', 'json-parse', 'datatype'
 ]});
