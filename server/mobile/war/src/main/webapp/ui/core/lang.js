@@ -49,6 +49,22 @@
             }
 
             return clazz;
+        },
+
+        /**
+         * @param {Function} fn
+         * @param {Function} clazz
+         * @returns {boolean}
+         */
+        isFunctionInstanceOf: function (fn, clazz) {
+            var constructor = fn;
+            do {
+                if (constructor === clazz) {
+                    return true;
+                }
+                constructor = constructor && constructor.superclass ? constructor.superclass.constructor : null;
+            } while (constructor);
+            return false;
         }
     };
 

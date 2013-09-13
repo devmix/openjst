@@ -21,32 +21,57 @@
 
 /*global Y, YUI, OJST, $*/
 /*jslint nomen:true, node:true, white:true, browser:true, plusplus:true, stupid: true*/
-YUI.add(OJST.ns.widgets.form.ListField, function (Y) {
+YUI.add(OJST.ns.widgets.form.fields.List, function (Y) {
     "use strict";
 
+    var TPL = {
+        INPUT: '<input type="hidden" id="{id}" name="{name}"/>'
+    };
+
     /**
-     * @class ListField
-     * @namespace OJST.ui.widgets.form
+     * @class List
+     * @namespace OJST.ui.widgets.form.fields
      * @constructor
      * @extends OJST.ui.widgets.form.Field
      */
-    OJST.ui.widgets.form.ListField = Y.Base.create('widgetsFormListField', OJST.ui.widgets.form.Field, [], {
+    OJST.ui.widgets.form.fields.List = Y.Base.create('widgets-form-fields-list', OJST.ui.widgets.form.Field, [], {
 
-        /** @override */
-        renderUI: function () {
-            OJST.ui.widgets.form.ListField.superclass.renderUI.apply(this, arguments);
-
-            this._controlId = this.get('controlId');
-            this._control = Y.Node.create(Y.Lang.sub('<input type="hidden" id="{id}" name="{name}"/>',
-                {
-                    id: this._controlId,
-                    name: this.get('name') || this._controlId
-                }));
-
-            this.get('controlsContainer').append(this._control);
+        /**
+         * @override
+         */
+        initializer: function () {
+            /**
+             * @type {Y.Node}
+             * @private
+             */
+            this._control = undefined;
         },
 
-        /** @override */
+        /**
+         * @override
+         */
+        destructor: function () {
+            this._control.destroy(true);
+            delete this._control;
+        },
+
+        /**
+         * @override
+         */
+        renderControl: function (container, controlId) {
+            this._control = Y.Node.create(Y.Lang.sub(TPL.INPUT, {
+                id: controlId,
+                name: this.get('name') || controlId
+            }));
+
+            container.append(this._control);
+
+            return this._control;
+        },
+
+        /**
+         * @override
+         */
         bindUI: function () {
             Y.once('available', this._initializeSelect2, '#' + this.get('controlId'), this);
         },
@@ -55,13 +80,13 @@ YUI.add(OJST.ns.widgets.form.ListField, function (Y) {
          * @private
          */
         _initializeSelect2: function () {
-            var controlId = this.get('controlId'), data = [];
+            var data = [];
 
             Y.each(this.get('data'), function (item) {
                 data.push({id: item[0], text: item[1]});
             });
 
-            $('#' + controlId).select2({
+            $('#' + this.get('controlId')).select2({
                 data: data,
                 width: '100%'
             });
@@ -75,7 +100,7 @@ YUI.add(OJST.ns.widgets.form.ListField, function (Y) {
          * @private
          */
         _valueSetter: function (value) {
-            $('#' + this._controlId).select2('val', value);
+            $('#' + this.get('controlId')).select2('val', value);
             return value;
         },
 
@@ -84,7 +109,7 @@ YUI.add(OJST.ns.widgets.form.ListField, function (Y) {
          * @private
          */
         _valueGetter: function () {
-            return $('#' + this._controlId).select2('val');
+            return $('#' + this.get('controlId')).select2('val');
         }
 
     }, {

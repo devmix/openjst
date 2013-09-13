@@ -185,21 +185,33 @@ YUI.add(OJST.ns.widgets.notify.Popup, function (Y) {
                 to: { top: 4, opacity: 1 },
                 on: {
                     end: Y.bind(function () {
-                        if (!this._anim.get('runHide') && this.get('autoHide')) {
-                            this._hideTimer = Y.later(hideDelay || this.get('delayBeforeHide'), this, function () {
-                                this._anim
-                                    .set('runHide', true)
-                                    .set('to', { opacity: 0 })
-                                    .run();
-                            });
-                        } else {
-                            this.showNext();
-                        }
+                        this._onEndAnimation(hideDelay);
                     }, this)
                 }
             });
 
             this._anim.run();
+        },
+
+        /**
+         * @private
+         */
+        _onEndAnimation: function (hideDelay) {
+            if (!this._active) {
+                return;
+            }
+            if (!this._anim.get('runHide') && this.get('autoHide')) {
+                this._hideTimer = Y.later(hideDelay || this.get('delayBeforeHide'), this, function () {
+                    if (this._active) {
+                        this._anim
+                            .set('runHide', true)
+                            .set('to', { opacity: 0 })
+                            .run();
+                    }
+                });
+            } else {
+                this.showNext();
+            }
         }
 
     }, {

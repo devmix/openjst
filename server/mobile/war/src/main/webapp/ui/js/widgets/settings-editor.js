@@ -128,25 +128,25 @@ YUI.add(OJST.ns.widgets.SettingsEditor, function (Y) {
                         };
                     switch (setting.get('type')) {
                         case 'INTEGER':
-                            config.type = OJST.ui.widgets.form.TextField;
+                            config.type = OJST.ui.widgets.form.fields.Text;
                             break;
                         case 'LONG':
-                            config.type = OJST.ui.widgets.form.TextField;
+                            config.type = OJST.ui.widgets.form.fields.Text;
                             break;
                         case 'FLOAT':
-                            config.type = OJST.ui.widgets.form.TextField;
+                            config.type = OJST.ui.widgets.form.fields.Text;
                             break;
                         case 'DOUBLE':
-                            config.type = OJST.ui.widgets.form.TextField;
+                            config.type = OJST.ui.widgets.form.fields.Text;
                             break;
                         case 'STRING':
-                            config.type = OJST.ui.widgets.form.TextField;
+                            config.type = OJST.ui.widgets.form.fields.Text;
                             break;
                         case 'DATE':
-                            config.type = OJST.ui.widgets.form.TextField;
+                            config.type = OJST.ui.widgets.form.fields.Text;
                             break;
                         case 'BOOLEAN':
-                            config.type = OJST.ui.widgets.form.CheckBox;
+                            config.type = OJST.ui.widgets.form.fields.CheckBox;
                             break;
                     }
 
@@ -373,8 +373,8 @@ YUI.add(OJST.ns.widgets.SettingsEditor, function (Y) {
 }, OJST.VERSION, {requires: [
     OJST.ns.widgets.AbstractWidget,
     OJST.ns.widgets.form.FormFields,
-    OJST.ns.widgets.form.CheckBox,
-    OJST.ns.widgets.form.TextField,
+    OJST.ns.widgets.form.fields.CheckBox,
+    OJST.ns.widgets.form.fields.Text,
     OJST.ns.widgets.toolbar.Controls,
     OJST.ns.utils.DependencyResolver,
     'widget-parent'

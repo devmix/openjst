@@ -18,7 +18,6 @@
 package org.openjst.server.mobile.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.openjst.server.commons.model.AbstractIdEntity;
 import org.openjst.server.commons.model.types.LanguageCode;
 import org.openjst.server.commons.model.types.RoleType;
 
@@ -60,10 +59,9 @@ import java.util.Arrays;
 @Table(name = User.TABLE,
         uniqueConstraints = {@UniqueConstraint(columnNames = {User.COLUMN_ACCOUNT_ID, User.COLUMN_AUTH_ID})}
 )
-public class User extends AbstractIdEntity {
+public class User extends AbstractAccountEntity {
 
     public static final String TABLE = "user";
-    public static final String COLUMN_ACCOUNT_ID = "account_id";
     public static final String COLUMN_AUTH_ID = "auth_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_PASSWORD = "password";
@@ -73,10 +71,6 @@ public class User extends AbstractIdEntity {
     public static final String COLUMN_SYSTEM = "system";
 
     public static final int DEFAULT_SALT_SIZE = 32;
-
-    @JoinColumn(name = COLUMN_ACCOUNT_ID, nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Account account;
 
     @NotEmpty
     @Size(min = 1, max = 255)
@@ -109,14 +103,6 @@ public class User extends AbstractIdEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = COLUMN_LANGUAGE, length = 6, nullable = false)
     private LanguageCode language;
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(final Account account) {
-        this.account = account;
-    }
 
     public String getAuthId() {
         return authId;

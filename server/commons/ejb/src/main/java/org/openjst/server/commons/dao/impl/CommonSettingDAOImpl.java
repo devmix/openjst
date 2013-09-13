@@ -22,6 +22,7 @@ import org.openjst.server.commons.AbstractEJB;
 import org.openjst.server.commons.dao.CommonSettingDAO;
 import org.openjst.server.commons.model.CommonSetting;
 import org.openjst.server.commons.settings.Setting;
+import org.openjst.server.commons.settings.SettingChangeEvent;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -34,6 +35,13 @@ import static org.openjst.server.commons.model.CommonQueries.CommonSetting.*;
  */
 @Stateless
 public class CommonSettingDAOImpl extends AbstractEJB implements CommonSettingDAO {
+
+    @Override
+    public void update(final Set<SettingChangeEvent.Item> settings) {
+        for (final SettingChangeEvent.Item item : settings) {
+            update(item.getSetting(), item.getNewValue());
+        }
+    }
 
     @Override
     public void update(final Setting property, @Nullable final Object value) {

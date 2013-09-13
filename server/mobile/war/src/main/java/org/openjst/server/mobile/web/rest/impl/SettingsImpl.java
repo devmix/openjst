@@ -28,6 +28,7 @@ import org.openjst.server.mobile.web.rest.Settings;
 
 import javax.ejb.EJB;
 import javax.ws.rs.core.MultivaluedMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.openjst.server.commons.settings.SettingGroups.*;
@@ -80,12 +81,17 @@ public class SettingsImpl implements Settings {
         }
 
         final Map<String, Setting> settings = group.settings();
+        final Map<Setting, Object> settingsForUpdate = new LinkedHashMap<Setting, Object>();
         for (final String key : values.keySet()) {
             if (settings.containsKey(key)) {
                 final Setting setting = settings.get(key);
                 final Object value = settingsManager.convertSetting(setting, values.getFirst(key));
-                settingsManager.set(setting, value);
+                settingsForUpdate.put(setting, value);
             }
+        }
+
+        if (!settingsForUpdate.isEmpty()) {
+            settingsManager.set(settingsForUpdate);
         }
 
         return QuerySingleResult.Builder.<Void>newInstance().status(Result.Status.OK).build();

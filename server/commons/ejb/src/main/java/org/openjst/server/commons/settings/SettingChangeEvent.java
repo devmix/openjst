@@ -17,7 +17,12 @@
 
 package org.openjst.server.commons.settings;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Sergey Grachev
@@ -27,38 +32,71 @@ public final class SettingChangeEvent implements Serializable {
 
     private static final long serialVersionUID = 810092482987272964L;
 
-    private final String name;
-    private final Object newValue;
-    private final Object oldValue;
+    private final Map<Setting, Item> settings = new HashMap<Setting, Item>();
 
-    private SettingChangeEvent(final String name, final Object newValue, final Object oldValue) {
-        this.name = name;
-        this.newValue = newValue;
-        this.oldValue = oldValue;
+    public SettingChangeEvent(final Set<Item> settings) {
+        for (final Item item : settings) {
+            this.settings.put(item.getSetting(), item);
+        }
     }
 
-    public static SettingChangeEvent newInstance(final String name, final Object newValue, final Object oldValue) {
-        return new SettingChangeEvent(name, newValue, oldValue);
+    public SettingChangeEvent(final Item item) {
+        this.settings.put(item.getSetting(), item);
     }
 
-    public String getName() {
-        return name;
+    public static SettingChangeEvent newInstance(final Setting setting, final Object newValue, final Object oldValue) {
+        return new SettingChangeEvent(new Item(setting, newValue, oldValue));
     }
 
-    public Object getNewValue() {
-        return newValue;
+    public static SettingChangeEvent newInstance(final Set<Item> settings) {
+        return new SettingChangeEvent(settings);
     }
 
-    public Object getOldValue() {
-        return oldValue;
+    public static Item newItem(final Setting setting, final Object newValue, final Object oldValue) {
+        return new Item(setting, newValue, oldValue);
+    }
+
+    public boolean containsAny(final Set<Setting> search) {
+        final Set<Setting> exists = settings.keySet();
+        for (final Setting setting : search) {
+            if (exists.contains(setting)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public String toString() {
         return "SettingChangeEvent{" +
-                "name='" + name + '\'' +
-                ", newValue=" + newValue +
-                ", oldValue=" + oldValue +
+                "settings=" + settings +
                 '}';
+    }
+
+    public static final class Item {
+
+        private final Setting setting;
+        private final Object newValue;
+        private final Object oldValue;
+
+        public Item(final Setting setting, @Nullable final Object newValue, @Nullable final Object oldValue) {
+            this.setting = setting;
+            this.newValue = newValue;
+            this.oldValue = oldValue;
+        }
+
+        public Setting getSetting() {
+            return setting;
+        }
+
+        @Nullable
+        public Object getNewValue() {
+            return newValue;
+        }
+
+        @Nullable
+        public Object getOldValue() {
+            return oldValue;
+        }
     }
 }

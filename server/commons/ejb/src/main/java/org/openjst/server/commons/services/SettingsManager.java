@@ -47,6 +47,8 @@ public interface SettingsManager {
 
     void set(Setting setting, Object value);
 
+    void set(Map<Setting, Object> values);
+
     void setString(Setting setting, String value);
 
     void setInteger(Setting setting, int value);

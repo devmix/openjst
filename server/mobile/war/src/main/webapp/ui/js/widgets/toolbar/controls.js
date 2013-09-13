@@ -110,7 +110,9 @@ YUI.add(OJST.ns.widgets.toolbar.Controls, function (Y) {
             return '<button id="' + controlId + '" type="button" class="btn btn-default'
                 + (control.primary ? ' btn-primary' : '')
                 + (control.align === 'right' ? ' pull-right' : '')
-                + '">'
+                + '"'
+                + (control.minWidth ? ' style="min-width:' + parseInt(control.minWidth, 10) + 'px"' : '')
+                + '>'
                 + (control.icon ? '<i class="glyphicon glyphicon-' + control.icon + '"></i> ' : '')
                 + (control.label || '') + '</button>';
         }

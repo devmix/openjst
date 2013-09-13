@@ -34,7 +34,7 @@ YUI.add(OJST.ns.widgets.AbstractWidget, function (Y) {
      * @constructor
      * @extends Y.Widget
      */
-    OJST.ui.widgets.AbstractWidget = Y.Base.create('widgetsAbstractWidget', Y.Widget, [], {
+    OJST.ui.widgets.AbstractWidget = Y.Base.create('widgets-abstract-widget', Y.Widget, [], {
 
         /** @override */
         initializer: function () {

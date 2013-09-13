@@ -20,6 +20,7 @@ package org.openjst.server.commons.dao;
 import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.model.CommonSetting;
 import org.openjst.server.commons.settings.Setting;
+import org.openjst.server.commons.settings.SettingChangeEvent;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,8 @@ import java.util.Set;
  * @author Sergey Grachev
  */
 public interface CommonSettingDAO {
+
+    void update(Set<SettingChangeEvent.Item> settings);
 
     void update(Setting property, @Nullable Object value);
 

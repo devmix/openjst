@@ -29,8 +29,10 @@ import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.commons.mq.results.QueryListResult;
 import org.openjst.server.commons.mq.results.QuerySingleResult;
 import org.openjst.server.commons.mq.results.Result;
+import org.openjst.server.mobile.cdi.beans.MobileSession;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.dao.RPCMessagesDAO;
+import org.openjst.server.mobile.dao.UpdatesDAO;
 import org.openjst.server.mobile.model.Account;
 import org.openjst.server.mobile.mq.model.AccountModel;
 import org.openjst.server.mobile.mq.model.AccountSummaryModel;
@@ -54,6 +56,12 @@ public class AccountsImpl implements Accounts {
 
     @Inject
     private RPCMessagesDAO rpcMessagesDAO;
+
+    @Inject
+    private UpdatesDAO updatesDAO;
+
+    @Inject
+    private MobileSession session;
 
     @Override
     public QueryListResult<AccountModel> list(final QueryListParams parameters) {
@@ -107,7 +115,7 @@ public class AccountsImpl implements Accounts {
 
     @Override
     public QuerySingleResult<AccountSummaryModel> getSummary(final Long accountId) {
-        final Account e = accountDAO.findById(accountId);
+        final Account e = accountDAO.findById(session.isAdministrator() ? accountId : session.getAccountId());
         if (e == null) {
             return Result.notExists();
         }
@@ -121,6 +129,8 @@ public class AccountsImpl implements Accounts {
         model.setMessagesFromServer(rpcMessagesDAO.getCountFromServer(e.getId()));
         model.setMessagesToClient(rpcMessagesDAO.getCountDeliveredToClients(e.getId()));
         model.setMessagesToServer(rpcMessagesDAO.getCountDeliveredToServer(e.getId()));
+
+        model.setUpdatesCount(updatesDAO.getCountForAccount(e.getId()).intValue());
 
         return QuerySingleResult.Builder.<AccountSummaryModel>newInstance().value(model).build();
     }

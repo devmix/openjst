@@ -212,32 +212,32 @@ YUI.add(OJST.ns.layouts.Border, function (Y) {
                 rightWidth, leftWidth, topHeight, bottomHeight, centerHeight, centerWidth;
 
             if (this._bottomNode) {
-                this._bottomNode.setStyle('width', (containerWidth - this._marginX(this._bottomNode) - this._borderX(this._bottomNode)) + 'px');
+                this._bottomNode.setStyle('width', (containerWidth - this._marginX(this._bottomNode)) + 'px');
             }
             if (this._topNode) {
-                this._topNode.setStyle('width', (containerWidth - this._marginX(this._topNode) - this._borderX(this._topNode) ) + 'px');
+                this._topNode.setStyle('width', (containerWidth - this._marginX(this._topNode)) + 'px');
             }
             if (this._leftNode) {
-                this._leftNode.setStyle('height', (containerHeight - this._marginY(this._leftNode) - this._borderY(this._leftNode)) + 'px');
+                this._leftNode.setStyle('height', (containerHeight - this._marginY(this._leftNode)) + 'px');
             }
             if (this._rightNode) {
-                this._rightNode.setStyle('height', (containerHeight - this._marginY(this._rightNode) - this._borderY(this._topNode)) + 'px');
+                this._rightNode.setStyle('height', (containerHeight - this._marginY(this._rightNode)) + 'px');
             }
 
             rightWidth = this._rightNode ? this._rightNode.get('offsetWidth') + this._marginX(this._rightNode) : 0;
             leftWidth = this._leftNode ? this._leftNode.get('offsetWidth') + this._marginX(this._leftNode) : 0;
 
             topHeight = (this._topNode ? this._topNode.get('offsetHeight')
-                + this._marginY(this._topNode) + this._borderY(this._topNode) : 0);
+                + this._marginY(this._topNode) : 0);
 
             bottomHeight = this._bottomNode ? this._bottomNode.get('offsetHeight')
-                + this._marginY(this._bottomNode) + this._borderY(this._bottomNode) : 0;
+                + this._marginY(this._bottomNode) : 0;
 
             centerHeight = containerHeight - topHeight - bottomHeight
-                - this._marginY(this._centerNode) - this._borderY(this._centerNode);
+                - this._marginY(this._centerNode);
 
             centerWidth = containerWidth - leftWidth - rightWidth
-                - this._marginX(this._centerNode) - this._borderX(this._centerNode);
+                - this._marginX(this._centerNode);
 
             this._centerNode.setStyle('width', centerWidth + 'px');
             this._centerNode.setStyle('height', centerHeight + 'px');

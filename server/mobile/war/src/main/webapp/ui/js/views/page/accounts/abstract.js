@@ -39,7 +39,8 @@ YUI.add(OJST.ns.views.page.accounts.Abstract, function (Y) {
 
         /** @override */
         createTabs: function () {
-            var accountId = this.get('accountId');
+            var accountId = this.get('accountId'),
+                isExists = OJST.ui.utils.Framework.isValue(accountId);
             return {
                 title: this.getTabsTitle(),
                 width: 150,
@@ -50,18 +51,29 @@ YUI.add(OJST.ns.views.page.accounts.Abstract, function (Y) {
 
                     {label: OJST.i18n.label('users'), route: '/accounts/' + accountId + '/users',
                         active: this instanceof OJST.ui.views.page.accounts.users.List,
-                        visible: !this.isNewModel()
+                        visible: isExists
                     },
 
                     {label: OJST.i18n.label('user'),
                         active: this instanceof OJST.ui.views.page.accounts.users.User,
-                        visible: !this.isNewModel() && this instanceof OJST.ui.views.page.accounts.users.User,
+                        visible: isExists && this instanceof OJST.ui.views.page.accounts.users.User,
+                        level: 1
+                    },
+
+                    {label: OJST.i18n.label('updates'), route: '/accounts/' + accountId + '/updates',
+                        active: this instanceof OJST.ui.views.page.accounts.updates.List,
+                        visible: isExists
+                    },
+
+                    {label: OJST.i18n.label('update'),
+                        active: this instanceof OJST.ui.views.page.accounts.updates.Update,
+                        visible: isExists && this instanceof OJST.ui.views.page.accounts.updates.Update,
                         level: 1
                     },
 
                     {label: OJST.i18n.label('summary'), route: '/accounts/' + accountId + '/summary',
                         active: this instanceof OJST.ui.views.page.accounts.Summary,
-                        visible: !this.isNewModel()
+                        visible: isExists
                     }
                 ]
             };
@@ -70,5 +82,6 @@ YUI.add(OJST.ns.views.page.accounts.Abstract, function (Y) {
     });
 
 }, OJST.VERSION, {requires: [
-    OJST.ns.views.page.Abstract
+    OJST.ns.views.page.Abstract,
+    OJST.ns.utils.Framework
 ]});

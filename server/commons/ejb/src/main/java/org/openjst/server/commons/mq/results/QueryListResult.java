@@ -18,6 +18,7 @@
 package org.openjst.server.commons.mq.results;
 
 
+import org.openjst.commons.dto.tuples.Pair;
 import org.openjst.server.commons.mq.IMapping;
 import org.openjst.server.commons.mq.ModelQuery;
 
@@ -115,6 +116,12 @@ public final class QueryListResult<M> extends AbstractResult<M> {
             for (final F e : list) {
                 add(mapping.map(e));
             }
+            return this;
+        }
+
+        public <F> Builder<M> convert(final Pair<List<F>, Long> list, final IMapping<F, M> mapping) {
+            convert(list.first(), mapping);
+            total(list.second());
             return this;
         }
 

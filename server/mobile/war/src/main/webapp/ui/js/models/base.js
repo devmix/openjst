@@ -24,7 +24,7 @@
 YUI.add(OJST.ns.models.Base, function (Y) {
     "use strict";
 
-    var Classes = OJST.ui.utils.Classes,
+    var Lang = OJST.core.Lang,
 
         DEFAULT_PAGE_SIZE = 15,
         COOKIE_GROUP = 'modelList',
@@ -88,7 +88,7 @@ YUI.add(OJST.ns.models.Base, function (Y) {
                             /*jslint evil:true*/
                             modelType = eval(attribute.type);
                             /*jslint evil:false*/
-                            if (Y.Lang.isFunction(modelType) && Classes.isFunctionInstanceOf(modelType, Y.Model)) {
+                            if (Y.Lang.isFunction(modelType) && Lang.isFunctionInstanceOf(modelType, Y.Model)) {
                                 obj[field] = convertObjectToModel(obj[field], modelType, true);
 
                             } else {
@@ -120,16 +120,48 @@ YUI.add(OJST.ns.models.Base, function (Y) {
      */
     OJST.ui.models.Base = Y.Base.create('modelsBase', Y.Model, [Y.ModelSync.REST], {
 
-        /** @override */
+        /**
+         * @override
+         */
         initializer: function () {
+            /**
+             * @type {Y.EventHandle[]}
+             * @private
+             */
+            this._subscribers = [];
             /**
              * @type {boolean}
              * @private
              */
             this._lastOperationFailed = undefined;
+
+            this.subscribe(this.on('error', function () {
+                this._lastOperationFailed = STATUS.INTERNAL_SERVER_ERROR;
+            }, this));
         },
 
-        /** @override */
+        /**
+         * @override
+         */
+        destructor: function () {
+            OJST.ui.utils.Framework.detach(this._subscribers);
+            delete this._subscribers;
+            delete this._lastOperationFailed;
+        },
+
+        /**
+         * @param {EventHandle} handler
+         * @public
+         */
+        subscribe: function (handler) {
+            if (handler) {
+                this._subscribers.push(handler);
+            }
+        },
+
+        /**
+         * @override
+         */
         parse: function (response) {
             this._lastOperationFailed = false;
 
@@ -141,7 +173,7 @@ YUI.add(OJST.ns.models.Base, function (Y) {
                 var result = Y.JSON.parse(response);
                 this._lastOperationFailed = result.status !== STATUS.OK;
                 if (this._lastOperationFailed) {
-                    this._fireServerError(result);
+                    this.fire('error', { status: result.status, errorData: result.errorData, src: 'server' });
                 } else {
                     return convertObjectToModel(result.value, this.constructor, false);
                 }
@@ -159,28 +191,8 @@ YUI.add(OJST.ns.models.Base, function (Y) {
          */
         isLastOperationFailed: function () {
             return  this._lastOperationFailed;
-        },
-
-        /**
-         * @param {object} result
-         * @private
-         */
-        _fireServerError: function (result) {
-//            var message;
-
-//            switch (result.status) {
-//                case STATUS.NOT_UNIQUE:
-//                    message = Y.Lang.sub(OJST.i18n.msg('errorNotUnique'),
-//                        {fields: result.errorData ? result.errorData.join(',') : ''});
-//                    break;
-//
-//                case STATUS.NOT_EXISTS:
-//                    message = OJST.i18n.msg('errorNotExists');
-//                    break;
-//            }
-
-            this.fire('error', { status: result.status, errorData: result.errorData, src: 'server' });
         }
+
     }, {
         ATTRS: {
             readOnly: {
@@ -199,12 +211,16 @@ YUI.add(OJST.ns.models.Base, function (Y) {
      */
     OJST.ui.models.BaseList = Y.Base.create('modelsBaseList', Y.ModelList, [Y.ModelSync.REST], {
 
-        /** @override */
+        /**
+         * @override
+         */
         initializer: function () {
             this._loadState();
         },
 
-        /** @override */
+        /**
+         * @override
+         */
         parse: function (response) {
             if (typeof response !== 'string') {
                 return response || [];
@@ -227,7 +243,9 @@ YUI.add(OJST.ns.models.Base, function (Y) {
             }
         },
 
-        /** @override */
+        /**
+         * @override
+         */
         getURL: function (action, options) {
             var url = Y.Lang.trim(Y.ModelSync.REST.prototype.getURL.apply(this, arguments)),
                 parameters = [],
@@ -333,6 +351,5 @@ YUI.add(OJST.ns.models.Base, function (Y) {
 
 }, OJST.VERSION, {requires: [
     OJST.ns.utils.Framework,
-    OJST.ns.utils.Classes,
     'cookie', 'model', 'model-list', 'model-sync-rest', 'json-parse', 'datatype'
 ]});

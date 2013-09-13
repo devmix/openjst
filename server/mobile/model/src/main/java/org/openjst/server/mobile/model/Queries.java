@@ -101,4 +101,16 @@ public final class Queries {
         }
     }
     //</editor-fold>
+    //<editor-fold desc="Update">
+
+    public static final class Update {
+        public static final String PREFIX = "Update.";
+        public static final String FIND_BY_ID = PREFIX + "findById";
+        public static final String GET_LIST_OF = PREFIX + "getListOf";
+        public static final String GET_COUNT_OF = PREFIX + "getCountOf";
+
+        private Update() {
+        }
+    }
+    //</editor-fold>
 }

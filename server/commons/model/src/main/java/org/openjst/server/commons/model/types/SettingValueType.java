@@ -27,5 +27,6 @@ public enum SettingValueType {
     DOUBLE,
     STRING,
     DATE,
+    ENUM,
     BOOLEAN
 }

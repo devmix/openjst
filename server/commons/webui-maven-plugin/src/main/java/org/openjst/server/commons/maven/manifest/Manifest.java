@@ -61,7 +61,9 @@ public final class Manifest {
 
         final Parameters parameters = createParameters(manifest.getParameters(), framework);
 
-        printModules(framework);
+        if (log.isDebugEnabled()) {
+            printModules(framework);
+        }
 
         final String parametersJson = new ObjectMapper().writer().writeValueAsString(parameters);
         final String frameworkJson = framework.getConfigAsJson(false);

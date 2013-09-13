@@ -47,33 +47,45 @@ YUI.add(OJST.ns.utils.Framework, function (Y) {
         /**
          * @param {*} v
          * @return {boolean}
+         * @static
          */
         isValue: function (v) {
             return Y.Lang.isValue(v) && String(v).trim() !== '';
         },
 
         /**
+         * @param {*} v
+         * @returns {boolean}
+         * @static
+         */
+        isNode: function (v) {
+            return v instanceof Y.Node;
+        },
+
+        /**
          * @param {Y.Node} node
          * @param {string} text
          * @param {top | bottom | left | right} placement
+         * @static
          */
         setToolTip: function (node, text, placement) {
             node.setAttribute('data-toggle', 'tooltip');
-            node.setAttribute('title', text);
-            $(node.getDOMNode()).tooltip(Y.merge({}, {
+//            node.setAttribute('title', text);
+            $(node.getDOMNode()).tooltip({
                 delay: { show: 500, hide: 100 },
                 title: text,
                 placement: placement
-            }));
+            });
         },
 
         /**
          * @param {Y,Node} node
+         * @static
          */
         removeToolTip: function (node) {
             if (node) {
                 node.removeAttribute('data-toggle');
-                node.removeAttribute('title');
+//                node.removeAttribute('title');
                 $(node.getDOMNode()).tooltip('destroy');
             }
         }

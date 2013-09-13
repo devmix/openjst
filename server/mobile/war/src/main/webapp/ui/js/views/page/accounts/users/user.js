@@ -39,8 +39,7 @@ YUI.add(OJST.ns.views.page.accounts.users.User, function (Y) {
 
         /** @override */
         isNewModel: function () {
-            var id = this.get('userId');
-            return !Y.Lang.isValue(id) || '' === id;
+            return !OJST.ui.utils.Framework.isValue(this.get('userId'));
         },
 
         /** @override */
@@ -57,26 +56,26 @@ YUI.add(OJST.ns.views.page.accounts.users.User, function (Y) {
                 useDefaultButtons: true,
                 children: [
                     {
-                        type: OJST.ui.widgets.form.TextField,
+                        type: OJST.ui.widgets.form.fields.Text,
                         name: 'name',
                         label: OJST.i18n.label('name'),
                         required: true
                     },
                     {
-                        type: OJST.ui.widgets.form.TextField,
+                        type: OJST.ui.widgets.form.fields.Text,
                         name: 'authId',
                         label: OJST.i18n.label('authId'),
                         required: true
                     },
                     {
-                        type: OJST.ui.widgets.form.TextField,
+                        type: OJST.ui.widgets.form.fields.Text,
                         name: 'password',
                         label: 'Password',
                         isPassword: true,
                         placeholder: OJST.i18n.label('passwordPlaceholder')
                     },
                     {
-                        type: OJST.ui.widgets.form.ListField,
+                        type: OJST.ui.widgets.form.fields.List,
                         name: 'role',
                         label: OJST.i18n.label('role'),
                         data: [
@@ -86,7 +85,7 @@ YUI.add(OJST.ns.views.page.accounts.users.User, function (Y) {
                         required: true
                     },
                     {
-                        type: OJST.ui.widgets.form.ListField,
+                        type: OJST.ui.widgets.form.fields.List,
                         name: 'language',
                         label: OJST.i18n.label('language'),
                         data: [
@@ -123,6 +122,6 @@ YUI.add(OJST.ns.views.page.accounts.users.User, function (Y) {
     OJST.ns.views.page.accounts.Abstract,
     OJST.ns.models.User,
     OJST.ns.widgets.form.Form,
-    OJST.ns.widgets.form.TextField,
-    OJST.ns.widgets.form.ListField
+    OJST.ns.widgets.form.fields.Text,
+    OJST.ns.widgets.form.fields.List
 ]});

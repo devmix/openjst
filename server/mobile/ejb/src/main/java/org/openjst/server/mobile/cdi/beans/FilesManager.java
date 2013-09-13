@@ -15,10 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package org.openjst.server.mobile.cdi.beans;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * @author Sergey Grachev
  */
+public interface FilesManager {
 
-.yui3-widgetsformtextfield .input-group .btn {
-  height: 31px;
+    String storeTemporaryFile(InputStream inputStream, String name) throws IOException;
+
+    InputStream getTemporaryFileStream(String externalId) throws FileNotFoundException;
 }

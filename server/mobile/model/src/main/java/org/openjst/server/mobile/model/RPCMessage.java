@@ -19,7 +19,6 @@ package org.openjst.server.mobile.model;
 
 import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.rpc.RPCMessageFormat;
-import org.openjst.server.commons.model.AbstractIdEntity;
 import org.openjst.server.commons.model.types.MessageDeliveryState;
 
 import javax.persistence.*;
@@ -39,10 +38,9 @@ import java.util.Date;
 @Table(name = RPCMessage.TABLE)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.INTEGER)
-public abstract class RPCMessage extends AbstractIdEntity {
+public abstract class RPCMessage extends AbstractAccountEntity {
 
     public static final String TABLE = "rpc_message";
-    public static final String COLUMN_ACCOUNT_ID = "account_id";
     public static final String COLUMN_CLIENT_ID = "client_id";
     public static final String COLUMN_CREATED = "created";
     public static final String COLUMN_FORMAT = "format";
@@ -53,10 +51,6 @@ public abstract class RPCMessage extends AbstractIdEntity {
     @JoinColumn(name = COLUMN_CLIENT_ID, nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Client client;
-
-    @JoinColumn(name = COLUMN_ACCOUNT_ID, nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Account account;
 
     @Column(name = COLUMN_CREATED, nullable = false)
     private Date created = new Date();
@@ -75,14 +69,6 @@ public abstract class RPCMessage extends AbstractIdEntity {
 
     @Column(name = COLUMN_DELIVERY_MESSAGE, length = Short.MAX_VALUE)
     private String deliveryMessage;
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(final Account account) {
-        this.account = account;
-    }
 
     public Client getClient() {
         return client;

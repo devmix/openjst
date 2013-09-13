@@ -76,6 +76,10 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
         </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
 
         <!--other-->
 
@@ -106,8 +110,26 @@
                             <contextRoot>/mobile</contextRoot>
                         </webModule>
                     </modules>
+                    <archive>
+                        <manifestEntries>
+                            <Dependencies>
+                                javax.jcr, org.modeshape.jcr.api export services, org.modeshape export services
+                            </Dependencies>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-jar-plugin</artifactId>-->
+            <!--<configuration>-->
+            <!--<archive>-->
+            <!--<manifestEntries>-->
+            <!--<Dependencies>javax.jcr, org.modeshape.jcr.api export services, org.modeshape export services</Dependencies>-->
+            <!--</manifestEntries>-->
+            <!--</archive>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>

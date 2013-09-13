@@ -49,19 +49,19 @@ YUI.add(OJST.ns.views.page.accounts.Account, function (Y) {
                 auto: true,
                 children: [
                     {
-                        type: OJST.ui.widgets.form.TextField,
+                        type: OJST.ui.widgets.form.fields.Text,
                         name: 'name',
                         label: OJST.i18n.label('name'),
                         required: true
                     },
                     {
-                        type: OJST.ui.widgets.form.TextField,
+                        type: OJST.ui.widgets.form.fields.Text,
                         name: 'authId',
                         label: OJST.i18n.label('authId'),
                         required: true
                     },
                     {
-                        type: OJST.ui.widgets.form.TextField,
+                        type: OJST.ui.widgets.form.fields.Text,
                         name: 'apiKey',
                         label: OJST.i18n.label('apiKey'),
                         required: true,
@@ -105,6 +105,6 @@ YUI.add(OJST.ns.views.page.accounts.Account, function (Y) {
     OJST.ns.models.Account,
     OJST.ns.views.page.accounts.Abstract,
     OJST.ns.widgets.form.Form,
-    OJST.ns.widgets.form.TextField,
+    OJST.ns.widgets.form.fields.Text,
     OJST.ns.widgets.Alerts
 ]});

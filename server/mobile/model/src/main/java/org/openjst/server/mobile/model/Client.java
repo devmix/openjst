@@ -18,7 +18,6 @@
 package org.openjst.server.mobile.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.openjst.server.commons.model.AbstractIdEntity;
 import org.openjst.server.commons.model.types.ProtocolType;
 
 import javax.persistence.*;
@@ -73,10 +72,9 @@ import static org.openjst.server.mobile.model.Queries.Client.*;
         uniqueConstraints = {@UniqueConstraint(columnNames = {Client.COLUMN_ACCOUNT_ID, Client.COLUMN_AUTH_ID})}
 )
 @SuppressWarnings("UnusedDeclaration")
-public class Client extends AbstractIdEntity {
+public class Client extends AbstractAccountEntity {
 
     public static final String TABLE = "client";
-    public static final String COLUMN_ACCOUNT_ID = "account_id";
     public static final String COLUMN_AUTH_ID = "authId";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_PASSWORD = "password";
@@ -92,10 +90,6 @@ public class Client extends AbstractIdEntity {
     public static final String COLUMN_LAST_REMOTE_HOST = "last_remote_host";
 
     public static final int DEFAULT_SALT_SIZE = 255;
-
-    @JoinColumn(name = COLUMN_ACCOUNT_ID, nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Account account;
 
     @NotEmpty
     @Size(min = 1, max = 255)
@@ -140,14 +134,6 @@ public class Client extends AbstractIdEntity {
 
     @Column(name = COLUMN_LAST_REMOTE_HOST)
     private String lastRemoteHost;
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(final Account account) {
-        this.account = account;
-    }
 
     public String getAuthId() {
         return authId;

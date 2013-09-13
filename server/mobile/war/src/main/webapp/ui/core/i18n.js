@@ -71,7 +71,7 @@
      * @public
      */
     I18n.prototype.msg = function (key) {
-        return this._reverse[GROUP_WEB_UI_MSG + '.' + key];
+        return this._reverse[GROUP_WEB_UI_MSG + '.' + key] || key;
     };
 
     OJST.core.I18n = I18n;

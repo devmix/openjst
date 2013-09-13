@@ -131,8 +131,8 @@ public class BasicProtocolServiceImpl implements BasicProtocolService<Actor<Long
 
     @PreDestroy
     private void destroy() {
-        server.removeListener(serverEventsListener);
         server.stop();
+        server.removeListener(serverEventsListener);
     }
 
     private ServerEventsListener createListener() {
@@ -302,5 +302,11 @@ public class BasicProtocolServiceImpl implements BasicProtocolService<Actor<Long
             default:
                 return MessageDeliveryState.AUTHENTICATION_INTERNAL_SERVER_ERROR;
         }
+    }
+
+    @Override
+    public void restart() {
+        destroy();
+        create();
     }
 }

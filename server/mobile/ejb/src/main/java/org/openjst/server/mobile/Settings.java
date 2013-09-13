@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static org.openjst.server.commons.model.types.SettingValueType.*;
+
 /**
  * @author Sergey Grachev
  */
@@ -41,9 +43,9 @@ public final class Settings {
 
     public enum UI implements Setting {
 
-        SCRIPTS_CACHE("ui.scripts.cache", SettingValueType.BOOLEAN, true),
-        SCRIPTS_DEBUG("ui.scripts.debug", SettingValueType.BOOLEAN, false),
-        SCRIPTS_COMBINE("ui.scripts.combine", SettingValueType.BOOLEAN, true);
+        SCRIPTS_CACHE("ui.scripts.cache", BOOLEAN, true),
+        SCRIPTS_DEBUG("ui.scripts.debug", BOOLEAN, false),
+        SCRIPTS_COMBINE("ui.scripts.combine", BOOLEAN, true);
 
         //<editor-fold desc="implementation">
         private final String name;
@@ -80,11 +82,11 @@ public final class Settings {
 
     public enum APIBasic implements Setting {
 
-        HOST("api.basic.host", SettingValueType.STRING, "localhost"),
+        HOST("api.basic.host", STRING, "localhost"),
         // clients to server connections
-        CLIENTS_PORT("api.basic.clients-port", SettingValueType.INTEGER, ProtocolBasicConstants.DEFAULT_CLIENTS_PORT),
+        CLIENTS_PORT("api.basic.clients-port", INTEGER, ProtocolBasicConstants.DEFAULT_CLIENTS_PORT),
         // servers to server connections
-        SERVERS_PORT("api.basic.servers-port", SettingValueType.INTEGER, ProtocolBasicConstants.DEFAULT_SERVERS_PORT);
+        SERVERS_PORT("api.basic.servers-port", INTEGER, ProtocolBasicConstants.DEFAULT_SERVERS_PORT);
 
         //<editor-fold desc="implementation">
         private final String name;
@@ -92,6 +94,43 @@ public final class Settings {
         private final Object defaultValue;
 
         private APIBasic(final String name, final SettingValueType type, final Object defaultValue) {
+            this.name = name;
+            this.type = type;
+            this.defaultValue = defaultValue;
+        }
+
+        @Override
+        public String key() {
+            return name;
+        }
+
+        @Override
+        public SettingValueType type() {
+            return type;
+        }
+
+        @Override
+        public Object defaultValue() {
+            return defaultValue;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+        //</editor-fold>
+    }
+
+    public enum Updates implements Setting {
+
+        DUMMY("update.dummy", BOOLEAN, null);
+
+        //<editor-fold desc="implementation">
+        private final String name;
+        private final SettingValueType type;
+        private final Object defaultValue;
+
+        private Updates(final String name, final SettingValueType type, final Object defaultValue) {
             this.name = name;
             this.type = type;
             this.defaultValue = defaultValue;

@@ -52,7 +52,9 @@ YUI.add(OJST.ns.models.AccountSummary, function (Y) {
             messagesToClient: {validator: Y.Lang.isNumber},
             messagesToServer: {validator: Y.Lang.isNumber},
             messagesFromClient: {validator: Y.Lang.isNumber},
-            messagesFromServer: {validator: Y.Lang.isNumber}
+            messagesFromServer: {validator: Y.Lang.isNumber},
+
+            updatesCount: {validator: Y.Lang.isNumber}
         }
     });
 

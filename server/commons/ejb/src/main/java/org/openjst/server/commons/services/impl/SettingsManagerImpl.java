@@ -221,8 +221,8 @@ public class SettingsManagerImpl implements SettingsManager, Serializable {
         set(setting, value.getTime());
     }
 
-    private void notifyChange(final String name, final Object newValue, final Object oldValue) {
-        preferenceChangeEvents.fire(SettingChangeEvent.newInstance(name, newValue, oldValue));
+    private void notifyChange(final Setting setting, final Object newValue, final Object oldValue) {
+        preferenceChangeEvents.fire(SettingChangeEvent.newInstance(setting, newValue, oldValue));
     }
 
     @Override
@@ -231,8 +231,24 @@ public class SettingsManagerImpl implements SettingsManager, Serializable {
         if (oldValue == null ? value != null : !oldValue.equals(value)) {
             commonSettingDAO.update(setting, value);
             cache.put(setting.key(), value);
-            notifyChange(setting.key(), value, oldValue);
+            notifyChange(setting, value, oldValue);
         }
+    }
+
+    @Override
+    public void set(final Map<Setting, Object> values) {
+        final Set<SettingChangeEvent.Item> settings = new LinkedHashSet<SettingChangeEvent.Item>();
+        for (final Map.Entry<Setting, Object> entry : values.entrySet()) {
+            final Setting setting = entry.getKey();
+            final Object value = entry.getValue();
+            final Object oldValue = cache.get(setting.key());
+            if (oldValue == null ? value != null : !oldValue.equals(value)) {
+                cache.put(setting.key(), value);
+                settings.add(SettingChangeEvent.newItem(setting, value, oldValue));
+            }
+        }
+        commonSettingDAO.update(settings);
+        preferenceChangeEvents.fire(SettingChangeEvent.newInstance(settings));
     }
 
     @Override

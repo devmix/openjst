@@ -60,6 +60,8 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
 
         /** @override */
         renderUI: function () {
+            OJST.ui.widgets.form.Form.superclass.bindUI.apply(this, arguments);
+
             var bbx = this.get(OJST.STATIC.BBX),
                 children = this.get('children'),
                 buttons = this.get('buttons'),
@@ -80,6 +82,7 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
                             {
                                 label: OJST.i18n.label('close'),
                                 align: 'right',
+                                minWidth: 100,
                                 handler: function () {
                                     this.fire('close');
                                 },
@@ -89,6 +92,7 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
                                 label: OJST.i18n.label('save'),
                                 align: 'right',
                                 primary: true,
+                                minWidth: 100,
                                 handler: function () {
                                     this._onSave();
                                 },
@@ -104,6 +108,8 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
 
         /** @override */
         bindUI: function () {
+            OJST.ui.widgets.form.Form.superclass.bindUI.apply(this, arguments);
+
             var model = this.get('model');
 
             this._checkNew(model);
@@ -257,11 +263,13 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
             },
             useDefaultButtons: {
                 writeOnce: 'initOnly',
-                validator: Y.Lang.isBoolean
+                validator: Y.Lang.isBoolean,
+                value: true
             },
             auto: {
                 writeOnce: 'initOnly',
-                validator: Y.Lang.isBoolean
+                validator: Y.Lang.isBoolean,
+                value: true
             },
             model: {
                 writeOnce: 'initOnly',

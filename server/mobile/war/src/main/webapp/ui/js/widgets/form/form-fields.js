@@ -46,7 +46,7 @@ YUI.add(OJST.ns.widgets.form.FormFields, function (Y) {
 
         /** @override */
         renderUI: function () {
-            var bbx = this.get(OJST.STATIC.BBX), cbx = this.get(OJST.STATIC.CBX);
+            var cbx = this.get(OJST.STATIC.CBX);
             this._titleNode = cbx.one('.title');
             this._onChangeTitle();
         },

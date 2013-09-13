@@ -26,4 +26,5 @@ import org.openjst.server.commons.network.Route;
  */
 public interface BasicProtocolService<R extends Actor<?>, M extends Message<?>> extends Route<R, M> {
 
+    void restart();
 }

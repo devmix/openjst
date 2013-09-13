@@ -21,32 +21,7 @@ git clone https://github.com/devmix/openjst.git
 
 Configuring JBoss
 
-The default profile is used standalone-full. You need to add the following settings in /standalone/configuration/standalone-full.xml
-
-    JAAS
-
-    <subsystem xmlns="urn:jboss:domain:security:1.1">
-      ...
-      <security-domain name="OpenJSTServerMobileRealm" cache-type="default">
-          <authentication>
-              <login-module code="org.openjst.server.mobile.jaas.DatabaseLoginModule" flag="required">
-                  <module-option name="realm" value="OpenJSTServerMobileRealm"/>
-          </login-module>
-          </authentication>
-      </security-domain>
-      ...
-    </security-domains>
-
-    Cache
-
-    <subsystem xmlns="urn:jboss:domain:infinispan:1.2" default-cache-container="hibernate">
-      ...
-      <cache-container name="openjst-cache" default-cache="openjst-local-cache" start="EAGER">
-          <local-cache name="openjst-local-cache"/>
-          <local-cache name="openjst-web-ui-cache"/>
-      </cache-container>
-      ...
-    </subsystem>
+See file "INSTALL"
 
 Configuring project
 

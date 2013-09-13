@@ -41,4 +41,12 @@ public final class Environment {
         private JMX() {
         }
     }
+
+    public static final class Repository {
+
+        public static final String DEFAULT = "server-mobile";
+
+        private Repository() {
+        }
+    }
 }

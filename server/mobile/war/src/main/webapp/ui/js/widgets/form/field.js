@@ -32,7 +32,10 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
             CONTROLS: '<div class="form-group">' +
                 '   <div class="input-group col-xs-12 col-sm-9 col-md-9 col-lg-9"></div>' +
                 '</div>',
-            LABEL: '<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label {requiredClass}" for="{controlId}">{label}</label>'
+            LABEL: '<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label {requiredClass}" for="{controlId}">' +
+                '{label}' +
+                '<span style="float:right; display: none;" class="icon-error glyphicon glyphicon-exclamation-sign"></span>' +
+                '</label>'
         },
         Framework = OJST.ui.utils.Framework;
 
@@ -55,11 +58,31 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
              * @private
              */
             this._subscribers = [];
+            /**
+             * @type {Y.Node}
+             * @private
+             */
+            this._labelIconErrorNode = undefined;
+            /**
+             * @type {Y.Node}
+             * @private
+             */
+            this._labelNode = undefined;
+            /**
+             * @type {Y.Node}
+             * @private
+             */
+            this._controlNode = undefined;
         },
 
         /** @override */
         destructor: function () {
             OJST.ui.utils.Framework.detach(this._subscribers);
+            this._labelNode.destroy(true);
+
+            delete this._controlNode;
+            delete this._labelNode;
+            delete this._labelIconErrorNode;
             delete this._subscribers;
         },
 
@@ -75,17 +98,21 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
         renderUI: function () {
             var bbx = this.get(OJST.STATIC.BBX),
                 controlId = Y.guid(),
-                label = this.get('label'),
-                labelContainer = Y.Node.create(Y.Lang.sub(TPL.LABEL, {
-                    controlId: controlId, label: label, requiredClass: this.get('required') ? CLS.REQUIRED : '' }));
+                label = this.get('label');
+
+            this.set('controlId', controlId);
 
             if (label) {
-                bbx.prepend(labelContainer);
+                this._labelNode = Y.Node.create(Y.Lang.sub(TPL.LABEL, {
+                    controlId: controlId,
+                    label: label,
+                    requiredClass: this.get('required') ? CLS.REQUIRED : ''
+                }));
+                this._labelIconErrorNode = this._labelNode.one('span.icon-error');
+                bbx.prepend(this._labelNode);
             }
 
-            this.set('controlsContainer', bbx.one('.input-group'));
-            this.set('labelContainer', labelContainer);
-            this.set('controlId', controlId);
+            this._controlNode = this.renderControl(bbx.one('.input-group'), controlId);
         },
 
         /** @override */
@@ -98,12 +125,37 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
             }));
         },
 
+        /** @override */
+        syncUI: function () {
+            if (Framework.isValue(this.get('value'))) {
+                this.validate();
+            }
+        },
+
+        /**
+         * @param {Y.Node} container
+         * @param {string} controlId
+         * @return {Y.Node}
+         * @protected
+         */
+        renderControl: function (container, controlId) {
+            return undefined;
+        },
+
         /**
          * @return {Y.Node}
          * @protected
          */
-        getValueNode: function () {
-            return this.get(OJST.STATIC.BBX);
+        getControlNode: function () {
+            return this._controlNode || this.get(OJST.STATIC.BBX);
+        },
+
+        /**
+         * @returns {boolean|string}
+         * @public
+         */
+        isValid: function () {
+            return !this.get('required') || Framework.isValue(this.get('value'));
         },
 
         /**
@@ -111,13 +163,15 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
          * @public
          */
         validate: function () {
-            var isValid = !this.get('required') || Framework.isValue(this.get('value'));
-            if (!isValid) {
+            var result = this.isValid();
+            if (result === false) {
                 this.markInvalid(OJST.i18n.msg('errorRequiredField'));
+            } else if (Y.Lang.isString(result)) {
+                this.markInvalid(result);
             } else {
                 this.clearInvalid();
             }
-            return isValid;
+            return result === true;
         },
 
         /**
@@ -125,7 +179,14 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
          */
         markInvalid: function (msg) {
             this.get(OJST.STATIC.BBX).addClass(CLS.INVALID);
-            Framework.setToolTip(this.getValueNode(), msg, 'bottom');
+            var labelIcon = this._labelIconErrorNode,
+                controlNode = this.getControlNode();
+            if (labelIcon) {
+                Framework.setToolTip(labelIcon.setStyle('display', 'inline'), msg, 'bottom');
+            }
+            if (controlNode) {
+                controlNode.setAttribute('title', msg);
+            }
         },
 
         /**
@@ -133,7 +194,14 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
          */
         clearInvalid: function () {
             this.get(OJST.STATIC.BBX).removeClass(CLS.INVALID);
-            Framework.removeToolTip(this.getValueNode());
+            var labelIcon = this._labelIconErrorNode,
+                controlNode = this.getControlNode();
+            if (labelIcon) {
+                Framework.removeToolTip(labelIcon.setStyle('display', 'none'));
+            }
+            if (controlNode) {
+                controlNode.removeAttribute('title');
+            }
         },
 
         /**
@@ -141,7 +209,7 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
          * @public
          */
         isBlank: function () {
-            return true;
+            return OJST.ui.utils.Framework.isValue(this.get('value'));
         },
 
         /**
@@ -149,21 +217,38 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
          * @public
          */
         isEnabled: function () {
-            return true;
+            var node = this.getControlNode();
+            return node ? !node.hasAttribute('disabled') : true;
         },
 
         /**
          * @public
          */
         disable: function () {
-            return undefined;
+            var node = this.getControlNode();
+            if (node) {
+                node.setAttribute('disabled', 'disabled');
+            }
         },
 
         /**
          * @public
          */
         enable: function () {
-            return undefined;
+            var node = this.getControlNode();
+            if (node) {
+                node.removeAttribute('disabled');
+            }
+        },
+
+        /**
+         * @public
+         */
+        focus: function () {
+            var node = this.getControlNode();
+            if (node) {
+                node.focus();
+            }
         }
 
     }, {
@@ -199,5 +284,6 @@ YUI.add(OJST.ns.widgets.form.Field, function (Y) {
 
 }, OJST.VERSION, {requires: [
     OJST.ns.widgets.AbstractWidget,
+    OJST.ns.utils.Framework,
     'widget-child'
 ]});
