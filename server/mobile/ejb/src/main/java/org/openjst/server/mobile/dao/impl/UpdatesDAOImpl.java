@@ -24,21 +24,25 @@ import org.openjst.commons.dto.tuples.Tuples;
 import org.openjst.server.commons.AbstractEJB;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
-import org.openjst.server.mobile.cdi.beans.MobileSession;
 import org.openjst.server.mobile.dao.UpdatesDAO;
+import org.openjst.server.mobile.events.UpdateChangeEvent;
 import org.openjst.server.mobile.model.Account;
-import org.openjst.server.mobile.model.Queries;
 import org.openjst.server.mobile.model.Update;
+import org.openjst.server.mobile.model.dto.UpdateToSentObj;
 import org.openjst.server.mobile.mq.model.UpdateModel;
 import org.openjst.server.mobile.mq.queries.UpdateQuery;
 import org.openjst.server.mobile.respository.UpdatesRepository;
+import org.openjst.server.mobile.session.MobileSession;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import java.util.Date;
 import java.util.List;
+
+import static org.openjst.server.mobile.model.Queries.Update.*;
 
 /**
  * @author Sergey Grachev
@@ -54,13 +58,16 @@ public class UpdatesDAOImpl extends AbstractEJB implements UpdatesDAO {
     @EJB
     private UpdatesRepository updatesRepository;
 
+    @Inject
+    private Event<UpdateChangeEvent> updateEvents;
+
     @Override
     public Pair<List<Update>, Long> getListOf(final ModelQuery<UpdateQuery.Filter, UpdateQuery.Order, VoidQuery.Search> query) {
         final Long accountId = session.isAdministrator()
                 ? (Long) query.getFilterValue(UpdateQuery.Filter.ACCOUNT_ID) : (Long) session.getAccountId();
 
         @SuppressWarnings("unchecked")
-        final List<Update> list = em.createNamedQuery(Queries.Update.GET_LIST_OF)
+        final List<Update> list = em.createNamedQuery(GET_LIST_OF)
                 .setParameter("accountId", accountId)
                 .setFirstResult(query.getStartIndex()).setMaxResults(query.getPageSize()).getResultList();
 
@@ -75,6 +82,7 @@ public class UpdatesDAOImpl extends AbstractEJB implements UpdatesDAO {
 
         final Update e = new Update();
         e.setAccount(em.find(Account.class, session.isAdministrator() ? model.getAccountId() : session.getAccountId()));
+        e.setOS(model.getOS());
         e.setDescription(model.getDescription());
         e.setMajor(version.getMajor());
         e.setMinor(version.getMinor());
@@ -83,7 +91,8 @@ public class UpdatesDAOImpl extends AbstractEJB implements UpdatesDAO {
         e.setLastUploadId(model.getUploadId());
         em.persist(e);
 
-        updatesRepository.store(e.getAccount().getId(), e.getId(), e.getLastUploadId());
+        updatesRepository.store(e.getAccount().getId(), e.getId(), e.getLastUploadId(), e.getOS());
+        updateEvents.fire(new UpdateChangeEvent(UpdateChangeEvent.Action.ADD, e.getId()));
 
         return e;
     }
@@ -92,7 +101,7 @@ public class UpdatesDAOImpl extends AbstractEJB implements UpdatesDAO {
     @Override
     public Update findById(final Long id) {
         try {
-            return (Update) em.createNamedQuery(Queries.Update.FIND_BY_ID)
+            return (Update) em.createNamedQuery(FIND_BY_ID)
                     .setParameter("id", id)
                     .setParameter("accountId", session.isAdministrator() ? null : session.getAccountId())
                     .getSingleResult();
@@ -103,28 +112,31 @@ public class UpdatesDAOImpl extends AbstractEJB implements UpdatesDAO {
 
     @Override
     public Update getById(final Long id) {
-        return (Update) em.createNamedQuery(Queries.Update.FIND_BY_ID)
+        return (Update) em.createNamedQuery(FIND_BY_ID)
                 .setParameter("id", id)
                 .setParameter("accountId", session.isAdministrator() ? null : session.getAccountId())
                 .getSingleResult();
     }
 
     @Override
-    public Update update(final Update entity, final UpdateModel model) {
+    public Update update(final Update e, final UpdateModel model) {
         final ApplicationVersion version = ApplicationVersion.parse(model.getVersion());
 
-        entity.setDescription(model.getDescription());
-        entity.setMajor(version.getMajor());
-        entity.setMinor(version.getMinor());
-        entity.setBuild(version.getBuild());
+        e.setOS(model.getOS());
+        e.setDescription(model.getDescription());
+        e.setMajor(version.getMajor());
+        e.setMinor(version.getMinor());
+        e.setBuild(version.getBuild());
 
-        if (!entity.getLastUploadId().equals(model.getUploadId())) {
-            entity.setUploadDate(new Date());
-            entity.setLastUploadId(model.getUploadId());
-            updatesRepository.store(entity.getAccount().getId(), entity.getId(), entity.getLastUploadId());
+        if (!e.getLastUploadId().equals(model.getUploadId())) {
+            e.setUploadDate(new Date());
+            e.setLastUploadId(model.getUploadId());
+            updatesRepository.store(e.getAccount().getId(), e.getId(), e.getLastUploadId(), e.getOS());
         }
 
-        return em.merge(entity);
+        updateEvents.fire(new UpdateChangeEvent(UpdateChangeEvent.Action.UPDATE, e.getId()));
+
+        return em.merge(e);
     }
 
     @Nullable
@@ -137,14 +149,22 @@ public class UpdatesDAOImpl extends AbstractEJB implements UpdatesDAO {
     @Override
     public void delete(final Long id) {
         final Update e = getById(id);
-        updatesRepository.remove(e.getAccount().getId(), e.getId());
+        updatesRepository.remove(e.getAccount().getId(), e.getId(), e.getOS());
+        updateEvents.fire(new UpdateChangeEvent(UpdateChangeEvent.Action.REMOVE, e.getId()));
         em.remove(e);
     }
 
     @Override
     public Long getCountForAccount(final Long id) {
-        return (Long) em.createNamedQuery(Queries.Update.GET_COUNT_OF)
+        return (Long) em.createNamedQuery(GET_COUNT_OF)
                 .setParameter("accountId", session.isAdministrator() ? id : session.getAccountId())
+                .getSingleResult();
+    }
+
+    @Override
+    public UpdateToSentObj getUpdateToSent(final Long updateId) {
+        return (UpdateToSentObj) em.createNamedQuery(GET_UPDATE_TO_SENT)
+                .setParameter("updateId", updateId)
                 .getSingleResult();
     }
 }

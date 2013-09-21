@@ -52,6 +52,7 @@ public final class Constants {
 
     public static final class RPC {
 
+        public static final String OBJECT_CORE_UPDATES = "core.updates";
         public static final String OBJECT_MOBILE = "mobile";
         public static final String MOBILE_CHECK_UPDATE = "checkUpdate";
 

@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.commons.cdi.interceptors.beans;
+package org.openjst.server.commons.web.interceptors.beans;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.openjst.server.commons.cdi.beans.GlobalSession;
-import org.openjst.server.commons.cdi.interceptors.UIService;
 import org.openjst.server.commons.mq.access.ModelAccessRestriction;
 import org.openjst.server.commons.mq.mapping.ExceptionMapping;
 import org.openjst.server.commons.mq.results.QuerySingleResult;
 import org.openjst.server.commons.mq.results.Result;
+import org.openjst.server.commons.session.GlobalSession;
+import org.openjst.server.commons.web.interceptors.UIService;
 
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;

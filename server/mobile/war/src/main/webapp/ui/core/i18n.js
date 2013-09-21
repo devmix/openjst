@@ -25,16 +25,17 @@
     "use strict";
 
     var GROUP_WEB_UI_LABEL = 'web.ui.label',
-        GROUP_WEB_UI_MSG = 'web.ui.msg';
+        GROUP_WEB_UI_MSG = 'web.ui.msg',
+        GROUP_WEB_UI_ENUM = 'web.ui.enum';
 
     /**
-     * @class I18n
+     * @class CoreI18n
      * @namespace OJST.core
      * @constructor
      * @param {Object} data
      */
-    function I18n(data) {
-        this._reverse = data;
+    function CoreI18n(data) {
+        this._data = data;
     }
 
     /**
@@ -43,8 +44,8 @@
      * @return {string}
      * @public
      */
-    I18n.prototype.localize = function (key, subKey) {
-        return this._reverse[subKey ? key + '.' + subKey : key];
+    CoreI18n.prototype.localize = function (key, subKey) {
+        return this._data[subKey ? key + '.' + subKey : key];
     };
 
     /**
@@ -52,8 +53,8 @@
      * @return {string}
      * @public
      */
-    I18n.prototype.label = function (key) {
-        return this._reverse[GROUP_WEB_UI_LABEL + '.' + key] || key;
+    CoreI18n.prototype.label = function (key) {
+        return this._data[GROUP_WEB_UI_LABEL + '.' + key] || key;
     };
 
     /**
@@ -61,8 +62,8 @@
      * @return {string}
      * @public
      */
-    I18n.prototype.setting = function (key) {
-        return this._reverse[key] || key;
+    CoreI18n.prototype.setting = function (key) {
+        return this._data[key] || key;
     };
 
     /**
@@ -70,10 +71,20 @@
      * @return {string}
      * @public
      */
-    I18n.prototype.msg = function (key) {
-        return this._reverse[GROUP_WEB_UI_MSG + '.' + key] || key;
+    CoreI18n.prototype.msg = function (key) {
+        return this._data[GROUP_WEB_UI_MSG + '.' + key] || key;
     };
 
-    OJST.core.I18n = I18n;
+    /**
+     * @param {string} className
+     * @param {string} enumName
+     * @return {string}
+     * @public
+     */
+    CoreI18n.prototype.enumeration = function (className, enumName) {
+        return this._data[GROUP_WEB_UI_ENUM + '.' + className + '.' + enumName] || enumName;
+    };
+
+    OJST.core.CoreI18n = CoreI18n;
 
 }());

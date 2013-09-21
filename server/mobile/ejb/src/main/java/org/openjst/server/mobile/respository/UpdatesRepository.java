@@ -17,6 +17,7 @@
 
 package org.openjst.server.mobile.respository;
 
+import org.openjst.server.commons.model.types.MobileClientOS;
 import org.openjst.server.commons.respository.ContentRepository;
 
 /**
@@ -24,7 +25,7 @@ import org.openjst.server.commons.respository.ContentRepository;
  */
 public interface UpdatesRepository extends ContentRepository {
 
-    void store(Long accountId, Long updateId, String uploadId);
+    void store(Long accountId, Long updateId, String uploadId, MobileClientOS os);
 
-    void remove(Long accountId, Long updateId);
+    void remove(Long accountId, Long updateId, MobileClientOS os);
 }

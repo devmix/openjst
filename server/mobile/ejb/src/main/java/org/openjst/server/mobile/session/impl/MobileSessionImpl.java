@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.mobile.cdi.beans.impl;
+package org.openjst.server.mobile.session.impl;
 
-import org.openjst.server.commons.cdi.beans.impl.AbstractGlobalSession;
 import org.openjst.server.commons.model.types.RoleType;
+import org.openjst.server.commons.session.impl.AbstractGlobalSession;
 import org.openjst.server.mobile.I18n;
-import org.openjst.server.mobile.cdi.beans.MobileSession;
 import org.openjst.server.mobile.model.User;
 import org.openjst.server.mobile.mq.model.UserModel;
+import org.openjst.server.mobile.session.MobileSession;
 
 import javax.enterprise.context.SessionScoped;
 import java.util.Locale;

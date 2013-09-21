@@ -17,7 +17,6 @@
 
 package org.openjst.server.mobile.web.rest.impl;
 
-import org.openjst.server.commons.cdi.interceptors.UIService;
 import org.openjst.server.commons.mq.IOrder;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.mapping.ExceptionMapping;
@@ -25,6 +24,7 @@ import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.commons.mq.results.QueryListResult;
 import org.openjst.server.commons.mq.results.QuerySingleResult;
 import org.openjst.server.commons.mq.results.Result;
+import org.openjst.server.commons.web.interceptors.UIService;
 import org.openjst.server.mobile.dao.UserDAO;
 import org.openjst.server.mobile.model.User;
 import org.openjst.server.mobile.mq.model.UserModel;

@@ -15,14 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.mobile.web.rest;
+package org.openjst.server.commons.managers;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Sergey Grachev
  */
-@ApplicationPath("/ui-api")
-public class RestApplication extends Application {
+public interface FilesManager {
+
+    String storeTemporaryFile(InputStream inputStream, String name) throws IOException;
+
+    InputStream getTemporaryFileStream(String externalId) throws FileNotFoundException;
 }

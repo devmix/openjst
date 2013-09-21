@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.mobile.cdi.beans.impl;
+package org.openjst.server.commons.managers.impl;
 
 import org.apache.commons.io.FileUtils;
-import org.openjst.server.mobile.cdi.beans.FilesManager;
+import org.openjst.server.commons.managers.FilesManager;
 
 import javax.inject.Singleton;
 import java.io.*;

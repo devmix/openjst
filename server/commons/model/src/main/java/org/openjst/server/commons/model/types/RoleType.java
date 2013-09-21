@@ -17,9 +17,12 @@
 
 package org.openjst.server.commons.model.types;
 
+import org.openjst.server.commons.model.ModelName;
+
 /**
  * @author Sergey Grachev
  */
+@ModelName("UserRole")
 public enum RoleType {
     UNKNOWN,
     ADMIN,

@@ -19,7 +19,6 @@ package org.openjst.server.mobile.web.rest.impl;
 
 import org.openjst.commons.checksum.MD5;
 import org.openjst.commons.encodings.Base64;
-import org.openjst.server.commons.cdi.interceptors.UIService;
 import org.openjst.server.commons.mq.IOrder;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.QueryListParams;
@@ -29,7 +28,7 @@ import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.commons.mq.results.QueryListResult;
 import org.openjst.server.commons.mq.results.QuerySingleResult;
 import org.openjst.server.commons.mq.results.Result;
-import org.openjst.server.mobile.cdi.beans.MobileSession;
+import org.openjst.server.commons.web.interceptors.UIService;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.dao.RPCMessagesDAO;
 import org.openjst.server.mobile.dao.UpdatesDAO;
@@ -37,6 +36,7 @@ import org.openjst.server.mobile.model.Account;
 import org.openjst.server.mobile.mq.model.AccountModel;
 import org.openjst.server.mobile.mq.model.AccountSummaryModel;
 import org.openjst.server.mobile.mq.queries.AccountQuery;
+import org.openjst.server.mobile.session.MobileSession;
 import org.openjst.server.mobile.web.rest.Accounts;
 
 import javax.inject.Inject;

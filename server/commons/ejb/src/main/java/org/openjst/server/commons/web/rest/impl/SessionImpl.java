@@ -19,22 +19,12 @@ package org.openjst.server.commons.web.rest.impl;
 
 import org.openjst.server.commons.web.rest.Session;
 
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Sergey Grachev
  */
-@Stateless
-@TransactionAttribute(TransactionAttributeType.NEVER)
 public class SessionImpl implements Session {
-
-    @Resource
-    private SessionContext ctx;
 
     @Override
     public void logout(final HttpServletRequest request) {

@@ -66,9 +66,17 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
                 children = this.get('children'),
                 buttons = this.get('buttons'),
                 layout = this.get('layout'),
-                useDefaultButtons = this.get('useDefaultButtons');
+                useDefaultButtons = this.get('useDefaultButtons'),
+                allowNameAsLabel = this.get('allowNameAsLabel');
 
             if (children && children.length > 0) {
+                if (allowNameAsLabel) {
+                    Y.each(children, function (c) {
+                        if (Y.Lang.isUndefined(c.label) && Y.Lang.isValue(c.name)) {
+                            children.label = OJST.i18n.label(c.name);
+                        }
+                    });
+                }
                 this._fields = new OJST.ui.widgets.form.FormFields({
                     children: children
                 });
@@ -276,6 +284,11 @@ YUI.add(OJST.ns.widgets.form.Form, function (Y) {
                 validator: function (v) {
                     return v instanceof OJST.ui.models.Base;
                 }
+            },
+            allowNameAsLabel: {
+                validator: Y.Lang.isBoolean,
+                writeOnce: 'initOnly',
+                value: true
             }
         }
     });

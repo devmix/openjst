@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.commons.cdi.interceptors;
+package org.openjst.server.commons.web.interceptors;
 
 import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.ElementType;

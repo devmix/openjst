@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.mobile.cdi.beans;
+package org.openjst.server.mobile.session;
 
-import org.openjst.server.commons.cdi.beans.GlobalSession;
+import org.openjst.server.commons.session.GlobalSession;
 import org.openjst.server.mobile.model.User;
 import org.openjst.server.mobile.mq.model.UserModel;
 

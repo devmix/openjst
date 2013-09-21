@@ -78,20 +78,14 @@ YUI.add(OJST.ns.views.page.accounts.users.User, function (Y) {
                         type: OJST.ui.widgets.form.fields.List,
                         name: 'role',
                         label: OJST.i18n.label('role'),
-                        data: [
-                            ['ADMIN', OJST.i18n.label('administrator')],
-                            ['USER', OJST.i18n.label('user')]
-                        ],
+                        data: OJST.enums.asFieldData("UserRole", {UNKNOWN: false}),
                         required: true
                     },
                     {
                         type: OJST.ui.widgets.form.fields.List,
                         name: 'language',
                         label: OJST.i18n.label('language'),
-                        data: [
-                            ['EN', OJST.i18n.label('english')],
-                            ['RU', OJST.i18n.label('russian')]
-                        ],
+                        data: OJST.enums.asFieldData("LanguageCode"),
                         value: 'RU'
                     }
                 ],

@@ -22,6 +22,7 @@ import org.openjst.commons.dto.tuples.Pair;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.mobile.model.Update;
+import org.openjst.server.mobile.model.dto.UpdateToSentObj;
 import org.openjst.server.mobile.mq.model.UpdateModel;
 import org.openjst.server.mobile.mq.queries.UpdateQuery;
 
@@ -49,4 +50,6 @@ public interface UpdatesDAO {
     void delete(Long id);
 
     Long getCountForAccount(Long id);
+
+    UpdateToSentObj getUpdateToSent(Long updateId);
 }

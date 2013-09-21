@@ -245,18 +245,17 @@ public final class ServerConnectionService extends Service {
             if (newClientId != null) {
                 clientId = newClientId;
             }
+
             if (newSecretKey != null) {
                 secretKey = newSecretKey;
             }
 
             try {
-                if (client.connect(accountId, this.clientId,
-                        this.secretKey != null ? SecretKeys.PLAIN.encode(newSecretKey) : SECRET_KEY_NONE, null)) {
-                    return true;
-                }
+                return client.connect(accountId, this.clientId,
+                        secretKey != null ? SecretKeys.PLAIN.encode(secretKey) : SECRET_KEY_NONE, null);
             } catch (Exception ignore) {
+                return false;
             }
-            return false;
         }
     }
 

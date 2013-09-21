@@ -32,6 +32,8 @@ public interface NetworkService {
 
     void clientRPCForwardTo(Long accountId, Long clientId, RPCMessageFormat format, byte[] data);
 
+    void clientRPCForwardBroadcast(Long accountId, RPCMessageFormat format, byte[] data, boolean onlyOnline);
+
     void serverConnected(Actor<Long> actor, ProtocolType protocolType, String remoteHost);
 
     void serverDisconnect(Actor<Long> actor, ProtocolType protocolType);

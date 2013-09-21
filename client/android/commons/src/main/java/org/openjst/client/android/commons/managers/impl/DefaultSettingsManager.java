@@ -60,7 +60,7 @@ public class DefaultSettingsManager implements SettingsManager {
 
     public int getInteger(final String key) {
         final Object value = sharedPreferences.getString(key, null);
-        if (value instanceof String) {
+        if (value != null) {
             return Integer.parseInt((String) value);
         }
         return sharedPreferences.getInt(key, 0);

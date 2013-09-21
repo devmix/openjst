@@ -29,6 +29,7 @@ import org.openjst.client.android.commons.managers.NotificationsManager;
 import org.openjst.client.android.dao.LogsDAO;
 import org.openjst.client.android.dao.SessionDAO;
 import org.openjst.client.android.managers.RPCManager;
+import org.openjst.client.android.managers.handlers.core.UpdatesHandler;
 import org.openjst.client.android.service.ServerConnectionService;
 import org.openjst.commons.dto.ApplicationVersion;
 import org.openjst.commons.dto.tuples.Pair;
@@ -78,6 +79,7 @@ public class DefaultRPCManager implements RPCManager {
 
     public DefaultRPCManager(final Application application) {
         this.application = application;
+        rpcContext.registerHandler(Constants.RPC.OBJECT_CORE_UPDATES, new UpdatesHandler(application));
         rpcContext.registerHandler(Constants.RPC.OBJECT_MOBILE, this);
 
         produceTask = new AsyncTask<Void, Void, Void>() {

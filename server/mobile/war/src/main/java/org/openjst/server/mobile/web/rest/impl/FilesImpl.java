@@ -21,8 +21,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.openjst.server.commons.cdi.interceptors.UIService;
-import org.openjst.server.mobile.cdi.beans.FilesManager;
+import org.openjst.server.commons.managers.FilesManager;
+import org.openjst.server.commons.web.interceptors.UIService;
 import org.openjst.server.mobile.web.rest.Files;
 
 import javax.inject.Inject;

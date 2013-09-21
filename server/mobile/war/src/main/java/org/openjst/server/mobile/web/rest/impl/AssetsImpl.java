@@ -24,12 +24,13 @@ import org.openjst.commons.dto.properties.GroupedProperties;
 import org.openjst.commons.dto.properties.PropertiesFactory;
 import org.openjst.commons.i18n.Language;
 import org.openjst.server.commons.services.SettingsManager;
+import org.openjst.server.commons.web.managers.EnumsManager;
 import org.openjst.server.commons.web.utils.WebAssetsAggregator;
 import org.openjst.server.mobile.I18n;
 import org.openjst.server.mobile.Settings;
-import org.openjst.server.mobile.cdi.beans.MobileSession;
 import org.openjst.server.mobile.mq.model.UIConfigModel;
 import org.openjst.server.mobile.services.CacheService;
+import org.openjst.server.mobile.session.MobileSession;
 import org.openjst.server.mobile.web.rest.Assets;
 
 import javax.ejb.EJB;
@@ -42,7 +43,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
 
-import static org.openjst.server.mobile.web.UIAssets.*;
+import static org.openjst.server.mobile.web.UIResources.*;
 
 /**
  * @author Sergey Grachev
@@ -66,6 +67,9 @@ public class AssetsImpl implements Assets {
 
     @Inject
     private MobileSession session;
+
+    @Inject
+    private EnumsManager enums;
 
     public static String extJs(final String fileName, final boolean debug) {
         return (debug ? fileName : fileName + "-min") + ".js";
@@ -134,7 +138,8 @@ public class AssetsImpl implements Assets {
                 .set("debug", preferences.get(Settings.UI.SCRIPTS_DEBUG))
                 .set("combine", true);
 
-        final UIConfigModel application = new UIConfigModel(this.session.getUser(), language.getAll(), properties);
+        final UIConfigModel application = new UIConfigModel(
+                this.session.getUser(), language.getAll(), properties, enums.getList());
 
         return new ObjectMapper().writer().writeValueAsString(application);
     }

@@ -227,6 +227,10 @@ public final class ApplicationContext {
         }
     }
 
+    public static void post(final Runnable runnable) {
+        handler.post(runnable);
+    }
+
     private static final class WeakReferenceListener extends WeakReference<Object> {
 
         private final int id;

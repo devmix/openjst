@@ -17,6 +17,7 @@
 
 package org.openjst.server.mobile.mq.model;
 
+import org.openjst.server.commons.model.types.MobileClientOS;
 import org.openjst.server.commons.mq.IMapping;
 import org.openjst.server.commons.mq.model.AbstractEntityModel;
 import org.openjst.server.mobile.model.Update;
@@ -31,13 +32,19 @@ public final class UpdateModel extends AbstractEntityModel {
     public static final IMapping<Update, UpdateModel> ENTITY_TO_MODEL = new IMapping<Update, UpdateModel>() {
         @Override
         public UpdateModel map(final Update value) {
-            return new UpdateModel(value.getId(), value.getMajor() + "." + value.getMinor() + "." + value.getBuild(),
-                    value.getUploadDate(), value.getDescription(), value.getLastUploadId());
+            return new UpdateModel(
+                    value.getId(),
+                    value.getOS(),
+                    value.getMajor() + "." + value.getMinor() + "." + value.getBuild(),
+                    value.getUploadDate(),
+                    value.getDescription(),
+                    value.getLastUploadId());
         }
     };
 
     private Long accountId;
     private String uploadId;
+    private MobileClientOS os;
     private String version;
     private Date uploadDate;
     private String description;
@@ -45,7 +52,9 @@ public final class UpdateModel extends AbstractEntityModel {
     public UpdateModel() {
     }
 
-    public UpdateModel(final long id, final String version, final Date uploadDate, final String description, final String uploadId) {
+    public UpdateModel(final long id, final MobileClientOS os, final String version, final Date uploadDate,
+                       final String description, final String uploadId) {
+        this.os = os;
         this.id = id;
         this.version = version;
         this.uploadDate = uploadDate;
@@ -71,5 +80,9 @@ public final class UpdateModel extends AbstractEntityModel {
 
     public String getUploadId() {
         return uploadId;
+    }
+
+    public MobileClientOS getOS() {
+        return os;
     }
 }

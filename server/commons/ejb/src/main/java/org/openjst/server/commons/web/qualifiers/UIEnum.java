@@ -15,18 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.commons.cdi.beans;
+package org.openjst.server.commons.web.qualifiers;
 
-import java.util.Locale;
+import javax.inject.Qualifier;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Sergey Grachev
  */
-public interface GlobalSession {
-
-    boolean isAuthorized();
-
-    boolean isAdministrator();
-
-    Locale getLocale();
+@Qualifier
+@Retention(RUNTIME)
+@Target({FIELD, TYPE, METHOD})
+public @interface UIEnum {
 }

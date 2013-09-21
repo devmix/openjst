@@ -77,6 +77,7 @@ public final class Queries {
         public static final String SET_OFFLINE_STATUS = PREFIX + "setOfflineStatus";
         public static final String GET_ONLINE_LIST_OF = PREFIX + "getOnlineListOf";
         public static final String GET_ONLINE_COUNT_OF = PREFIX + "getOnlineCountOf";
+        public static final String GET_ALL_CLIENTS_AS_ACTORS = PREFIX + "getAllClientsAsActors";
 
         private Client() {
         }
@@ -108,6 +109,7 @@ public final class Queries {
         public static final String FIND_BY_ID = PREFIX + "findById";
         public static final String GET_LIST_OF = PREFIX + "getListOf";
         public static final String GET_COUNT_OF = PREFIX + "getCountOf";
+        public static final String GET_UPDATE_TO_SENT = PREFIX + "getUpdateToSent";
 
         private Update() {
         }

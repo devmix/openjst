@@ -29,13 +29,16 @@ public final class UIConfigModel {
 
     private final Map<String, String> i18n;
     private final GroupedProperties<String, String, Object> preferences;
+    private final Map<String, Enum<?>[]> enums;
     private final UserModel user;
 
     public UIConfigModel(final UserModel user, final Map<String, String> i18n,
-                         final GroupedProperties<String, String, Object> preferences) {
+                         final GroupedProperties<String, String, Object> preferences,
+                         final Map<String, Enum<?>[]> enums) {
         this.user = user;
         this.i18n = i18n;
         this.preferences = preferences;
+        this.enums = enums;
     }
 
     public Map<String, String> getI18n() {
@@ -50,12 +53,7 @@ public final class UIConfigModel {
         return preferences;
     }
 
-    @Override
-    public String toString() {
-        return "UIConfigModel{" +
-                "i18n=" + i18n +
-                ", preferences=" + preferences +
-                ", user=" + user +
-                '}';
+    public Map<String, Enum<?>[]> getEnums() {
+        return enums;
     }
 }

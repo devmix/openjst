@@ -1,4 +1,4 @@
-<%@ page import="org.openjst.server.mobile.web.UIAssets" %>
+<%@ page import="org.openjst.server.mobile.web.UIResources" %>
 <%@ page import="static org.openjst.server.mobile.I18n.*" %>
 <%--
   ~ Copyright (C) 2013 OpenJST Project
@@ -24,7 +24,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%=UIAssets.jspDefault() + UIAssets.jsDefault()%>
+    <%=UIResources.jspDefault() + UIResources.jsDefault()%>
 </head>
 
 <body class="sam">

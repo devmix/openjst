@@ -26,13 +26,13 @@ import org.openjst.server.commons.AbstractEJB;
 import org.openjst.server.commons.model.types.RoleType;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
-import org.openjst.server.mobile.cdi.beans.MobileSession;
 import org.openjst.server.mobile.dao.UserDAO;
 import org.openjst.server.mobile.model.Account;
 import org.openjst.server.mobile.model.Queries;
 import org.openjst.server.mobile.model.User;
 import org.openjst.server.mobile.mq.model.UserModel;
 import org.openjst.server.mobile.mq.queries.UserQuery;
+import org.openjst.server.mobile.session.MobileSession;
 import org.openjst.server.mobile.utils.UserUtils;
 
 import javax.ejb.Stateless;

@@ -22,5 +22,6 @@ package org.openjst.server.commons.model.types;
  */
 @SuppressWarnings("UnusedDeclaration")
 public enum LanguageCode {
-    EN, RU
+    EN,
+    RU
 }

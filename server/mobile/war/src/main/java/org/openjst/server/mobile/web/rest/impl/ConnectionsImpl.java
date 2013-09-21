@@ -18,11 +18,11 @@
 package org.openjst.server.mobile.web.rest.impl;
 
 import org.jboss.resteasy.annotations.Form;
-import org.openjst.server.commons.cdi.interceptors.UIService;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.QueryListParams;
 import org.openjst.server.commons.mq.access.ModelAccessRestriction;
 import org.openjst.server.commons.mq.results.QueryListResult;
+import org.openjst.server.commons.web.interceptors.UIService;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.dao.ClientDAO;
 import org.openjst.server.mobile.model.dto.AccountConnectionObj;

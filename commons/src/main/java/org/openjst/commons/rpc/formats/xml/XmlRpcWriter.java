@@ -152,6 +152,10 @@ final class XmlRpcWriter {
 
             createChild(root, XmlRpcUtils.TAG_STRING).setContent(value.toString());
 
+        } else if (value instanceof Enum) {
+
+            createChild(root, XmlRpcUtils.TAG_STRING).setContent(((Enum) value).name());
+
         } else if (value instanceof Date) {
 
             createChild(root, XmlRpcUtils.TAG_DATETIME_ISO8601)

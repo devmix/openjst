@@ -17,9 +17,10 @@
 
 package org.openjst.server.mobile.respository.impl;
 
+import org.openjst.server.commons.managers.FilesManager;
+import org.openjst.server.commons.model.types.MobileClientOS;
 import org.openjst.server.commons.respository.AbstractRepository;
 import org.openjst.server.mobile.Environment;
-import org.openjst.server.mobile.cdi.beans.FilesManager;
 import org.openjst.server.mobile.respository.UpdatesRepository;
 
 import javax.ejb.Stateless;
@@ -69,14 +70,14 @@ public class UpdatesRepositoryImpl extends AbstractRepository implements Updates
     }
 
     @Override
-    public void store(final Long accountId, final Long updateId, final String uploadId) {
+    public void store(final Long accountId, final Long updateId, final String uploadId, final MobileClientOS os) {
         execute(new Operation() {
             @Override
             public void execute(final Session session) throws Exception {
                 final InputStream stream = filesManager.getTemporaryFileStream(uploadId);
 
                 final Node folder = makeFoldersPath(session.getNode("/client/updates"),
-                        "android", String.valueOf(accountId));
+                        os.name().toLowerCase(), String.valueOf(accountId));
 
                 final String fileName = String.valueOf(updateId);
                 final Node file = folder.hasNode(fileName) ? folder.getNode(fileName) : folder.addNode(fileName, "nt:file");
@@ -93,11 +94,11 @@ public class UpdatesRepositoryImpl extends AbstractRepository implements Updates
     }
 
     @Override
-    public void remove(final Long accountId, final Long updateId) {
+    public void remove(final Long accountId, final Long updateId, final MobileClientOS os) {
         execute(new Operation() {
             @Override
             public void execute(final Session session) throws Exception {
-                final String path = "/client/updates/android/" + accountId + "/" + updateId;
+                final String path = "/client/updates/" + os.name().toLowerCase() + "/" + accountId + "/" + updateId;
                 if (session.nodeExists(path)) {
                     session.removeItem(path);
                 }

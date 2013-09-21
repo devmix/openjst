@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.commons.cdi.beans.impl;
+package org.openjst.server.commons.session.impl;
 
-import org.openjst.server.commons.cdi.beans.GlobalSession;
+import org.openjst.server.commons.session.GlobalSession;
 
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;

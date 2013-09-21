@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.dto.tuples.Pair;
 import org.openjst.commons.dto.tuples.Tuples;
 
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -53,6 +54,10 @@ public final class RPCUtils {
         } else {
             return Tuples.newPair(null, methodParts[0]);
         }
+    }
+
+    public static String uniqueRequestId() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }
 

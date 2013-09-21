@@ -1,4 +1,4 @@
-<%@ page import="org.openjst.server.mobile.web.UIAssets" %>
+<%@ page import="org.openjst.server.mobile.web.UIResources" %>
 <%--
   ~ Copyright (C) 2013 OpenJST Project
   ~
@@ -23,7 +23,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%= UIAssets.jspDefault() + UIAssets.jsDefault() %>
+    <%= UIResources.jspDefault() + UIResources.jsDefault() %>
 </head>
 
 <body class="yui3-skin-sam">

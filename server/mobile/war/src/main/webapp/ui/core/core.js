@@ -33,9 +33,9 @@
     OJST.ui.libs = OJST.manifest.ns.libs;
 
     /**
-     * @type {I18n}
+     * @type {CoreI18n}
      */
-    OJST.i18n = new OJST.core.I18n(cfg.i18n);
+    OJST.i18n = new OJST.core.CoreI18n(cfg.i18n);
 
     /**
      * @type {CoreApplication}
@@ -43,14 +43,19 @@
     OJST.app = new OJST.core.CoreApplication(cfg.app);
 
     /**
-     * @type {Session}
+     * @type {CoreSession}
      */
-    OJST.session = new OJST.core.Session(cfg.user);
+    OJST.session = new OJST.core.CoreSession(cfg.user);
 
     /**
      * @type {CorePreferences}
      */
     OJST.preferences = new OJST.core.CorePreferences(cfg.preferences);
+
+    /**
+     * @type {CoreEnums}
+     */
+    OJST.enums = new OJST.core.CoreEnums(cfg.enums);
 
     // set framework properties
 

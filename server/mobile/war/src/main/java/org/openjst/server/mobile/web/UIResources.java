@@ -17,17 +17,29 @@
 
 package org.openjst.server.mobile.web;
 
+import org.openjst.server.commons.model.types.MobileClientOS;
+import org.openjst.server.commons.web.qualifiers.UIEnum;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Sergey Grachev
  */
-public final class UIAssets {
+public final class UIResources {
 
     public static final String PATH_UI = "ui/";
     public static final String PATH_LIB = "ui/lib/";
     public static final String PATH_CORE = "ui/core/";
 
-    private UIAssets() {
-    }
+    @Produces
+    @ApplicationScoped
+    @UIEnum
+    public static final List<Class> UI_ENUMS = Arrays.asList(
+            (Class) MobileClientOS.class
+    );
 
     public static String jspDefault() {
         return "<title>OpenJST</title>\n"

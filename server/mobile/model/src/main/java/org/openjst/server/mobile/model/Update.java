@@ -17,7 +17,13 @@
 
 package org.openjst.server.mobile.model;
 
+import org.openjst.server.commons.model.types.MobileClientOS;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
@@ -35,7 +41,13 @@ import java.util.Date;
 
         @NamedQuery(name = Queries.Update.GET_COUNT_OF,
                 query = "select count(e) from Update e " +
-                        " where (:accountId is null or e.account.id = :accountId)")
+                        " where (:accountId is null or e.account.id = :accountId)"),
+
+        @NamedQuery(name = Queries.Update.GET_UPDATE_TO_SENT,
+                query = "select new org.openjst.server.mobile.model.dto.UpdateToSentObj(" +
+                        "   e.id, e.account.id, e.os, concat(e.major,'.',e.minor,'.',e.build), e.uploadDate, e.description " +
+                        ")from Update e" +
+                        " where e.id = :updateId")
 })
 @Entity
 @Table(name = Update.TABLE)
@@ -48,23 +60,37 @@ public class Update extends AbstractAccountEntity {
     public static final String COLUMN_UPLOAD_DATE = "upload_date";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_EXTERNAL_ID = "last_upload_id";
+    public static final String COLUMN_OS = "os";
+
+    @Column(name = COLUMN_OS, nullable = false, length = 32)
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private MobileClientOS os;
 
     @Column(name = COLUMN_MAJOR, nullable = false)
+    @Min(0)
     private int major;
 
     @Column(name = COLUMN_MINOR, nullable = false)
+    @Min(0)
     private int minor;
 
     @Column(name = COLUMN_BUILD, nullable = false)
+    @Min(0)
     private int build;
 
     @Column(name = COLUMN_UPLOAD_DATE, nullable = false)
+    @Past
+    @NotNull
     private Date uploadDate;
 
-    @Column(name = COLUMN_DESCRIPTION)
+    @Column(name = COLUMN_DESCRIPTION, length = Short.MAX_VALUE)
+    @Size(max = Short.MAX_VALUE)
     private String description;
 
-    @Column(name = COLUMN_EXTERNAL_ID, nullable = false)
+    @Column(name = COLUMN_EXTERNAL_ID, nullable = false, length = 32)
+    @Size(max = 32)
+    @NotNull
     private String lastUploadId;
 
     public int getMajor() {
@@ -113,5 +139,13 @@ public class Update extends AbstractAccountEntity {
 
     public void setLastUploadId(final String lastUploadId) {
         this.lastUploadId = lastUploadId;
+    }
+
+    public MobileClientOS getOS() {
+        return os;
+    }
+
+    public void setOS(final MobileClientOS operatingSystem) {
+        this.os = operatingSystem;
     }
 }

@@ -52,6 +52,14 @@ YUI.add(OJST.ns.views.page.accounts.updates.Update, function (Y) {
                 }),
                 children: [
                     {
+                        type: OJST.ui.widgets.form.fields.List,
+                        name: 'os',
+                        label: OJST.i18n.label('os'),
+                        required: true,
+                        data: OJST.enums.asFieldData("MobileClientOS"),
+                        value: 'ANDROID'
+                    },
+                    {
                         type: OJST.ui.widgets.form.fields.Version,
                         name: 'version',
                         label: OJST.i18n.label('version'),

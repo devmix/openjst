@@ -40,6 +40,7 @@ import javax.annotation.PreDestroy;
 import javax.ejb.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Sergey Grachev
@@ -105,6 +106,15 @@ public class NetworkServiceImpl implements NetworkService {
         LOG.debug("createForwardToClient accountId {} clientId {} msg-fmt {} msg {}", accountId, clientId, format, data);
         rpcDAO.createForwardToClient(accountId, clientId, format, data);
         clientsMsgProducer.checkMessagesFor(new SimpleActorObj(clientId));
+    }
+
+    @Override
+    public void clientRPCForwardBroadcast(final Long accountId, final RPCMessageFormat format, final byte[] data, final boolean onlyOnline) {
+        LOG.debug("clientRPCForwardBroadcast accountId {} msg-fmt {} msg {} onlyOnline {}", accountId, format, data, onlyOnline);
+        final Set<Actor<Long>> actors = onlyOnline ? clientsMsgRouter.getConnected() : clientDAO.getAllClientsAsActors(accountId);
+        for (final Actor<Long> actor : actors) {
+            clientRPCForwardTo(accountId, actor.getId(), format, data);
+        }
     }
 
     @Override

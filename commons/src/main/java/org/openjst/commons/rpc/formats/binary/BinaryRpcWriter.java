@@ -143,6 +143,11 @@ final class BinaryRpcWriter {
             writeTag(BinaryRpcUtils.TAG_VALUE_UTF8);
             buffer.writeUtf8((String) value);
 
+        } else if (value instanceof Enum) {
+
+            writeTag(BinaryRpcUtils.TAG_VALUE_UTF8);
+            buffer.writeUtf8(((Enum) value).name());
+
         } else if (value instanceof Date) {
 
             writeTag(BinaryRpcUtils.TAG_VALUE_DATE);

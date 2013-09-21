@@ -17,13 +17,13 @@
 
 package org.openjst.server.mobile.web.rest.impl;
 
-import org.openjst.server.commons.cdi.interceptors.UIService;
 import org.openjst.server.commons.mq.access.ModelAccessRestriction;
 import org.openjst.server.commons.mq.results.QuerySingleResult;
 import org.openjst.server.commons.mq.results.Result;
 import org.openjst.server.commons.services.SettingsManager;
 import org.openjst.server.commons.settings.Setting;
 import org.openjst.server.commons.settings.SettingGroups;
+import org.openjst.server.commons.web.interceptors.UIService;
 import org.openjst.server.mobile.web.rest.Settings;
 
 import javax.ejb.EJB;

@@ -65,7 +65,12 @@ import static org.openjst.server.mobile.model.Queries.Client.*;
                         " where e.online = true"),
 
         @NamedQuery(name = GET_ONLINE_COUNT_OF,
-                query = "select count(e.id) from Client e where e.online = true")
+                query = "select count(e.id) from Client e where e.online = true"),
+
+        @NamedQuery(name = GET_ALL_CLIENTS_AS_ACTORS,
+                query = "select new org.openjst.server.mobile.model.dto.SimpleActorObj(" +
+                        "   e.id, e.authId" +
+                        ")from Client e where e.account.id = :accountId")
 })
 @Entity
 @Table(name = Client.TABLE,

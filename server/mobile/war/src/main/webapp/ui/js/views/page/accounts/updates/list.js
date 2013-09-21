@@ -45,12 +45,13 @@ YUI.add(OJST.ns.views.page.accounts.updates.List, function (Y) {
                 autoLoad: true,
                 data: new OJST.ui.models.UpdateList({accountId: accountId, persistentId: 'pageAccountsUpdates'}),
                 columns: [
-                    { name: "version", label: OJST.i18n.label('version'), width: 150, render: function (v, m) {
-                        return v;
+                    { name: 'os', label: OJST.i18n.label('os'), width: 150, render: function (v, m) {
+                        return OJST.i18n.enumeration('MobileClientOS', v);
                     }},
-                    { name: "uploadDate", label: OJST.i18n.label('upload-date'), format: '%Y-%m-%d %H:%M', width: 120 },
-                    { name: "description", label: OJST.i18n.label('description'), fill: true },
-                    { name: "actions", label: OJST.i18n.label('actions'), html: true, width: 55,
+                    { name: 'version', label: OJST.i18n.label('version'), width: 150 },
+                    { name: 'uploadDate', label: OJST.i18n.label('upload-date'), format: '%Y-%m-%d %H:%M', width: 120 },
+                    { name: 'description', label: OJST.i18n.label('description'), fill: true },
+                    { name: 'actions', label: OJST.i18n.label('actions'), html: true, width: 55,
                         render: function (v, m) {
                             return Y.Lang.sub(TPL.ACTIONS, {id: m.get('id')});
                         }

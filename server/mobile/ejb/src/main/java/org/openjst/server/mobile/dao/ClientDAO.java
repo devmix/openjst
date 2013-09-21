@@ -21,11 +21,13 @@ import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.protocols.auth.SecretKey;
 import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.mq.ModelQuery;
+import org.openjst.server.commons.network.Actor;
 import org.openjst.server.mobile.model.Client;
 import org.openjst.server.mobile.model.dto.ClientAuthenticationObj;
 import org.openjst.server.mobile.model.dto.ClientConnectionObj;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.openjst.server.commons.mq.queries.VoidQuery.*;
 
@@ -53,4 +55,6 @@ public interface ClientDAO {
     long getOnlineCountOf(ModelQuery<Filter, Order, Search> query);
 
     List<ClientConnectionObj> getOnlineListOf(ModelQuery<Filter, Order, Search> query);
+
+    Set<Actor<Long>> getAllClientsAsActors(Long accountId);
 }

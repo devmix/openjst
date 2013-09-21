@@ -15,18 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.mobile.cdi.beans;
+package org.openjst.server.commons.model;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Sergey Grachev
  */
-public interface FilesManager {
-
-    String storeTemporaryFile(InputStream inputStream, String name) throws IOException;
-
-    InputStream getTemporaryFileStream(String externalId) throws FileNotFoundException;
+@Retention(RUNTIME)
+@Target({TYPE})
+public @interface ModelName {
+    String value() default "";
 }

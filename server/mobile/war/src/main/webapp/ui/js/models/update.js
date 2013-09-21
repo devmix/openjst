@@ -36,6 +36,7 @@ YUI.add(OJST.ns.models.Update, function (Y) {
         ATTRS: {
             accountId: {validator: Y.Lang.isNumber},
             id: {validator: Y.Lang.isNumber},
+            os: {validator: Y.Lang.isString},
             version: {validator: Y.Lang.isString},
             uploadDate: {validator: Y.Lang.isDate, type: 'date'},
             description: {validator: Y.Lang.isString},

@@ -18,13 +18,13 @@
 package org.openjst.server.mobile.web.rest.impl;
 
 import org.jboss.resteasy.annotations.Form;
-import org.openjst.server.commons.cdi.interceptors.UIService;
 import org.openjst.server.commons.mq.IOrder;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
 import org.openjst.server.commons.mq.results.QueryListResult;
 import org.openjst.server.commons.mq.results.QuerySingleResult;
 import org.openjst.server.commons.mq.results.Result;
+import org.openjst.server.commons.web.interceptors.UIService;
 import org.openjst.server.mobile.dao.UpdatesDAO;
 import org.openjst.server.mobile.model.Update;
 import org.openjst.server.mobile.mq.model.UpdateModel;

@@ -23,6 +23,7 @@ import org.openjst.commons.protocols.auth.SecretKeys;
 import org.openjst.server.commons.AbstractEJB;
 import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.mq.ModelQuery;
+import org.openjst.server.commons.network.Actor;
 import org.openjst.server.mobile.dao.AccountDAO;
 import org.openjst.server.mobile.dao.ClientDAO;
 import org.openjst.server.mobile.model.Account;
@@ -35,7 +36,9 @@ import org.openjst.server.mobile.utils.UserUtils;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.openjst.server.commons.mq.queries.VoidQuery.*;
 import static org.openjst.server.mobile.model.Queries.Client.*;
@@ -159,6 +162,15 @@ public class ClientDAOImpl extends AbstractEJB implements ClientDAO {
                 .setFirstResult(query.getStartIndex())
                 .setMaxResults(query.getPageSize())
                 .getResultList();
+    }
+
+    @Override
+    public Set<Actor<Long>> getAllClientsAsActors(final Long accountId) {
+        @SuppressWarnings("unchecked")
+        final List<Actor<Long>> result = em.createNamedQuery(GET_ALL_CLIENTS_AS_ACTORS)
+                .setParameter("accountId", accountId)
+                .getResultList();
+        return new HashSet<Actor<Long>>(result);
     }
 
     @Override
