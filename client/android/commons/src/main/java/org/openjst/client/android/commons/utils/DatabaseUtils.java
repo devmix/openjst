@@ -19,12 +19,12 @@ package org.openjst.client.android.commons.utils;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.client.android.commons.database.DatabaseObject;
 import org.openjst.commons.database.model.QueryInsert;
 import org.openjst.commons.database.model.QuerySelect;
 import org.openjst.commons.database.model.QueryUpdate;
 
+import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;

@@ -18,10 +18,10 @@
 package org.openjst.server.commons.maven.resources;
 
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.maven.manifest.jaxb.ExcludesType;
 import org.openjst.server.commons.maven.manifest.jaxb.IncludesType;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 

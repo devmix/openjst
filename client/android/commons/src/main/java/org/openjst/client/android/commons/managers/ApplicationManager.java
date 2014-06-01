@@ -17,8 +17,9 @@
 
 package org.openjst.client.android.commons.managers;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.dto.ApplicationVersion;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

@@ -17,8 +17,9 @@
 
 package org.openjst.server.commons.network;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.model.types.MessageDeliveryState;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

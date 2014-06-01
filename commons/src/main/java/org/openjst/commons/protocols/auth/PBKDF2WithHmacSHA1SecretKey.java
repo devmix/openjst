@@ -17,9 +17,9 @@
 
 package org.openjst.commons.protocols.auth;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.checksum.PBKDF2WithHmacSHA1;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /**

@@ -18,7 +18,8 @@
 package org.openjst.client.android.commons.managers;
 
 import android.content.SharedPreferences;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

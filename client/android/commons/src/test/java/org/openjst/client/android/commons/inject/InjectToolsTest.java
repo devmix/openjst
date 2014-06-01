@@ -32,11 +32,11 @@ public final class InjectToolsTest {
     public void testInject() {
         final Target target = new Target();
 
-//        final ApplicationConfig annotation = Target.class.getAnnotation(ApplicationConfig.class);
-//        final DefaultApplicationInjector injector = new DefaultApplicationInjector(null);
+        final ApplicationConfig annotation = Target.class.getAnnotation(ApplicationConfig.class);
+        final DefaultApplicationInjector injector = new DefaultApplicationInjector(null);
 //        GlobalContext.assignInjector(new DefaultApplicationInjector(null));
 //        GlobalContext.registerImplementations(annotation.implementations());
-//        injector.apply(target);
+        injector.apply(target);
 
         target.invokeManagers();
 

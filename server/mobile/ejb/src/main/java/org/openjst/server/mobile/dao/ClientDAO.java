@@ -17,7 +17,6 @@
 
 package org.openjst.server.mobile.dao;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.protocols.auth.SecretKey;
 import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.mq.ModelQuery;
@@ -26,6 +25,7 @@ import org.openjst.server.mobile.model.Client;
 import org.openjst.server.mobile.model.dto.ClientAuthenticationObj;
 import org.openjst.server.mobile.model.dto.ClientConnectionObj;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 

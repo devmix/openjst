@@ -17,10 +17,10 @@
 
 package org.openjst.server.commons.maven.compiler;
 
-import org.jetbrains.annotations.Nullable;
 import org.mozilla.javascript.ContextFactory;
 import org.openjst.server.commons.maven.utils.OptionGroup;
 
+import javax.annotation.Nullable;
 import java.io.File;
 
 /**

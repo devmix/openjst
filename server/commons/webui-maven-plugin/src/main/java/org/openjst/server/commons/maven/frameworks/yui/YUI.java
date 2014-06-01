@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.maven.frameworks.Framework;
 import org.openjst.server.commons.maven.frameworks.Module;
 import org.openjst.server.commons.maven.manifest.jaxb.FrameworkCoreGroupType;
@@ -33,6 +32,7 @@ import org.openjst.server.commons.maven.resources.ResourceType;
 import org.openjst.server.commons.maven.utils.ManifestUtils;
 import org.openjst.server.commons.maven.utils.Patterns;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;

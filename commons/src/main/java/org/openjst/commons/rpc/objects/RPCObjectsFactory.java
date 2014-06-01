@@ -17,11 +17,12 @@
 
 package org.openjst.commons.rpc.objects;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.rpc.RPCContext;
 import org.openjst.commons.rpc.RPCParameters;
 import org.openjst.commons.rpc.RPCRequest;
 import org.openjst.commons.rpc.RPCResponse;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

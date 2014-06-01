@@ -20,10 +20,10 @@ package org.openjst.client.android.commons.managers.impl;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.client.android.commons.inject.annotations.Singleton;
 import org.openjst.client.android.commons.managers.LocaleManager;
 
+import javax.annotation.Nullable;
 import java.util.Locale;
 
 import static org.openjst.client.android.commons.GlobalContext.context;

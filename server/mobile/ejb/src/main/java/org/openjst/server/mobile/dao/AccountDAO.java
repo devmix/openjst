@@ -17,7 +17,6 @@
 
 package org.openjst.server.mobile.dao;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
@@ -27,6 +26,7 @@ import org.openjst.server.mobile.model.dto.AccountConnectionObj;
 import org.openjst.server.mobile.mq.model.AccountModel;
 import org.openjst.server.mobile.mq.queries.AccountQuery;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import static org.openjst.server.commons.mq.queries.VoidQuery.*;

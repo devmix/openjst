@@ -17,7 +17,6 @@
 
 package org.openjst.server.mobile.dao.impl;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.protocols.auth.SecretKey;
 import org.openjst.commons.protocols.auth.SecretKeys;
 import org.openjst.server.commons.AbstractEJB;
@@ -33,6 +32,7 @@ import org.openjst.server.mobile.model.dto.ClientAuthenticationObj;
 import org.openjst.server.mobile.model.dto.ClientConnectionObj;
 import org.openjst.server.mobile.utils.UserUtils;
 
+import javax.annotation.Nullable;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;

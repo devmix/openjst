@@ -17,8 +17,7 @@
 
 package org.openjst.commons.workflow;
 
-import org.jetbrains.annotations.Nullable;
-
+import javax.annotation.Nullable;
 import java.io.Serializable;
 
 /**

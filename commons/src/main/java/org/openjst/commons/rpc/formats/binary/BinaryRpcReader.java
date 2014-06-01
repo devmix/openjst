@@ -17,7 +17,6 @@
 
 package org.openjst.commons.rpc.formats.binary;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.io.buffer.ArrayDataBuffer;
 import org.openjst.commons.io.buffer.DataBufferException;
 import org.openjst.commons.rpc.RPCMessage;
@@ -27,6 +26,7 @@ import org.openjst.commons.rpc.RPCResponse;
 import org.openjst.commons.rpc.exceptions.RPCException;
 import org.openjst.commons.rpc.objects.RPCObjectsFactory;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**

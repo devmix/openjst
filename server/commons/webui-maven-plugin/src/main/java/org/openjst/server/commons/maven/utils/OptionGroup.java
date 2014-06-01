@@ -17,11 +17,11 @@
 
 package org.openjst.server.commons.maven.utils;
 
-import org.jetbrains.annotations.Nullable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 

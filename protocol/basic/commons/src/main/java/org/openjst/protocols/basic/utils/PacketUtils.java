@@ -17,12 +17,12 @@
 
 package org.openjst.protocols.basic.utils;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.io.buffer.ArrayDataInputBuffer;
 import org.openjst.commons.io.buffer.ArrayDataOutputBuffer;
 import org.openjst.commons.io.buffer.DataBufferException;
 import org.openjst.protocols.basic.pdu.beans.Parameter;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 

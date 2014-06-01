@@ -17,12 +17,13 @@
 
 package org.openjst.commons.workflow.engine;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.workflow.State;
 import org.openjst.commons.workflow.Workflow;
 import org.openjst.commons.workflow.events.Event;
 import org.openjst.commons.workflow.tasks.Task;
 import org.openjst.commons.workflow.timers.Timer;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

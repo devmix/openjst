@@ -25,7 +25,6 @@ import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.handler.execution.OrderedMemoryAwareThreadPoolExecutor;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.protocols.auth.SecretKey;
 import org.openjst.commons.rpc.RPCMessageFormat;
 import org.openjst.protocols.basic.client.context.ClientContext;
@@ -38,6 +37,7 @@ import org.openjst.protocols.basic.pdu.beans.Parameter;
 import org.openjst.protocols.basic.pdu.packets.AbstractAuthPacket;
 import org.openjst.protocols.basic.pdu.packets.PacketsFactory;
 
+import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;

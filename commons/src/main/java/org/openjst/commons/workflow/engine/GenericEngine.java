@@ -17,8 +17,6 @@
 
 package org.openjst.commons.workflow.engine;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.conversion.units.TimeUnits;
 import org.openjst.commons.conversion.units.Units;
 import org.openjst.commons.dto.tuples.Pair;
@@ -38,6 +36,7 @@ import org.openjst.commons.workflow.timers.Timers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -454,9 +453,8 @@ final class GenericEngine implements Engine {
             namePrefix = "engine-" + ENGINE_ID.getAndIncrement() + "-";
         }
 
-        @NotNull
         @Override
-        public Thread newThread(@NotNull final Runnable runnable) {
+        public Thread newThread(final Runnable runnable) {
             final Thread t = new Thread(group, runnable, namePrefix + threadId.getAndIncrement(), 0);
             if (t.isDaemon()) {
                 t.setDaemon(false);

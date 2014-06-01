@@ -18,7 +18,6 @@
 package org.openjst.client.android.dao.impl;
 
 import android.database.Cursor;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.client.android.commons.inject.annotations.Inject;
 import org.openjst.client.android.commons.inject.annotations.Singleton;
 import org.openjst.client.android.commons.managers.SessionManager;
@@ -26,6 +25,8 @@ import org.openjst.client.android.commons.utils.DatabaseUtils;
 import org.openjst.client.android.dao.VersionDAO;
 import org.openjst.client.android.db.ClientDB;
 import org.openjst.commons.dto.ApplicationVersion;
+
+import javax.annotation.Nullable;
 
 import static org.openjst.client.android.commons.utils.DatabaseUtils.*;
 import static org.openjst.client.android.db.impl.SQLiteClientDB.*;

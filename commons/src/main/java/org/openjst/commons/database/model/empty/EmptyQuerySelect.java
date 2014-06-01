@@ -17,12 +17,12 @@
 
 package org.openjst.commons.database.model.empty;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.database.model.QueryOrderBy;
 import org.openjst.commons.database.model.QuerySelect;
 import org.openjst.commons.database.model.QueryWhere;
 import org.openjst.commons.utils.Constants;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**

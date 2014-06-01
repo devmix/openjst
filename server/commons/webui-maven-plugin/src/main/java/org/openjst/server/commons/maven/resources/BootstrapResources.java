@@ -17,12 +17,12 @@
 
 package org.openjst.server.commons.maven.resources;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.maven.manifest.jaxb.CoreType;
 import org.openjst.server.commons.maven.manifest.jaxb.ExcludesType;
 import org.openjst.server.commons.maven.manifest.jaxb.IncludesType;
 import org.openjst.server.commons.maven.manifest.jaxb.SourcesType;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 

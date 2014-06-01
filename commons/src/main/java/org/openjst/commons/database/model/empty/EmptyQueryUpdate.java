@@ -17,11 +17,11 @@
 
 package org.openjst.commons.database.model.empty;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.database.model.QueryUpdate;
 import org.openjst.commons.database.model.QueryWhere;
 import org.openjst.commons.utils.Constants;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**

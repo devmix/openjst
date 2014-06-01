@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.client.android.Constants;
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.ScheduleTodayActivity;
@@ -51,6 +50,7 @@ import org.openjst.protocols.basic.client.ClientEventsListener;
 import org.openjst.protocols.basic.events.*;
 import org.openjst.protocols.basic.exceptions.ClientNotConnectedException;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**

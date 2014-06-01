@@ -17,7 +17,6 @@
 
 package org.openjst.commons.workflow.engine;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.workflow.State;
 import org.openjst.commons.workflow.UserData;
 import org.openjst.commons.workflow.UserDataHashMap;
@@ -27,6 +26,7 @@ import org.openjst.commons.workflow.persistence.Persistence;
 import org.openjst.commons.workflow.tasks.Task;
 import org.openjst.commons.workflow.timers.Timer;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**

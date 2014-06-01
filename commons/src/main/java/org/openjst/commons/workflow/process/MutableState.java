@@ -17,11 +17,11 @@
 
 package org.openjst.commons.workflow.process;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.workflow.actions.Action;
 import org.openjst.commons.workflow.tasks.Task;
 import org.openjst.commons.workflow.timers.Timer;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

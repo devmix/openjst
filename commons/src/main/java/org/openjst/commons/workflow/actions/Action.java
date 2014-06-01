@@ -17,10 +17,10 @@
 
 package org.openjst.commons.workflow.actions;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.workflow.Engine;
 import org.openjst.commons.workflow.UserData;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Set;
 

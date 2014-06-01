@@ -17,9 +17,10 @@
 
 package org.openjst.commons.workflow.engine;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.workflow.UserData;
 import org.openjst.commons.workflow.UserDataHashMap;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

@@ -17,7 +17,6 @@
 
 package org.openjst.protocols.basic.pdu.packets;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.io.buffer.ArrayDataInputBuffer;
 import org.openjst.commons.io.buffer.ArrayDataOutputBuffer;
 import org.openjst.commons.io.buffer.DataBufferException;
@@ -25,6 +24,7 @@ import org.openjst.protocols.basic.pdu.Packets;
 import org.openjst.protocols.basic.pdu.beans.Parameter;
 import org.openjst.protocols.basic.utils.PacketUtils;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 
 /**

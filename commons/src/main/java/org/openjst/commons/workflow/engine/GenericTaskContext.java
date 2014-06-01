@@ -17,8 +17,9 @@
 
 package org.openjst.commons.workflow.engine;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.workflow.tasks.Tasks;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

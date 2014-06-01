@@ -17,10 +17,10 @@
 
 package org.openjst.commons.utils;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.dto.tuples.Pair;
 import org.openjst.commons.dto.tuples.Tuples;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.regex.Pattern;
 

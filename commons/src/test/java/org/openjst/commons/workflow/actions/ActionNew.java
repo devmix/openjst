@@ -17,13 +17,13 @@
 
 package org.openjst.commons.workflow.actions;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.workflow.Engine;
 import org.openjst.commons.workflow.UserData;
 import org.openjst.commons.workflow.WorkflowEngineTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;

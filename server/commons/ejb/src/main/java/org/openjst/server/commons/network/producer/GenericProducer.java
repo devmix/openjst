@@ -17,7 +17,6 @@
 
 package org.openjst.server.commons.network.producer;
 
-import org.jetbrains.annotations.NotNull;
 import org.openjst.server.commons.network.*;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -113,9 +112,8 @@ final class GenericProducer<P extends Persistence<A, M>, A extends Actor<?>, M e
             namePrefix = "message-producer-" + GLOBAL_ID.getAndIncrement() + "-";
         }
 
-        @NotNull
         @Override
-        public Thread newThread(@NotNull final Runnable runnable) {
+        public Thread newThread(final Runnable runnable) {
             final Thread t = new Thread(group, runnable, namePrefix + className + "-" + localId.getAndIncrement(), 0);
             if (t.isDaemon()) {
                 t.setDaemon(false);

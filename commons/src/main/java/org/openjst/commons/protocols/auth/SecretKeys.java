@@ -17,9 +17,9 @@
 
 package org.openjst.commons.protocols.auth;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.encodings.StringCharset;
 
+import javax.annotation.Nullable;
 import java.security.SecureRandom;
 
 /**

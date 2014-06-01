@@ -17,7 +17,7 @@
 
 package org.openjst.commons.dto.tuples;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

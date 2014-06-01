@@ -18,10 +18,10 @@
 package org.openjst.server.commons.maven.compression;
 
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.Nullable;
 import org.mozilla.javascript.*;
 import org.openjst.server.commons.maven.utils.OptionGroup;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 /**

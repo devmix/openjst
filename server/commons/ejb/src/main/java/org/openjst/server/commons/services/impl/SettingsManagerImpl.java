@@ -17,7 +17,6 @@
 
 package org.openjst.server.commons.services.impl;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.cache.CacheOnDemand;
 import org.openjst.commons.cache.Caches;
 import org.openjst.server.commons.dao.CommonSettingDAO;
@@ -26,6 +25,7 @@ import org.openjst.server.commons.services.SettingsManager;
 import org.openjst.server.commons.settings.Setting;
 import org.openjst.server.commons.settings.SettingChangeEvent;
 
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.*;

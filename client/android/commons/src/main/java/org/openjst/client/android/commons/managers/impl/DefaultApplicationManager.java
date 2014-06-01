@@ -21,10 +21,11 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.client.android.commons.inject.annotations.Singleton;
 import org.openjst.client.android.commons.managers.ApplicationManager;
 import org.openjst.commons.dto.ApplicationVersion;
+
+import javax.annotation.Nullable;
 
 import static org.openjst.client.android.commons.GlobalContext.context;
 

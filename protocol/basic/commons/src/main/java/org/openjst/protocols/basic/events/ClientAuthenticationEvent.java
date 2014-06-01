@@ -17,10 +17,10 @@
 
 package org.openjst.protocols.basic.events;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.protocols.basic.pdu.beans.Parameter;
 import org.openjst.protocols.basic.pdu.packets.AbstractAuthPacket;
 
+import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;

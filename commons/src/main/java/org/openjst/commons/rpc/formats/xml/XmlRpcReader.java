@@ -18,7 +18,6 @@
 package org.openjst.commons.rpc.formats.xml;
 
 import net.n3.nanoxml.IXMLBuilder;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.dto.tuples.Pair;
 import org.openjst.commons.encodings.Base64;
 import org.openjst.commons.rpc.RPCParameters;
@@ -27,6 +26,7 @@ import org.openjst.commons.rpc.objects.RPCObjectsFactory;
 import org.openjst.commons.utils.DateTimeUtils;
 import org.openjst.commons.utils.RPCUtils;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.Reader;
 import java.text.ParseException;

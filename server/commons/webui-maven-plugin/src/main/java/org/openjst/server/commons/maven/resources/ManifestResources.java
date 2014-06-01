@@ -19,7 +19,6 @@ package org.openjst.server.commons.maven.resources;
 
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.FileUtils;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.dto.tuples.Pair;
 import org.openjst.server.commons.maven.compiler.Compiler;
 import org.openjst.server.commons.maven.compiler.Compilers;
@@ -31,6 +30,7 @@ import org.openjst.server.commons.maven.utils.Patterns;
 import org.openjst.server.commons.maven.validation.Validator;
 import org.openjst.server.commons.maven.validation.Validators;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;

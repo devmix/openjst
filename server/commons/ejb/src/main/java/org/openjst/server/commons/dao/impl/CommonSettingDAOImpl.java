@@ -17,13 +17,13 @@
 
 package org.openjst.server.commons.dao.impl;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.AbstractEJB;
 import org.openjst.server.commons.dao.CommonSettingDAO;
 import org.openjst.server.commons.model.CommonSetting;
 import org.openjst.server.commons.settings.Setting;
 import org.openjst.server.commons.settings.SettingChangeEvent;
 
+import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import java.util.*;

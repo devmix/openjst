@@ -17,11 +17,11 @@
 
 package org.openjst.server.commons.dao;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.model.CommonSetting;
 import org.openjst.server.commons.settings.Setting;
 import org.openjst.server.commons.settings.SettingChangeEvent;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

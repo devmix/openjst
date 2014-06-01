@@ -17,8 +17,7 @@
 
 package org.openjst.server.commons.settings;
 
-import org.jetbrains.annotations.Nullable;
-
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;

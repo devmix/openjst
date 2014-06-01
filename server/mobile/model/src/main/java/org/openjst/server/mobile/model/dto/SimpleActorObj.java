@@ -17,8 +17,9 @@
 
 package org.openjst.server.mobile.model.dto;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.network.Actor;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

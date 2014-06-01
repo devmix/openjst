@@ -17,8 +17,9 @@
 
 package org.openjst.commons.workflow.events;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.workflow.UserData;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

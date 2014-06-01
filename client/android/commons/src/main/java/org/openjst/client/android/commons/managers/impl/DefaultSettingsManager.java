@@ -20,9 +20,10 @@ package org.openjst.client.android.commons.managers.impl;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.client.android.commons.inject.annotations.Singleton;
 import org.openjst.client.android.commons.managers.SettingsManager;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

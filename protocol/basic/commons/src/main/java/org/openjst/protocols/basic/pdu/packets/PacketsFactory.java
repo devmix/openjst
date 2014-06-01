@@ -17,12 +17,12 @@
 
 package org.openjst.protocols.basic.pdu.packets;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.protocols.auth.SecretKey;
 import org.openjst.commons.rpc.RPCMessageFormat;
 import org.openjst.protocols.basic.pdu.Packets;
 import org.openjst.protocols.basic.pdu.beans.Parameter;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 
 /**

@@ -17,13 +17,13 @@
 
 package org.openjst.commons.workflow.persistence;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.workflow.Workflow;
 import org.openjst.commons.workflow.WorkflowData;
 import org.openjst.commons.workflow.events.Event;
 import org.openjst.commons.workflow.tasks.Task;
 import org.openjst.commons.workflow.timers.Timer;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;

@@ -17,12 +17,13 @@
 
 package org.openjst.commons.workflow.engine;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.conversion.units.TimeUnits;
 import org.openjst.commons.conversion.units.Units;
 import org.openjst.commons.workflow.Engine;
 import org.openjst.commons.workflow.persistence.Persistence;
 import org.openjst.commons.workflow.persistence.PersistenceTypes;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

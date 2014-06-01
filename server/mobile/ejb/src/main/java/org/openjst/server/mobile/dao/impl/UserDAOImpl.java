@@ -18,7 +18,6 @@
 package org.openjst.server.mobile.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.dto.tuples.Triple;
 import org.openjst.commons.dto.tuples.Tuples;
 import org.openjst.commons.protocols.auth.SecretKeys;
@@ -35,6 +34,7 @@ import org.openjst.server.mobile.mq.queries.UserQuery;
 import org.openjst.server.mobile.session.MobileSession;
 import org.openjst.server.mobile.utils.UserUtils;
 
+import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.LockModeType;

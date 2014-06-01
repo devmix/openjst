@@ -17,11 +17,11 @@
 
 package org.openjst.server.mobile;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.cache.CacheOnDemand;
 import org.openjst.commons.cache.Caches;
 import org.openjst.commons.i18n.Language;
 
+import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Map;
 

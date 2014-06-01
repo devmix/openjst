@@ -17,8 +17,7 @@
 
 package org.openjst.server.commons.maven.frameworks;
 
-import org.jetbrains.annotations.Nullable;
-
+import javax.annotation.Nullable;
 import java.util.Set;
 
 /**

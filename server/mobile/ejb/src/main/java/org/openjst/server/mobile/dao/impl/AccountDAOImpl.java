@@ -17,7 +17,6 @@
 
 package org.openjst.server.mobile.dao.impl;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.AbstractEJB;
 import org.openjst.server.commons.model.types.ProtocolType;
 import org.openjst.server.commons.mq.ModelQuery;
@@ -29,6 +28,7 @@ import org.openjst.server.mobile.model.dto.AccountConnectionObj;
 import org.openjst.server.mobile.mq.model.AccountModel;
 import org.openjst.server.mobile.mq.queries.AccountQuery;
 
+import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;

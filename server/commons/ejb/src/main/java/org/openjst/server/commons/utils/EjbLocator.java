@@ -17,8 +17,7 @@
 
 package org.openjst.server.commons.utils;
 
-import org.jetbrains.annotations.Nullable;
-
+import javax.annotation.Nullable;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 

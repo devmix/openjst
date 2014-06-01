@@ -17,7 +17,6 @@
 
 package org.openjst.commons.workflow.persistence;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.conversion.units.TimeUnits;
 import org.openjst.commons.conversion.units.Units;
 import org.openjst.commons.workflow.Workflow;
@@ -28,6 +27,7 @@ import org.openjst.commons.workflow.timers.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 

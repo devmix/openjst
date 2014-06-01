@@ -17,10 +17,10 @@
 
 package org.openjst.commons.database.model.empty;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.database.model.QueryInsert;
 import org.openjst.commons.utils.Constants;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

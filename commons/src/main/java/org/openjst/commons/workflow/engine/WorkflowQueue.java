@@ -17,7 +17,6 @@
 
 package org.openjst.commons.workflow.engine;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.concurrent.ResourcesLock;
 import org.openjst.commons.workflow.State;
 import org.openjst.commons.workflow.UserData;
@@ -29,6 +28,7 @@ import org.openjst.commons.workflow.timers.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**

@@ -17,11 +17,11 @@
 
 package org.openjst.server.commons.maven.resources;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.server.commons.maven.manifest.jaxb.LibraryType;
 import org.openjst.server.commons.maven.manifest.jaxb.SourcesType;
 import org.openjst.server.commons.maven.manifest.jaxb.StylesType;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashSet;

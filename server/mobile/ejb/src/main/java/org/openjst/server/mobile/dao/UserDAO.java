@@ -17,7 +17,6 @@
 
 package org.openjst.server.mobile.dao;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.dto.tuples.Triple;
 import org.openjst.server.commons.model.types.RoleType;
 import org.openjst.server.commons.mq.ModelQuery;
@@ -26,6 +25,7 @@ import org.openjst.server.mobile.model.User;
 import org.openjst.server.mobile.mq.model.UserModel;
 import org.openjst.server.mobile.mq.queries.UserQuery;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**

@@ -17,9 +17,9 @@
 
 package org.openjst.commons.utils;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.io.buffer.DataBufferException;
 
+import javax.annotation.Nullable;
 import java.io.*;
 
 /**

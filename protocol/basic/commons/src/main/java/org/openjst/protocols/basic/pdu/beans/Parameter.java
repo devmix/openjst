@@ -17,7 +17,7 @@
 
 package org.openjst.protocols.basic.pdu.beans;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev

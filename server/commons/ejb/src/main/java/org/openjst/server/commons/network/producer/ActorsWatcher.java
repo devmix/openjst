@@ -17,8 +17,7 @@
 
 package org.openjst.server.commons.network.producer;
 
-import org.jetbrains.annotations.Nullable;
-
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;

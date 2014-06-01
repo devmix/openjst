@@ -17,10 +17,10 @@
 
 package org.openjst.commons.io.buffer;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.utils.Constants;
 import org.openjst.commons.utils.IOUtils;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /**

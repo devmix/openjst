@@ -17,7 +17,6 @@
 
 package org.openjst.server.mobile.dao.impl;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.dto.ApplicationVersion;
 import org.openjst.commons.dto.tuples.Pair;
 import org.openjst.commons.dto.tuples.Tuples;
@@ -34,6 +33,7 @@ import org.openjst.server.mobile.mq.queries.UpdateQuery;
 import org.openjst.server.mobile.respository.UpdatesRepository;
 import org.openjst.server.mobile.session.MobileSession;
 
+import javax.annotation.Nullable;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;

@@ -17,10 +17,10 @@
 
 package org.openjst.server.mobile.model;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.rpc.RPCMessageFormat;
 import org.openjst.server.commons.model.types.MessageDeliveryState;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.util.Date;
 

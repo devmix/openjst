@@ -17,7 +17,6 @@
 
 package org.openjst.server.mobile.dao;
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.dto.tuples.Pair;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
@@ -26,6 +25,7 @@ import org.openjst.server.mobile.model.dto.UpdateToSentObj;
 import org.openjst.server.mobile.mq.model.UpdateModel;
 import org.openjst.server.mobile.mq.queries.UpdateQuery;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**

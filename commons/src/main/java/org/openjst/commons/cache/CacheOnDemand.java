@@ -18,9 +18,9 @@
 package org.openjst.commons.cache;
 
 
-import org.jetbrains.annotations.Nullable;
 import org.openjst.commons.dto.tuples.Pair;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**

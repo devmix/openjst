@@ -53,6 +53,8 @@
 
     <properties>
         <jboss.bom.version>1.0.3.Final</jboss.bom.version>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
 
     <dependencyManagement>
