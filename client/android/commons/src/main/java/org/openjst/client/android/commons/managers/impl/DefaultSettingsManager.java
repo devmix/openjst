@@ -17,23 +17,23 @@
 
 package org.openjst.client.android.commons.managers.impl;
 
-import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import org.jetbrains.annotations.Nullable;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Singleton;
 import org.openjst.client.android.commons.managers.SettingsManager;
 
 /**
  * @author Sergey Grachev
  */
-@JSTInject(SettingsManager.class)
+@Singleton
 public class DefaultSettingsManager implements SettingsManager {
 
     protected final SharedPreferences sharedPreferences;
 
-    public DefaultSettingsManager(final Application application) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
+    public DefaultSettingsManager(final Context ctx) {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ctx);
     }
 
     @Nullable

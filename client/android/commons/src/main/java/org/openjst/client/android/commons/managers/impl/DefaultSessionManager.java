@@ -17,7 +17,8 @@
 
 package org.openjst.client.android.commons.managers.impl;
 
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.Singleton;
 import org.openjst.client.android.commons.managers.SessionManager;
 import org.openjst.client.android.commons.managers.SettingsManager;
 import org.openjst.protocols.basic.session.Session;
@@ -25,10 +26,10 @@ import org.openjst.protocols.basic.session.Session;
 /**
  * @author Sergey Grachev
  */
-@JSTInject(SessionManager.class)
+@Singleton
 public class DefaultSessionManager implements SessionManager {
 
-    @JSTInject
+    @Inject
     private SettingsManager settings;
 
     private Session currentSession;

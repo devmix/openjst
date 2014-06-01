@@ -26,7 +26,7 @@ import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
-import org.openjst.client.android.commons.ApplicationContext;
+import org.openjst.client.android.commons.GlobalContext;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -59,7 +59,7 @@ public final class ServicesBinder implements ServiceConnection {
                 }
                 bindFutures.remove(serviceClass);
             }
-            ApplicationContext.addAndroidService(serviceClass, serviceInstance);
+            GlobalContext.addAndroidService(serviceClass, serviceInstance);
         } catch (ClassNotFoundException e) {
             Log.e("ServicesBinder", "onServiceConnected", e);
         }
@@ -68,7 +68,7 @@ public final class ServicesBinder implements ServiceConnection {
     public void onServiceDisconnected(final ComponentName name) {
         try {
             final Class serviceClass = Class.forName(name.getClassName());
-            ApplicationContext.removeAndroidService(serviceClass);
+            GlobalContext.removeAndroidService(serviceClass);
         } catch (ClassNotFoundException e) {
             Log.e("ServicesBinder", "onServiceConnected", e);
         }
@@ -103,7 +103,7 @@ public final class ServicesBinder implements ServiceConnection {
                 while (!Thread.currentThread().isInterrupted() && Thread.currentThread().isAlive()) {
                     try {
                         final Class<? extends Service> serviceClass = bindServicesQueue.take();
-                        final Application application = ApplicationContext.getApplication();
+                        final Application application = GlobalContext.application();
                         final Intent intent = new Intent(application, serviceClass);
                         application.startService(intent);
                         application.bindService(intent, ServicesBinder.this, Context.BIND_AUTO_CREATE);

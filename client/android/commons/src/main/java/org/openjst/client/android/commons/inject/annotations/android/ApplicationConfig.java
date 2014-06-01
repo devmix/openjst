@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.client.android.commons.inject.annotations;
+package org.openjst.client.android.commons.inject.annotations.android;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,8 +27,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author Sergey Grachev
  */
 @Retention(RUNTIME)
-@Target({ElementType.METHOD})
-public @interface AndroidOnMenuItemSelected {
+@Target({ElementType.TYPE})
+public @interface ApplicationConfig {
 
-    int value() default -1;
+    Class<?>[] implementations() default {};
 }

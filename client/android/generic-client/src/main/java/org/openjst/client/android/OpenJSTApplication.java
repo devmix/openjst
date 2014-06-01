@@ -19,24 +19,27 @@ package org.openjst.client.android;
 
 import android.app.Application;
 import android.content.Intent;
-import org.openjst.client.android.commons.ApplicationContext;
-import org.openjst.client.android.commons.inject.GenericInjector;
-import org.openjst.client.android.commons.inject.annotations.JSTApplicationContext;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.GlobalContext;
+import org.openjst.client.android.commons.inject.DefaultApplicationInjector;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.android.ApplicationConfig;
 import org.openjst.client.android.commons.managers.LocaleManager;
 import org.openjst.client.android.commons.managers.SettingsManager;
 import org.openjst.client.android.commons.managers.impl.*;
-import org.openjst.client.android.dao.impl.SQLiteArchiveDAO;
-import org.openjst.client.android.dao.impl.SQLiteSessionDAO;
+import org.openjst.client.android.dao.impl.SQLiteLogsDAO;
+import org.openjst.client.android.dao.impl.SQLitePacketsDAO;
+import org.openjst.client.android.dao.impl.SQLiteTrafficDAO;
+import org.openjst.client.android.dao.impl.SQLiteVersionDAO;
+import org.openjst.client.android.db.impl.SQLiteClientDB;
+import org.openjst.client.android.db.impl.SQLiteLogsDB;
 import org.openjst.client.android.managers.impl.DefaultRPCManager;
 import org.openjst.client.android.service.ServerConnectionService;
 
 /**
  * @author Sergey Grachev
  */
-@JSTApplicationContext(
-        injector = GenericInjector.class,
-        managers = {
+@ApplicationConfig(
+        implementations = {
                 // managers
                 DefaultSettingsManager.class,
                 DefaultLocaleManager.class,
@@ -44,26 +47,46 @@ import org.openjst.client.android.service.ServerConnectionService;
                 DefaultApplicationManager.class,
                 DefaultRPCManager.class,
                 DefaultSessionManager.class,
+
                 // database
-                SQLiteArchiveDAO.class,
-                SQLiteSessionDAO.class
+                SQLiteLogsDB.class,
+                SQLiteClientDB.class,
+
+                // DAO
+                SQLiteLogsDAO.class,
+                SQLiteTrafficDAO.class,
+                SQLitePacketsDAO.class,
+                SQLiteVersionDAO.class
         }
 )
 public final class OpenJSTApplication extends Application {
 
-    @JSTInject
+    @Inject
     private LocaleManager localeManager;
 
-    @JSTInject
+    @Inject
     private SettingsManager settingsManager;
-
+    
+    private DefaultApplicationInjector injector;
+    
     @Override
     public void onCreate() {
         super.onCreate();
-        ApplicationContext.init(this);
+
+        GlobalContext.registerApplication(this);
+
+        injector = new DefaultApplicationInjector(this);
+        injector.apply(this);
+        injector.finish();
 
         localeManager.changeLocale(settingsManager.getString(Constants.Settings.LOCALE_CODE));
 
         startService(new Intent(this, ServerConnectionService.class));
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        GlobalContext.unregisterApplication();
     }
 }

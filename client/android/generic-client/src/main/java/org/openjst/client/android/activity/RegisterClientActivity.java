@@ -22,22 +22,22 @@ import android.widget.EditText;
 import org.openjst.client.android.Constants;
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.generic.AbstractActivity;
-import org.openjst.client.android.commons.inject.annotations.AndroidLayout;
-import org.openjst.client.android.commons.inject.annotations.AndroidView;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.android.ALayout;
+import org.openjst.client.android.commons.inject.annotations.android.AView;
 import org.openjst.client.android.commons.managers.SettingsManager;
 
 /**
  * @author Sergey Grachev
  */
 @SuppressWarnings("UnusedDeclaration")
-@AndroidLayout(R.layout.activity_register_client)
+@ALayout(R.layout.activity_register_client)
 public final class RegisterClientActivity extends AbstractActivity {
 
-    @AndroidView(R.id.ed_account)
+    @AView(R.id.ed_account)
     private EditText edAccount;
 
-    @JSTInject
+    @Inject
     private SettingsManager settings;
 
     @Override

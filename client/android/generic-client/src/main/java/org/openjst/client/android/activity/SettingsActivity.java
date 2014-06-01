@@ -23,17 +23,17 @@ import android.preference.*;
 import org.openjst.client.android.Constants;
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.generic.AbstractPreferenceActivity;
-import org.openjst.client.android.commons.inject.annotations.AndroidPreferences;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.android.APreferences;
 import org.openjst.client.android.commons.managers.LocaleManager;
 
 /**
  * @author Sergey Grachev
  */
-@AndroidPreferences(R.xml.settings)
+@APreferences(R.xml.settings)
 public final class SettingsActivity extends AbstractPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    @JSTInject
+    @Inject
     private LocaleManager localeManager;
 
     @Override

@@ -15,29 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.client.android.commons.inject;
+package org.openjst.client.android.db;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import org.openjst.client.android.commons.database.DatabaseObject;
 
 /**
  * @author Sergey Grachev
  */
-public interface Injector {
-
-    void finish();
-
-    void apply(Object target);
-
-    void onVisitField(Object target, Class<?> targetClass, Field field);
-
-    void onVisitMethod(Object target, Class<?> targetClass, Method method);
-
-    void onVisitClass(Object target, Class<?> targetClass);
-
-    void onEnableEvents(Object target, Class<?> targetClass, Method method);
-
-    void enableEvents(Object target);
-
-    void disableEvents(Object target);
+public interface LogsDB extends DatabaseObject {
 }

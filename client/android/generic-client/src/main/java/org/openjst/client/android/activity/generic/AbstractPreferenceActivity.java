@@ -20,35 +20,43 @@ package org.openjst.client.android.activity.generic;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import org.openjst.client.android.commons.ApplicationContext;
 import org.openjst.client.android.commons.inject.ActivityInjector;
-import org.openjst.client.android.commons.inject.GenericActivityInjector;
-import org.openjst.client.android.commons.inject.Inject;
+import org.openjst.client.android.commons.inject.DefaultActivityInjector;
+import org.openjst.client.android.commons.inject.Injector;
 
 /**
  * @author Sergey Grachev
  */
 public abstract class AbstractPreferenceActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    protected ActivityInjector injector = new GenericActivityInjector(this);
+    protected final ActivityInjector injector;
+
+    protected AbstractPreferenceActivity() {
+        this.injector = (ActivityInjector) onCreateInjector();
+    }
+
+    protected Injector onCreateInjector() {
+        return new DefaultActivityInjector(this);
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Inject.apply(this, injector);
+        injector.apply(this);
+        injector.finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-        ApplicationContext.addEvents(this);
+        injector.enableEvents(this);
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        ApplicationContext.removeEventListener(this);
+        injector.disableEvents(this);
+        super.onPause();
     }
 }

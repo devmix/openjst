@@ -15,9 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.client.android.commons.inject.annotations;
-
-import org.openjst.client.android.commons.inject.Injector;
+package org.openjst.client.android.commons.inject.annotations.android;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,10 +27,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author Sergey Grachev
  */
 @Retention(RUNTIME)
-@Target({ElementType.TYPE})
-public @interface JSTApplicationContext {
+@Target({ElementType.FIELD})
+public @interface AView {
 
-    Class<?>[] managers() default {};
-
-    Class<? extends Injector> injector();
+    int value();
 }

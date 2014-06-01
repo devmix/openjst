@@ -19,8 +19,8 @@ package org.openjst.client.android.commons.utils;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import org.jetbrains.annotations.Nullable;
+import org.openjst.client.android.commons.database.DatabaseObject;
 import org.openjst.commons.database.model.QueryInsert;
 import org.openjst.commons.database.model.QuerySelect;
 import org.openjst.commons.database.model.QueryUpdate;
@@ -37,7 +37,7 @@ public final class DatabaseUtils {
     private DatabaseUtils() {
     }
 
-    public static long selectLong(final SQLiteDatabase db, final QuerySelect select) {
+    public static long selectLong(final DatabaseObject db, final QuerySelect select) {
         final List<Object> parameters = new LinkedList<Object>();
         final Cursor cursor = db.rawQuery(select.toSql(parameters), convertParametersToStrings(parameters));
         cursor.moveToFirst();
@@ -49,7 +49,7 @@ public final class DatabaseUtils {
     }
 
     @Nullable
-    public static Long selectId(final SQLiteDatabase db, final QuerySelect select) {
+    public static Long selectId(final DatabaseObject db, final QuerySelect select) {
         final List<Object> parameters = new LinkedList<Object>();
         final Cursor cursor = db.rawQuery(select.toSql(parameters), convertParametersToStrings(parameters));
         try {
@@ -59,17 +59,17 @@ public final class DatabaseUtils {
         }
     }
 
-    public static void update(final SQLiteDatabase db, final QueryUpdate update) {
+    public static void update(final DatabaseObject db, final QueryUpdate update) {
         final List<Object> parameters = new LinkedList<Object>();
-        db.execSQL(update.toSql(parameters), parameters.toArray());
+        db.updateSQL(update.toSql(parameters), parameters.toArray());
     }
 
-    public static void insert(final SQLiteDatabase db, final QueryInsert insert) {
+    public static void insert(final DatabaseObject db, final QueryInsert insert) {
         final List<Object> parameters = new LinkedList<Object>();
-        db.execSQL(insert.toSql(parameters), parameters.toArray());
+        db.updateSQL(insert.toSql(parameters), parameters.toArray());
     }
 
-    public static long insertWithResult(final SQLiteDatabase db, final QueryInsert insert) {
+    public static long insertWithResult(final DatabaseObject db, final QueryInsert insert) {
         final ContentValues values = new ContentValues();
         for (final Map.Entry<String, Object> entry : insert.values().entrySet()) {
             final Object value = entry.getValue();
@@ -106,7 +106,7 @@ public final class DatabaseUtils {
         return arguments;
     }
 
-    public static Cursor select(final SQLiteDatabase db, final QuerySelect select) {
+    public static Cursor select(final DatabaseObject db, final QuerySelect select) {
         final List<Object> parameters = new LinkedList<Object>();
         return db.rawQuery(select.toSql(parameters), convertParametersToStrings(parameters));
     }

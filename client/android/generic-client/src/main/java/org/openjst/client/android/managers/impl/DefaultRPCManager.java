@@ -17,17 +17,19 @@
 
 package org.openjst.client.android.managers.impl;
 
-import android.app.Application;
 import android.os.AsyncTask;
 import org.openjst.client.android.Constants;
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.ApplicationUpdateActivity;
-import org.openjst.client.android.commons.inject.annotations.AndroidService;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.OnCreate;
+import org.openjst.client.android.commons.inject.annotations.Singleton;
+import org.openjst.client.android.commons.inject.annotations.android.AService;
 import org.openjst.client.android.commons.managers.ApplicationManager;
 import org.openjst.client.android.commons.managers.NotificationsManager;
 import org.openjst.client.android.dao.LogsDAO;
-import org.openjst.client.android.dao.SessionDAO;
+import org.openjst.client.android.dao.PacketsDAO;
+import org.openjst.client.android.dao.VersionDAO;
 import org.openjst.client.android.managers.RPCManager;
 import org.openjst.client.android.managers.handlers.core.UpdatesHandler;
 import org.openjst.client.android.service.ServerConnectionService;
@@ -46,10 +48,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static org.openjst.client.android.commons.GlobalContext.context;
+
 /**
  * @author Sergey Grachev
  */
-@JSTInject(RPCManager.class)
+@Singleton(lazy = false)
 public class DefaultRPCManager implements RPCManager {
 
     public static final RPCMessageFormat RPC_MESSAGE_FORMAT = RPCMessageFormat.BINARY;
@@ -61,27 +65,37 @@ public class DefaultRPCManager implements RPCManager {
     private final AsyncTask<Void, Void, Void> produceTask;
     private final AsyncTask<Void, Void, Void> consumeTask;
     private final Map<String, String> requestIds = new HashMap<String, String>();
-    private final Application application;
 
     private ServerConnectionService connection;
 
-    @JSTInject
+    @Inject
     private ApplicationManager applicationManager;
 
-    @JSTInject
-    private SessionDAO sessionDAO;
+    @Inject
+    private PacketsDAO packetsDAO;
 
-    @JSTInject
+    @Inject
     private LogsDAO logsDAO;
 
-    @JSTInject
+    @Inject
+    private VersionDAO versionDAO;
+
+    @Inject
     private NotificationsManager notifications;
 
-    public DefaultRPCManager(final Application application) {
-        this.application = application;
-        rpcContext.registerHandler(Constants.RPC.OBJECT_CORE_UPDATES, new UpdatesHandler(application));
+    @Inject
+    private UpdatesHandler updatesHandler;
+
+    @OnCreate
+    private void onCreate() {
+        rpcContext.registerHandler(Constants.RPC.OBJECT_CORE_UPDATES, updatesHandler);
         rpcContext.registerHandler(Constants.RPC.OBJECT_MOBILE, this);
 
+        produceTask.execute();
+        consumeTask.execute();
+    }
+
+    public DefaultRPCManager() {
         produceTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(final Void... params) {
@@ -96,22 +110,21 @@ public class DefaultRPCManager implements RPCManager {
                         final Triple<String, RPCMessageFormat, byte[]> msg = produceQueue.take();
                         try {
                             connection.send(msg.second(), msg.third());
-                            sessionDAO.outStatus(msg.first(), SessionDAO.PacketStatus.SENT);
-                        } catch (ClientNotConnectedException e) {
+                            packetsDAO.outStatus(msg.first(), PacketsDAO.PacketStatus.SENT);
+                        } catch (final ClientNotConnectedException e) {
                             produceQueue.addFirst(msg); // try later
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             logsDAO.errorSendRPC(connection.getServerHost(), connection.getServerPort(),
                                     connection.getAccountId(), connection.getClientId(), e.getMessage());
-                            sessionDAO.outStatus(msg.first(), SessionDAO.PacketStatus.ERROR);
+                            packetsDAO.outStatus(msg.first(), PacketsDAO.PacketStatus.ERROR);
                         }
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                         break;
                     }
                 }
                 return null;
             }
         };
-        produceTask.execute();
 
         consumeTask = new AsyncTask<Void, Void, Void>() {
             @Override
@@ -122,20 +135,19 @@ public class DefaultRPCManager implements RPCManager {
                         final Pair<RPCMessageFormat, byte[]> msg = consumeQueue.take();
                         try {
                             incoming(msg);
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             e.printStackTrace();
                         }
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                         break;
                     }
                 }
                 return null;
             }
         };
-        consumeTask.execute();
     }
 
-    @AndroidService(ServerConnectionService.class)
+    @AService(ServerConnectionService.class)
     private void onBindServerConnectionService(final ServerConnectionService service) {
         connection = service;
     }
@@ -147,15 +159,15 @@ public class DefaultRPCManager implements RPCManager {
 
     @SuppressWarnings("UnusedDeclaration")
     public void checkUpdateResponse(final ApplicationVersion version) throws RPCException {
-        if (sessionDAO.findVersionId(version.getMajor(), version.getMinor(), version.getBuild()) != null) {
+        if (versionDAO.findVersionId(version.getMajor(), version.getMinor(), version.getBuild()) != null) {
             return;
         }
 
-        sessionDAO.persistVersion(version);
+        versionDAO.add(version);
 
         notifications.newActivityInvoke(Constants.Notifications.TAG_UPDATE, Constants.Notifications.ID_APPLICATION,
-                String.format(application.getString(R.string.notification_new_version), version),
-                String.format(application.getString(R.string.notification_click_to_start_upgrade_to_new_version), version),
+                String.format(context().getString(R.string.notification_new_version), version),
+                String.format(context().getString(R.string.notification_click_to_start_upgrade_to_new_version), version),
                 ApplicationUpdateActivity.class, version);
     }
 
@@ -171,7 +183,7 @@ public class DefaultRPCManager implements RPCManager {
         final byte[] data = RPC_MESSAGE_FORMAT.newFormatter(true).write(request);
         final Triple<String, RPCMessageFormat, byte[]> msg = Tuples.newTriple(String.valueOf(id), RPC_MESSAGE_FORMAT, data);
 
-        sessionDAO.outPersist(msg.first(), msg.second(), msg.third());
+        packetsDAO.outPersist(msg.first(), msg.second(), msg.third());
         requestIds.put(id, methodName);
         produceQueue.add(msg);
 
@@ -185,16 +197,16 @@ public class DefaultRPCManager implements RPCManager {
 
         try {
             final RPCMessage message = msg.first().newFormatter(true).read(msg.second());
-            sessionDAO.inPersist(message.getId(), msg.first(), msg.second());
+            packetsDAO.inPersist(message.getId(), msg.first(), msg.second());
             if (message instanceof RPCRequest) {
 
-                sessionDAO.inStatus(message.getId(), SessionDAO.PacketStatus.RECEIVED);
+                packetsDAO.inStatus(message.getId(), PacketsDAO.PacketStatus.RECEIVED);
                 final RPCRequest request = (RPCRequest) message;
                 rpcContext.invoke(request.getObject(), request.getMethod(), request.getParameters());
 
             } else if (message instanceof RPCResponse) {
 
-                sessionDAO.inResponse(message.getId());
+                packetsDAO.inResponse(message.getId());
 
                 final RPCResponse response = (RPCResponse) message;
                 final String requestMethodName = requestIds.get(message.getId());
@@ -204,7 +216,7 @@ public class DefaultRPCManager implements RPCManager {
                 // TODO errors, responses w/o requestMethodName
 
             }
-        } catch (RPCException e) {
+        } catch (final RPCException e) {
             e.printStackTrace();
         }
     }

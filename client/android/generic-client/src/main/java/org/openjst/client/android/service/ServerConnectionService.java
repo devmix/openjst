@@ -28,13 +28,12 @@ import org.openjst.client.android.Constants;
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.ScheduleTodayActivity;
 import org.openjst.client.android.activity.StartupActivity;
-import org.openjst.client.android.commons.ApplicationContext;
+import org.openjst.client.android.commons.GlobalContext;
 import org.openjst.client.android.commons.events.annotations.OnConnectionEvent;
 import org.openjst.client.android.commons.events.types.ConnectionEvent;
-import org.openjst.client.android.commons.inject.GenericInjector;
-import org.openjst.client.android.commons.inject.Inject;
+import org.openjst.client.android.commons.inject.DefaultInjector;
 import org.openjst.client.android.commons.inject.Injector;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Inject;
 import org.openjst.client.android.commons.managers.NotificationsManager;
 import org.openjst.client.android.commons.managers.SessionManager;
 import org.openjst.client.android.commons.managers.SettingsManager;
@@ -62,20 +61,20 @@ public final class ServerConnectionService extends Service {
     private static final SecretKey SECRET_KEY_NONE = SecretKeys.NONE.create(new byte[0]);
 
     private final LocalServiceBinder<ServerConnectionService> localBinder;
-    private final Injector injector = new GenericInjector();
+    private final Injector injector = new DefaultInjector();
     private final AtomicLong requestId = new AtomicLong(0);
     private final Object lock = new Object();
 
-    @JSTInject
+    @Inject
     private NotificationsManager notifications;
 
-    @JSTInject
+    @Inject
     private SettingsManager settings;
 
-    @JSTInject
+    @Inject
     private SessionManager sessionManager;
 
-    @JSTInject
+    @Inject
     private RPCManager rpcManager;
 
     private final ClientEventsListener clientEventsListener;
@@ -87,7 +86,8 @@ public final class ServerConnectionService extends Service {
     private String secretKey;
 
     public ServerConnectionService() {
-        ApplicationContext.addAndroidService(ServerConnectionService.class, this);
+        GlobalContext.registerService(this);
+        GlobalContext.addAndroidService(ServerConnectionService.class, this);
 
         this.handler = new Handler();
 
@@ -107,7 +107,7 @@ public final class ServerConnectionService extends Service {
 
             @Override
             public void onAuthenticationFail(final AuthenticationFailEvent event) {
-                ApplicationContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(null));
+                GlobalContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(null));
                 handler.post(new Runnable() {
                     public void run() {
                         Toast.makeText(ServerConnectionService.this,
@@ -120,7 +120,7 @@ public final class ServerConnectionService extends Service {
             public void onConnect(final ConnectEvent event) {
                 sessionManager.setSession(event.getSession());
 
-                ApplicationContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(event.getSession()));
+                GlobalContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(event.getSession()));
 
                 if (!updateChecked) {
                     updateChecked = true;
@@ -158,7 +158,7 @@ public final class ServerConnectionService extends Service {
 
             @Override
             public void onDisconnect(final DisconnectEvent event) {
-                ApplicationContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(null));
+                GlobalContext.fireEvent(OnConnectionEvent.class, new ConnectionEvent(null));
                 handler.post(new Runnable() {
                     public void run() {
                         Toast.makeText(ServerConnectionService.this, "Client disconnected", Toast.LENGTH_SHORT).show();
@@ -189,7 +189,9 @@ public final class ServerConnectionService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Inject.apply(this, injector);
+        injector.apply(this);
+        injector.finish();
+        injector.enableEvents(this);
 
         sessionManager.setSession(null);
 
@@ -214,7 +216,9 @@ public final class ServerConnectionService extends Service {
 
     @Override
     public void onDestroy() {
+        injector.disableEvents(this);
         notifications.cancel(Constants.Notifications.ID_APPLICATION);
+        GlobalContext.unregisterService();
     }
 
     @Override

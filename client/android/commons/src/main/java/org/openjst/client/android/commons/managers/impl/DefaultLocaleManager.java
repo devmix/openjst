@@ -17,30 +17,25 @@
 
 package org.openjst.client.android.commons.managers.impl;
 
-import android.app.Application;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import org.jetbrains.annotations.Nullable;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Singleton;
 import org.openjst.client.android.commons.managers.LocaleManager;
 
 import java.util.Locale;
 
+import static org.openjst.client.android.commons.GlobalContext.context;
+
 /**
  * @author Sergey Grachev
  */
-@JSTInject(LocaleManager.class)
-public final class DefaultLocaleManager implements LocaleManager {
-
-    protected final Application application;
-
-    public DefaultLocaleManager(final Application application) {
-        this.application = application;
-    }
+@Singleton
+public class DefaultLocaleManager implements LocaleManager {
 
     public void changeLocale(@Nullable final String code) {
-        final Resources resources = application.getBaseContext().getResources();
+        final Resources resources = context().getResources();
         final DisplayMetrics displayMetrics = resources.getDisplayMetrics();
         final Configuration configuration = resources.getConfiguration();
         configuration.locale = new Locale(code == null ? "en" : code);

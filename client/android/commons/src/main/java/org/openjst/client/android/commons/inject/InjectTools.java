@@ -20,8 +20,9 @@ package org.openjst.client.android.commons.inject;
 import android.app.Activity;
 import android.app.Service;
 import android.preference.PreferenceActivity;
-import org.openjst.client.android.commons.ApplicationContext;
-import org.openjst.client.android.commons.inject.annotations.*;
+import org.openjst.client.android.commons.GlobalContext;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.android.*;
 import org.openjst.client.android.commons.services.LookupServiceFuture;
 import org.openjst.commons.utils.ReflectionUtils;
 
@@ -30,18 +31,21 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.openjst.commons.utils.ReflectionUtils.forceSetFieldValue;
+
 /**
  * @author Sergey Grachev
  */
-public final class Inject {
+public final class InjectTools {
 
     private static final Map<Class<? extends Injector>, Injector> INJECTORS = new HashMap<Class<? extends Injector>, Injector>();
 
-    private Inject() {
+    private InjectTools() {
     }
 
     public static <T> void apply(final T target, final Injector injector) {
         injector.apply(target);
+        injector.finish();
     }
 
     public static <T> void apply(final T target, final Class<? extends Injector> injectorClass) {
@@ -51,7 +55,7 @@ public final class Inject {
         } else {
             try {
                 INJECTORS.put(injectorClass, injector = injectorClass.newInstance());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new IllegalArgumentException("Can't create injector " + injectorClass.getName());
             }
         }
@@ -59,41 +63,40 @@ public final class Inject {
     }
 
     public static <T> void apply(final T target) {
-        apply(target, new GenericInjector());
+        apply(target, new DefaultInjector());
     }
 
     public static void injectAndroidSystemService(final Field field, final Object target) {
-        if (field.isAnnotationPresent(AndroidSystemService.class)) {
-            final AndroidSystemService annotation = field.getAnnotation(AndroidSystemService.class);
+        if (field.isAnnotationPresent(ASystemService.class)) {
+            final ASystemService annotation = field.getAnnotation(ASystemService.class);
             if (!"".equals(annotation.value())) {
-                final Object service = ApplicationContext.getApplication().getSystemService(annotation.value());
-                ReflectionUtils.forceSetFieldValue(target, field, service);
+                final Object service = GlobalContext.application().getSystemService(annotation.value());
+                forceSetFieldValue(target, field, service);
             }
         }
     }
 
-    public static void injectManager(final Field field, final Object target) {
-        if (field.isAnnotationPresent(JSTInject.class)) {
-            final Object manager = ApplicationContext.lookup(field.getType());
-            if (manager != null) {
-                ReflectionUtils.forceSetFieldValue(target, field, manager);
-            }
+    public static void injectBean(final Field field, final Object target, final DefaultInjector injector) {
+        if (field.isAnnotationPresent(Inject.class)) {
+            final Object bean = GlobalContext.lookup(field.getType());
+            forceSetFieldValue(target, field, bean);
+            injector.apply(bean);
         }
     }
 
     public static void injectAndroidView(final Field field, final Activity target) {
-        if (field.isAnnotationPresent(AndroidView.class)) {
-            final AndroidView annotation = field.getAnnotation(AndroidView.class);
+        if (field.isAnnotationPresent(AView.class)) {
+            final AView annotation = field.getAnnotation(AView.class);
             if (annotation.value() > -1) {
                 final Object view = target.findViewById(annotation.value());
-                ReflectionUtils.forceSetFieldValue(target, field, view);
+                forceSetFieldValue(target, field, view);
             }
         }
     }
 
     public static void injectAndroidLayout(final Class<?> targetClass, final Activity target) {
-        if (targetClass.isAnnotationPresent(AndroidLayout.class)) {
-            final AndroidLayout annotation = targetClass.getAnnotation(AndroidLayout.class);
+        if (targetClass.isAnnotationPresent(ALayout.class)) {
+            final ALayout annotation = targetClass.getAnnotation(ALayout.class);
             if (annotation.value() > -1) {
                 target.setContentView(annotation.value());
             }
@@ -101,8 +104,8 @@ public final class Inject {
     }
 
     public static void injectAndroidPreferences(final Class<?> targetClass, final Activity target) {
-        if (PreferenceActivity.class.isAssignableFrom(targetClass) && targetClass.isAnnotationPresent(AndroidPreferences.class)) {
-            final AndroidPreferences annotation = targetClass.getAnnotation(AndroidPreferences.class);
+        if (PreferenceActivity.class.isAssignableFrom(targetClass) && targetClass.isAnnotationPresent(APreferences.class)) {
+            final APreferences annotation = targetClass.getAnnotation(APreferences.class);
             if (annotation.value() > -1) {
                 ((PreferenceActivity) target).addPreferencesFromResource(annotation.value());
             }
@@ -110,13 +113,13 @@ public final class Inject {
     }
 
     public static void injectAndroidService(final Method method, final Object target) {
-        if (!method.isAnnotationPresent(AndroidService.class)) {
+        if (!method.isAnnotationPresent(AService.class)) {
             return;
         }
-        final AndroidService annotation = method.getAnnotation(AndroidService.class);
+        final AService annotation = method.getAnnotation(AService.class);
         @SuppressWarnings("unchecked")
         final Class<Service> serviceClass = (Class<Service>) annotation.value();
-        ApplicationContext.lookupService(serviceClass, new LookupServiceFuture<Service>() {
+        GlobalContext.lookupService(serviceClass, new LookupServiceFuture<Service>() {
             public void onBind(final Service service) {
                 ReflectionUtils.forceInvokeMethod(target, method, service);
             }

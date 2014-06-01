@@ -20,11 +20,11 @@ package org.openjst.client.android.activity.status;
 import android.os.Bundle;
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.generic.AbstractActivity;
-import org.openjst.client.android.commons.inject.annotations.AndroidLayout;
-import org.openjst.client.android.commons.inject.annotations.AndroidView;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.android.ALayout;
+import org.openjst.client.android.commons.inject.annotations.android.AView;
 import org.openjst.client.android.commons.widgets.PropertiesView;
-import org.openjst.client.android.dao.SessionDAO;
+import org.openjst.client.android.dao.TrafficDAO;
 import org.openjst.client.android.dto.TrafficSummary;
 import org.openjst.client.android.utils.LocaleUtils;
 import org.openjst.commons.conversion.units.InformationUnits;
@@ -37,14 +37,14 @@ import java.util.List;
 /**
  * @author Sergey Grachev
  */
-@AndroidLayout(R.layout.activity_status_traffic)
+@ALayout(R.layout.activity_status_traffic)
 public class StatusTrafficActivity extends AbstractActivity {
 
-    @AndroidView(R.id.list)
+    @AView(R.id.list)
     private PropertiesView pvList;
 
-    @JSTInject
-    private SessionDAO sessionDAO;
+    @Inject
+    private TrafficDAO trafficDAO;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class StatusTrafficActivity extends AbstractActivity {
     private void addSummary(final List<Pair<String, List<PropertiesView.Property>>> properties) {
         final List<PropertiesView.Property> list = new ArrayList<PropertiesView.Property>();
 
-        final TrafficSummary summary = sessionDAO.getTrafficSummary();
+        final TrafficSummary summary = trafficDAO.getTrafficSummary();
 
         list.add(PropertiesView.Property.newHorizontal("RPC In:",
                 LocaleUtils.unitCut(summary.getRPCIn(), InformationUnits.BYTE)));

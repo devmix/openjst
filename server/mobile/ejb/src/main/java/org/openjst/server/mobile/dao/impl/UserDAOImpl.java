@@ -137,6 +137,7 @@ public class UserDAOImpl extends AbstractEJB implements UserDAO {
             entity.setPasswordSalt(SecretKeys.salt(User.DEFAULT_SALT_SIZE));
             entity.setPassword(UserUtils.encodePassword(password, SecretKeys.PBKDF2WithHmacSHA1, entity.getPasswordSalt()));
         }
+        session.initialization(entity);
         return em.merge(entity);
     }
 

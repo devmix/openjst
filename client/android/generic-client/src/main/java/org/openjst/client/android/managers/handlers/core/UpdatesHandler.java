@@ -17,56 +17,61 @@
 
 package org.openjst.client.android.managers.handlers.core;
 
-import android.app.Application;
 import android.widget.Toast;
-import org.openjst.client.android.commons.ApplicationContext;
+import org.openjst.client.android.Constants;
+import org.openjst.client.android.R;
+import org.openjst.client.android.activity.ApplicationUpdateActivity;
+import org.openjst.client.android.commons.GlobalContext;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.Singleton;
+import org.openjst.client.android.commons.managers.NotificationsManager;
+import org.openjst.client.android.dao.VersionDAO;
+import org.openjst.commons.dto.ApplicationVersion;
 
-import java.util.Date;
+import static org.openjst.client.android.commons.GlobalContext.context;
 
 /**
  * @author Sergey Grachev
  */
+@Singleton
 public final class UpdatesHandler {
 
-    private final Application application;
+    @Inject
+    private VersionDAO dao;
 
-    public UpdatesHandler(final Application application) {
-        this.application = application;
+    @Inject
+    private NotificationsManager notifications;
+
+    public void add(final String os, final ApplicationVersion version) {
+        if ("ANDROID".equals(os)) {
+            dao.add(version);
+            notify(version);
+        }
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public void add(final Long updateId, final String os, final String version, final Date uploadDate, final String description) {
+    public void update(final String os, final ApplicationVersion version) {
         if ("ANDROID".equals(os)) {
-            ApplicationContext.post(new Runnable() {
+            dao.update(version);
+            notify(version);
+        }
+    }
+
+    public void remove(final String os, final ApplicationVersion version) {
+        if ("ANDROID".equals(os)) {
+            dao.remove(version);
+            GlobalContext.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(application, "add " + updateId + " " + version + " " + uploadDate + " " + description, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context(), "remove " + version, Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public void update(final Long updateId, final String os, final String version, final Date uploadDate, final String description) {
-        if ("ANDROID".equals(os)) {
-            ApplicationContext.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(application, "update " + updateId + " " + version + " " + uploadDate + " " + description, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    public void remove(final Long updateId, final String os) {
-        if ("ANDROID".equals(os)) {
-            ApplicationContext.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(application, "remove " + updateId, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+    private void notify(final ApplicationVersion version) {
+        notifications.newActivityInvoke(Constants.Notifications.TAG_UPDATE, Constants.Notifications.ID_APPLICATION,
+                String.format(context().getString(R.string.notification_new_version), version),
+                String.format(context().getString(R.string.notification_click_to_start_upgrade_to_new_version), version),
+                ApplicationUpdateActivity.class, version);
     }
 }

@@ -15,29 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.client.android.commons.inject;
+package org.openjst.client.android.dao.impl;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.Singleton;
+import org.openjst.client.android.dao.LogsDAO;
+import org.openjst.client.android.db.LogsDB;
 
 /**
  * @author Sergey Grachev
  */
-public interface Injector {
+@Singleton(lazy = false)
+public final class SQLiteLogsDAO implements LogsDAO {
 
-    void finish();
+    @Inject
+    private LogsDB db;
 
-    void apply(Object target);
+    @Override
+    public void errorSendRPC(final String host, final Integer port, final String accountId, final String clientId, final String message) {
+        // TODO
+    }
 
-    void onVisitField(Object target, Class<?> targetClass, Field field);
-
-    void onVisitMethod(Object target, Class<?> targetClass, Method method);
-
-    void onVisitClass(Object target, Class<?> targetClass);
-
-    void onEnableEvents(Object target, Class<?> targetClass, Method method);
-
-    void enableEvents(Object target);
-
-    void disableEvents(Object target);
 }

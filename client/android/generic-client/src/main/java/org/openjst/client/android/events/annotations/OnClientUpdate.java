@@ -15,20 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.client.android.commons.inject.annotations;
+package org.openjst.client.android.events.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Sergey Grachev
  */
-@Retention(RUNTIME)
-@Target({ElementType.FIELD})
-public @interface AndroidView {
-
-    int value();
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+public @interface OnClientUpdate {
 }

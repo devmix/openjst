@@ -15,23 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.client.android.dao.impl;
+package org.openjst.client.android.db.impl;
 
-import android.app.Application;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
-import org.openjst.client.android.dao.LogsDAO;
+import android.content.Context;
+import org.openjst.client.android.commons.database.AbstractSQLiteDatabaseObject;
+import org.openjst.client.android.commons.inject.annotations.Singleton;
+import org.openjst.client.android.db.LogsDB;
 import org.openjst.commons.database.model.Database;
-import org.openjst.commons.database.model.Table;
 import org.openjst.commons.database.model.sqlite.SQLiteModelFactory;
 
 /**
  * @author Sergey Grachev
  */
-@JSTInject(LogsDAO.class)
-public final class SQLiteArchiveDAO extends SQLiteOpenHelper implements LogsDAO {
+@Singleton
+public final class SQLiteLogsDB extends AbstractSQLiteDatabaseObject implements LogsDB {
 
     private static final int VERSION = 1;
     private static final String NAME = "archive";
@@ -59,43 +56,12 @@ public final class SQLiteArchiveDAO extends SQLiteOpenHelper implements LogsDAO 
         ;
     }
 
-    public SQLiteArchiveDAO(final Application application) {
-        super(application, NAME, null, VERSION);
+    public SQLiteLogsDB(final Context ctx) {
+        super(ctx, NAME, null, VERSION);
     }
 
     @Override
-    public void onCreate(final SQLiteDatabase db) {
-        for (final Table table : DB.tables()) {
-            final String query = table.ddlCreate();
-            Log.d(this.getClass().getSimpleName(), query);
-            db.execSQL(query);
-        }
-    }
-
-    @Override
-    public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-        Log.w(SQLiteArchiveDAO.class.getName(),
-                "Upgrading database from version " + oldVersion + " to "
-                        + newVersion + ", which will destroy all old data");
-
-        for (final Table table : DB.tables()) {
-            final String query = table.ddlDrop();
-            Log.d(this.getClass().getSimpleName(), query);
-            db.execSQL(query);
-        }
-
-        onCreate(db);
-    }
-
-    public void open() {
-        getReadableDatabase();
-    }
-
-    public boolean isOpened() {
-        return getReadableDatabase().isOpen();
-    }
-
-    public void errorSendRPC(final String host, final Integer port, final String accountId, final String clientId, final String message) {
-        // TODO
+    protected Database db() {
+        return DB;
     }
 }

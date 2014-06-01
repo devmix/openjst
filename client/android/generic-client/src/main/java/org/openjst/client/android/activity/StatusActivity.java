@@ -25,7 +25,7 @@ import org.openjst.client.android.activity.generic.AbstractTabActivity;
 import org.openjst.client.android.activity.status.StatusApplicationActivity;
 import org.openjst.client.android.activity.status.StatusConnectionActivity;
 import org.openjst.client.android.activity.status.StatusTrafficActivity;
-import org.openjst.client.android.commons.inject.annotations.AndroidLayout;
+import org.openjst.client.android.commons.inject.annotations.android.ALayout;
 import org.openjst.client.android.commons.widgets.tabhost.TabHostUtils;
 
 /**
@@ -33,7 +33,7 @@ import org.openjst.client.android.commons.widgets.tabhost.TabHostUtils;
  *
  * @author Sergey Grachev
  */
-@AndroidLayout(R.layout.activity_status)
+@ALayout(R.layout.activity_status)
 public final class StatusActivity extends AbstractTabActivity {
 
     private static final String TAB_APPLICATION = "Application";

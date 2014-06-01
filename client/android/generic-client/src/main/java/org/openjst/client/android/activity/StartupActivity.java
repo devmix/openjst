@@ -21,27 +21,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.generic.AbstractActivity;
-import org.openjst.client.android.commons.ApplicationContext;
-import org.openjst.client.android.commons.inject.annotations.AndroidLayout;
+import org.openjst.client.android.commons.GlobalContext;
+import org.openjst.client.android.commons.inject.annotations.android.ALayout;
 import org.openjst.client.android.commons.services.LookupServiceFuture;
 import org.openjst.client.android.service.ServerConnectionService;
 
 /**
  * @author Sergey Grachev
  */
-@AndroidLayout(R.layout.activity_startup)
+@ALayout(R.layout.activity_startup)
 public final class StartupActivity extends AbstractActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ApplicationContext.lookupService(ServerConnectionService.class, new LookupServiceFuture<ServerConnectionService>() {
+        GlobalContext.lookupService(ServerConnectionService.class, new LookupServiceFuture<ServerConnectionService>() {
             public void onBind(final ServerConnectionService service) {
                 if (service.isConnected()) {
-                    startActivity(new Intent(ApplicationContext.getApplication(), ScheduleTodayActivity.class));
+                    startActivity(new Intent(GlobalContext.application(), ScheduleTodayActivity.class));
                 } else {
-                    startActivity(new Intent(ApplicationContext.getApplication(), LoginActivity.class));
+                    startActivity(new Intent(GlobalContext.application(), LoginActivity.class));
                 }
                 finish();
             }

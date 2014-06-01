@@ -19,12 +19,12 @@ package org.openjst.client.android.activity.status;
 
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.generic.AbstractActivity;
-import org.openjst.client.android.commons.inject.annotations.AndroidLayout;
+import org.openjst.client.android.commons.inject.annotations.android.ALayout;
 
 /**
  * @author Sergey Grachev
  */
-@AndroidLayout(R.layout.activity_status_connection)
+@ALayout(R.layout.activity_status_connection)
 public class StatusConnectionActivity extends AbstractActivity {
 
 }

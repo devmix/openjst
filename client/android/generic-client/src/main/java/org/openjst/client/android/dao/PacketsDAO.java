@@ -15,20 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.client.android.commons.inject.annotations;
+package org.openjst.client.android.dao;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.openjst.commons.rpc.RPCMessageFormat;
 
 /**
  * @author Sergey Grachev
  */
-@Retention(RUNTIME)
-@Target({ElementType.FIELD, ElementType.TYPE})
-public @interface AndroidLayout {
+public interface PacketsDAO {
 
-    int value() default -1;
+    void outPersist(String uuid, RPCMessageFormat format, byte[] data);
+
+    void outStatus(String uuid, PacketStatus sent);
+
+    void inPersist(String uuid, RPCMessageFormat format, byte[] data);
+
+    void inStatus(String uuid, PacketStatus status);
+
+    void inResponse(String uuid);
+
+    enum PacketStatus {
+        IDLE, ERROR, SENT, RECEIVED, PRECESSED
+    }
 }

@@ -19,7 +19,7 @@ package org.openjst.client.android.utils;
 
 import android.content.Context;
 import org.openjst.client.android.R;
-import org.openjst.client.android.commons.ApplicationContext;
+import org.openjst.client.android.commons.GlobalContext;
 import org.openjst.commons.conversion.units.InformationUnits;
 import org.openjst.commons.conversion.units.Units;
 import org.openjst.commons.dto.tuples.Pair;
@@ -41,7 +41,7 @@ public final class LocaleUtils {
     }
 
     public static String unitAsString(final InformationUnits unit) {
-        final Context context = ApplicationContext.getApplication();
+        final Context context = GlobalContext.application();
         switch (unit) {
             case BYTE:
                 return context.getString(R.string.units_information_byte);

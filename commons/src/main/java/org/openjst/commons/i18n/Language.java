@@ -22,9 +22,9 @@ import java.util.*;
 /**
  * @author Sergey Grachev
  */
-public final class Language {
+public class Language {
 
-    private final String bundleName;
+    private String bundleName;
     private ResourceBundle bundle;
     private Class relativeToClass = null;
 

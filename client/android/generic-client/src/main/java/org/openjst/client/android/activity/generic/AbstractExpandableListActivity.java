@@ -21,34 +21,42 @@ import android.app.ExpandableListActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import org.openjst.client.android.commons.ApplicationContext;
 import org.openjst.client.android.commons.inject.ActivityInjector;
-import org.openjst.client.android.commons.inject.GenericActivityInjector;
-import org.openjst.client.android.commons.inject.Inject;
+import org.openjst.client.android.commons.inject.DefaultActivityInjector;
+import org.openjst.client.android.commons.inject.Injector;
 
 /**
  * @author Sergey Grachev
  */
 public abstract class AbstractExpandableListActivity extends ExpandableListActivity {
 
-    protected ActivityInjector injector = new GenericActivityInjector(this);
+    protected final ActivityInjector injector;
+
+    protected AbstractExpandableListActivity() {
+        this.injector = (ActivityInjector) onCreateInjector();
+    }
+
+    protected Injector onCreateInjector() {
+        return new DefaultActivityInjector(this);
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Inject.apply(this, injector);
+        injector.apply(this);
+        injector.finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ApplicationContext.addEvents(this);
+        injector.enableEvents(this);
     }
 
     @Override
     protected void onPause() {
+        injector.disableEvents(this);
         super.onPause();
-        ApplicationContext.removeEventListener(this);
     }
 
     @Override

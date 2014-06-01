@@ -15,20 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.client.android.commons.inject.annotations;
+package org.openjst.client.android.db;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.openjst.client.android.commons.database.DatabaseObject;
 
 /**
  * @author Sergey Grachev
  */
-@Retention(RUNTIME)
-@Target({ElementType.FIELD, ElementType.TYPE})
-public @interface JSTInject {
+public interface ClientDB extends DatabaseObject {
 
-    Class<?> value() default Void.class;
 }

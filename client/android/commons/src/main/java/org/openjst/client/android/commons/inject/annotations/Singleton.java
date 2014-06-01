@@ -28,7 +28,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Retention(RUNTIME)
 @Target({ElementType.TYPE})
-public @interface AndroidMenu {
+public @interface Singleton {
 
-    int value() default -1;
+    boolean lazy() default true;
 }

@@ -92,7 +92,8 @@ public class UpdatesDAOImpl extends AbstractEJB implements UpdatesDAO {
         em.persist(e);
 
         updatesRepository.store(e.getAccount().getId(), e.getId(), e.getLastUploadId(), e.getOS());
-        updateEvents.fire(new UpdateChangeEvent(UpdateChangeEvent.Action.ADD, e.getId()));
+        updateEvents.fire(new UpdateChangeEvent(UpdateChangeEvent.Action.ADD, e.getAccount().getId(),
+                e.getId(), e.getOS(), e.getUploadDate(), e.getMajor(), e.getMinor(), e.getBuild(), e.getDescription()));
 
         return e;
     }
@@ -134,7 +135,8 @@ public class UpdatesDAOImpl extends AbstractEJB implements UpdatesDAO {
             updatesRepository.store(e.getAccount().getId(), e.getId(), e.getLastUploadId(), e.getOS());
         }
 
-        updateEvents.fire(new UpdateChangeEvent(UpdateChangeEvent.Action.UPDATE, e.getId()));
+        updateEvents.fire(new UpdateChangeEvent(UpdateChangeEvent.Action.UPDATE, e.getAccount().getId(),
+                e.getId(), e.getOS(), e.getUploadDate(), e.getMajor(), e.getMinor(), e.getBuild(), e.getDescription()));
 
         return em.merge(e);
     }
@@ -150,7 +152,8 @@ public class UpdatesDAOImpl extends AbstractEJB implements UpdatesDAO {
     public void delete(final Long id) {
         final Update e = getById(id);
         updatesRepository.remove(e.getAccount().getId(), e.getId(), e.getOS());
-        updateEvents.fire(new UpdateChangeEvent(UpdateChangeEvent.Action.REMOVE, e.getId()));
+        updateEvents.fire(new UpdateChangeEvent(UpdateChangeEvent.Action.REMOVE, e.getAccount().getId(),
+                e.getId(), e.getOS(), e.getUploadDate(), e.getMajor(), e.getMinor(), e.getBuild(), e.getDescription()));
         em.remove(e);
     }
 

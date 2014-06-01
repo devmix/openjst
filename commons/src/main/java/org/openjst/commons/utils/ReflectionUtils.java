@@ -110,7 +110,7 @@ public final class ReflectionUtils {
         }
         try {
             field.set(target, value);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new RuntimeException(e);
         } finally {
             if (!accessible) {
@@ -126,7 +126,7 @@ public final class ReflectionUtils {
         }
         try {
             return method.invoke(target, args);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         } finally {
             if (!accessible) {
@@ -137,5 +137,21 @@ public final class ReflectionUtils {
 
     public static boolean isModifiableField(final Field field) {
         return (field.getModifiers() & (Modifier.STATIC | Modifier.FINAL | Modifier.NATIVE | Modifier.TRANSIENT)) == 0;
+    }
+
+    public static boolean isEmpty(final Object target, final Field field) {
+        final boolean isAccessible = field.isAccessible();
+        if (!isAccessible) {
+            field.setAccessible(true);
+        }
+        try {
+            return field.get(target) == null;
+        } catch (final IllegalAccessException e) {
+            throw new IllegalAccessError(e.getMessage());
+        } finally {
+            if (!isAccessible) {
+                field.setAccessible(false);
+            }
+        }
     }
 }

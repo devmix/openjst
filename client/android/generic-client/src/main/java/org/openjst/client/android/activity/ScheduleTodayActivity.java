@@ -24,25 +24,25 @@ import android.view.View;
 import android.widget.Button;
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.generic.AbstractActivity;
-import org.openjst.client.android.commons.ApplicationContext;
-import org.openjst.client.android.commons.inject.annotations.AndroidLayout;
-import org.openjst.client.android.commons.inject.annotations.AndroidMenu;
-import org.openjst.client.android.commons.inject.annotations.AndroidOnMenuItemSelected;
-import org.openjst.client.android.commons.inject.annotations.AndroidView;
+import org.openjst.client.android.commons.GlobalContext;
+import org.openjst.client.android.commons.inject.annotations.android.ALayout;
+import org.openjst.client.android.commons.inject.annotations.android.AMenu;
+import org.openjst.client.android.commons.inject.annotations.android.AOnMenuItemSelected;
+import org.openjst.client.android.commons.inject.annotations.android.AView;
 import org.openjst.client.android.commons.services.LookupServiceFuture;
 import org.openjst.client.android.service.ServerConnectionService;
 
 /**
  * @author Sergey Grachev
  */
-@AndroidMenu(R.menu.menu_after_login)
-@AndroidLayout(R.layout.activity_schedule_today)
+@AMenu(R.menu.menu_after_login)
+@ALayout(R.layout.activity_schedule_today)
 public final class ScheduleTodayActivity extends AbstractActivity {
 
-    @AndroidView(R.id.btn_reconnect)
+    @AView(R.id.btn_reconnect)
     private Button btnReconnect;
 
-    @AndroidView(R.id.btn_gc)
+    @AView(R.id.btn_gc)
     private Button btnGC;
 
     @Override
@@ -51,7 +51,7 @@ public final class ScheduleTodayActivity extends AbstractActivity {
 
         btnReconnect.setOnClickListener(new View.OnClickListener() {
             public void onClick(final View v) {
-                ApplicationContext.lookupService(ServerConnectionService.class, new LookupServiceFuture<ServerConnectionService>() {
+                GlobalContext.lookupService(ServerConnectionService.class, new LookupServiceFuture<ServerConnectionService>() {
                     public void onBind(final ServerConnectionService service) {
                         service.reconnect();
                     }
@@ -66,17 +66,17 @@ public final class ScheduleTodayActivity extends AbstractActivity {
         });
     }
 
-    @AndroidOnMenuItemSelected(R.id.menu_status)
+    @AOnMenuItemSelected(R.id.menu_status)
     private boolean onMenuStatus(final MenuItem item) {
         startActivity(new Intent(this, StatusActivity.class));
         return true;
     }
 
-    @AndroidOnMenuItemSelected(R.id.menu_logout)
+    @AOnMenuItemSelected(R.id.menu_logout)
     private boolean onMenuLogout(final MenuItem item) {
-        ApplicationContext.lookupService(ServerConnectionService.class, new LookupServiceFuture<ServerConnectionService>() {
+        GlobalContext.lookupService(ServerConnectionService.class, new LookupServiceFuture<ServerConnectionService>() {
             public void onBind(final ServerConnectionService service) {
-                startActivity(new Intent(ApplicationContext.getApplication(), LoginActivity.class)
+                startActivity(new Intent(GlobalContext.application(), LoginActivity.class)
                         .putExtra(LoginActivity.ATTR_AFTER_LOGOUT, true));
                 service.disconnect();
                 finish();

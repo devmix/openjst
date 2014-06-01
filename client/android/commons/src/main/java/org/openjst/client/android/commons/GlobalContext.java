@@ -19,11 +19,10 @@ package org.openjst.client.android.commons;
 
 import android.app.Application;
 import android.app.Service;
+import android.content.Context;
 import android.os.Handler;
 import org.openjst.client.android.commons.events.annotations.OnConnectionEvent;
-import org.openjst.client.android.commons.inject.Inject;
-import org.openjst.client.android.commons.inject.annotations.JSTApplicationContext;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Singleton;
 import org.openjst.client.android.commons.services.LookupServiceFuture;
 import org.openjst.client.android.commons.services.ServicesBinder;
 import org.openjst.commons.utils.ReflectionUtils;
@@ -34,13 +33,17 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * @author Sergey Grachev
  */
-public final class ApplicationContext {
+public final class GlobalContext {
 
-    private static final Map<Class<?>, Object> MANAGERS = new HashMap<Class<?>, Object>();
+    private static final Map<Class<?>, Class<?>> IMPLEMENTATIONS = new HashMap<Class<?>, Class<?>>();
+    private static final Map<Object, Handler> HANDLERS = new WeakHashMap<Object, Handler>();
+    private static final Map<Class<?>, Class<?>[]> INTERFACES = new HashMap<Class<?>, Class<?>[]>();
+    private static final Map<Class<?>, Object> SINGLETONS = new HashMap<Class<?>, Object>();
     private static final Map<Class, Service> SERVICES = new HashMap<Class, Service>();
     private static final ServicesBinder SERVICES_BINDER = new ServicesBinder();
 
@@ -49,77 +52,70 @@ public final class ApplicationContext {
      */
     private static final Map<Class, Map<WeakReference<Object>, String>> EVENT_LISTENERS = new HashMap<Class, Map<WeakReference<Object>, String>>();
 
-    private static Application application;
-    private static Handler handler;
+    private static WeakReference<Application> application;
+    private static WeakReference<Service> service;
 
-    private ApplicationContext() {
+    private GlobalContext() {
     }
 
-    public static void init(final Application application) {
-        ApplicationContext.application = application;
-        ApplicationContext.handler = new Handler(application.getMainLooper());
-        applyApplicationContextAnnotation(application);
+    public static Application application() {
+        return application.get();
     }
 
-    /**
-     * For test
-     */
-    public static <T> void applyApplicationContextAnnotation(final T target) {
-        final Class<?> applicationClass = target.getClass();
-        if (applicationClass.isAnnotationPresent(JSTApplicationContext.class)) {
-            final JSTApplicationContext annotation = applicationClass.getAnnotation(JSTApplicationContext.class);
-            // create managers
-            initializeManagers(annotation.managers());
-            // inject dependencies into current object
-            Inject.apply(target, annotation.injector());
-            // inject dependencies into new managers
-            for (final Object manager : ApplicationContext.MANAGERS.values()) {
-                Inject.apply(manager, annotation.injector());
-            }
-        }
+    public static Handler handler() {
+        final Application a = application.get();
+        return HANDLERS.containsKey(a) ? HANDLERS.get(a) : HANDLERS.get(service.get());
     }
 
-    public static Application getApplication() {
-        return application;
+    public static Context context() {
+        final Application a = application.get();
+        return a != null ? a : service.get();
+    }
+
+    public static void registerApplication(final Application application) {
+        GlobalContext.application = new WeakReference<Application>(application);
+        HANDLERS.put(application, new Handler(application.getMainLooper()));
+    }
+
+    public static void unregisterApplication() {
+        HANDLERS.remove(application.get());
+        application = null;
+    }
+
+    public static void registerService(final Service service) {
+        GlobalContext.service = new WeakReference<Service>(service);
+        HANDLERS.put(service, new Handler());
+    }
+
+    public static void unregisterService() {
+        HANDLERS.remove(service.get());
+        service = null;
+    }
+
+    public static Map<Class<?>, Class<?>> implementations() {
+        return IMPLEMENTATIONS;
+    }
+
+    public static Map<Class<?>, Class<?>[]> interfaces() {
+        return INTERFACES;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T lookup(final Class<T> managerClass) {
-        synchronized (MANAGERS) {
-            return (T) MANAGERS.get(managerClass);
-        }
-    }
-
-    private static void initializeManagers(final Class<?>... list) {
-        for (final Class<?> managerClass : list) {
-            if (!managerClass.isAnnotationPresent(JSTInject.class)) {
-                throw new IllegalArgumentException("Instance of '" + managerClass + "' not annotated as JSTInject");
+    public static <T> T lookup(final Class<T> beanClass) {
+        synchronized (SINGLETONS) {
+            // find by bean class
+            if (SINGLETONS.containsKey(beanClass)) {
+                return (T) SINGLETONS.get(beanClass);
             }
 
-            final JSTInject annotation = managerClass.getAnnotation(JSTInject.class);
-            final Class bindManagerClass = annotation.value();
-            if (bindManagerClass == Void.class) {
-                throw new IllegalArgumentException("Unknown class of manager '" + managerClass + "'");
-            }
-
-            try {
-                Object manager;
-                try {
-                    final Constructor constructor = managerClass.getConstructor(Application.class);
-                    manager = constructor.newInstance(application);
-                } catch (Exception e) {
-                    manager = managerClass.newInstance();
+            // find by any interface of bean
+            for (final Class iClass : beanClass.getInterfaces()) {
+                if (SINGLETONS.containsKey(iClass)) {
+                    return (T) SINGLETONS.get(iClass);
                 }
-                addManager(bindManagerClass, manager);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
-        }
-    }
-
-    private static void addManager(final Class clazz, final Object instance) {
-        synchronized (MANAGERS) {
-            MANAGERS.put(clazz, instance);
+            // try create new instance of bean
+            return (T) createBean(beanClass);
         }
     }
 
@@ -133,13 +129,6 @@ public final class ApplicationContext {
             }
         }
         SERVICES_BINDER.bind(type, future);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends Service> T lookupService(final Class<T> type) {
-        synchronized (SERVICES) {
-            return (T) SERVICES.get(type);
-        }
     }
 
     public static void addAndroidService(final Class serviceClass, final Service serviceInstance) {
@@ -185,7 +174,7 @@ public final class ApplicationContext {
                     final String methodName = listener.getValue();
                     for (final Method method : target.getClass().getDeclaredMethods()) {
                         if (method.getName().equals(methodName)) {
-                            handler.post(new Runnable() {
+                            handler().post(new Runnable() {
                                 public void run() {
                                     ReflectionUtils.forceInvokeMethod(target, method, args);
                                 }
@@ -193,7 +182,7 @@ public final class ApplicationContext {
                             break;
                         }
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -202,17 +191,17 @@ public final class ApplicationContext {
 
     public static void addEvents(final Object target, final Method method) {
         if (method.isAnnotationPresent(OnConnectionEvent.class)) {
-            ApplicationContext.addEventListener(OnConnectionEvent.class, target, method.getName());
+            addEventListener(OnConnectionEvent.class, target, method.getName());
         }
     }
 
-    public static void addEvents(final Object target) {
-        for (final Method method : target.getClass().getDeclaredMethods()) {
-            addEvents(target, method);
-        }
-    }
+//    public static void addEvents(final Object target) {
+//        for (final Method method : target.getClass().getDeclaredMethods()) {
+//            addEvents(target, method);
+//        }
+//    }
 
-    public static void removeEventListener(final Object target) {
+    public static void removeEventsListener(final Object target) {
         synchronized (EVENT_LISTENERS) {
             final int id = target.getClass().getName().hashCode();
             for (final Map<WeakReference<Object>, String> listeners : EVENT_LISTENERS.values()) {
@@ -228,7 +217,32 @@ public final class ApplicationContext {
     }
 
     public static void post(final Runnable runnable) {
-        handler.post(runnable);
+        handler().post(runnable);
+    }
+
+    private static Object createBean(final Class<?> beanClass) {
+        final Class<?> oClass = IMPLEMENTATIONS.containsKey(beanClass) ? IMPLEMENTATIONS.get(beanClass) : beanClass;
+        final Class<?>[] iClass = INTERFACES.containsKey(oClass) ? INTERFACES.get(oClass) : new Class[]{beanClass};
+        final boolean isSingleton = oClass.isAnnotationPresent(Singleton.class);
+        Object bean;
+        try {
+            try {
+                final Constructor constructor = oClass.getConstructor(Context.class);
+                bean = constructor.newInstance(context());
+            } catch (final Exception e) {
+                bean = oClass.newInstance();
+            }
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        if (isSingleton) {
+            for (final Class<?> i : iClass) {
+                SINGLETONS.put(i, bean);
+            }
+        }
+
+        return bean;
     }
 
     private static final class WeakReferenceListener extends WeakReference<Object> {

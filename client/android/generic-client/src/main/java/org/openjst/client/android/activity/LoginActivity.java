@@ -32,44 +32,45 @@ import org.openjst.client.android.R;
 import org.openjst.client.android.activity.generic.AbstractActivity;
 import org.openjst.client.android.commons.events.annotations.OnConnectionEvent;
 import org.openjst.client.android.commons.events.types.ConnectionEvent;
-import org.openjst.client.android.commons.inject.annotations.*;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.android.*;
 import org.openjst.client.android.commons.managers.SettingsManager;
-import org.openjst.client.android.dao.LogsDAO;
+import org.openjst.client.android.db.LogsDB;
 import org.openjst.client.android.managers.RPCManager;
 import org.openjst.client.android.service.ServerConnectionService;
 
 /**
  * @author Sergey Grachev
  */
-@AndroidMenu(R.menu.menu_before_login)
-@AndroidLayout(R.layout.activity_login)
+@AMenu(R.menu.menu_before_login)
+@ALayout(R.layout.activity_login)
 public final class LoginActivity extends AbstractActivity {
 
     public static final String ATTR_AFTER_LOGOUT = "afterLogout";
 
-    @AndroidView(R.id.btn_login)
+    @AView(R.id.btn_login)
     private Button btnLogin;
 
-    @AndroidView(R.id.ed_client_id)
+    @AView(R.id.ed_client_id)
     private EditText edClientId;
 
-    @AndroidView(R.id.ed_secret_key)
+    @AView(R.id.ed_secret_key)
     private EditText edSecretKey;
 
-    @AndroidView(R.id.btn_register)
+    @AView(R.id.btn_register)
     private Button btnRegister;
 
-    @AndroidView(R.id.cb_remember_me)
+    @AView(R.id.cb_remember_me)
     private CheckBox cbRememberMe;
 
-    @JSTInject
+    @Inject
     private SettingsManager settingsManager;
 
-    @JSTInject
+    @Inject
     private RPCManager rpcManager;
 
-    @JSTInject
-    private LogsDAO logsDAO;
+    @Inject
+    private LogsDB logsDB;
 
     private ProgressDialog progress;
     private ServerConnectionService connection;
@@ -104,13 +105,13 @@ public final class LoginActivity extends AbstractActivity {
         }
     }
 
-    @AndroidOnMenuItemSelected(R.id.menu_settings)
+    @AOnMenuItemSelected(R.id.menu_settings)
     private boolean onMenuSettings(final MenuItem item) {
         startActivity(new Intent(this, SettingsActivity.class));
         return true;
     }
 
-    @AndroidOnMenuItemSelected(R.id.menu_exit)
+    @AOnMenuItemSelected(R.id.menu_exit)
     private boolean onMenuExit(final MenuItem item) {
         stopService(new Intent(this, ServerConnectionService.class));
         finish();
@@ -119,7 +120,7 @@ public final class LoginActivity extends AbstractActivity {
         return true;
     }
 
-    @AndroidService(ServerConnectionService.class)
+    @AService(ServerConnectionService.class)
     private void onBindServerConnectionService(final ServerConnectionService service) {
         connection = service;
     }

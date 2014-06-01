@@ -15,29 +15,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.client.android.commons.inject;
+package org.openjst.client.android.commons.database;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import android.content.ContentValues;
+import android.database.Cursor;
+import org.openjst.commons.database.model.QueryInsert;
+import org.openjst.commons.database.model.QuerySelect;
+import org.openjst.commons.database.model.QueryUpdate;
 
 /**
  * @author Sergey Grachev
  */
-public interface Injector {
+public interface DatabaseObject {
 
-    void finish();
+    void open();
 
-    void apply(Object target);
+    void close();
 
-    void onVisitField(Object target, Class<?> targetClass, Field field);
+    boolean isOpened();
 
-    void onVisitMethod(Object target, Class<?> targetClass, Method method);
+    QuerySelect querySelect();
 
-    void onVisitClass(Object target, Class<?> targetClass);
+    QueryInsert queryInsert();
 
-    void onEnableEvents(Object target, Class<?> targetClass, Method method);
+    QueryUpdate queryUpdate();
 
-    void enableEvents(Object target);
+    Cursor rawQuery(String sql, String[] selectionArgs);
 
-    void disableEvents(Object target);
+    long insert(String table, String nullColumnHack, ContentValues values);
+
+    int update(String table, ContentValues values, String whereClause, String[] whereArgs);
+
+    void updateSQL(String sql, Object[] bindArgs);
 }

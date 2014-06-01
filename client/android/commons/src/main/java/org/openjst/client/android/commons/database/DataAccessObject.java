@@ -22,9 +22,5 @@ package org.openjst.client.android.commons.database;
  */
 public interface DataAccessObject {
 
-    void open();
 
-    void close();
-
-    boolean isOpened();
 }

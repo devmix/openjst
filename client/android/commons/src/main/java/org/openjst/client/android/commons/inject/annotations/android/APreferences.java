@@ -15,29 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.client.android.commons.inject;
+package org.openjst.client.android.commons.inject.annotations.android;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Sergey Grachev
  */
-public interface Injector {
+@Retention(RUNTIME)
+@Target({ElementType.TYPE})
+public @interface APreferences {
 
-    void finish();
-
-    void apply(Object target);
-
-    void onVisitField(Object target, Class<?> targetClass, Field field);
-
-    void onVisitMethod(Object target, Class<?> targetClass, Method method);
-
-    void onVisitClass(Object target, Class<?> targetClass);
-
-    void onEnableEvents(Object target, Class<?> targetClass, Method method);
-
-    void enableEvents(Object target);
-
-    void disableEvents(Object target);
+    int value() default -1;
 }

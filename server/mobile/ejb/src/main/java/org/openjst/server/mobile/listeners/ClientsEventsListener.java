@@ -17,12 +17,12 @@
 
 package org.openjst.server.mobile.listeners;
 
+import org.openjst.commons.dto.ApplicationVersion;
 import org.openjst.commons.rpc.RPCParameters;
 import org.openjst.commons.rpc.RPCRequest;
 import org.openjst.commons.rpc.exceptions.RPCException;
 import org.openjst.server.mobile.dao.UpdatesDAO;
 import org.openjst.server.mobile.events.UpdateChangeEvent;
-import org.openjst.server.mobile.model.dto.UpdateToSentObj;
 import org.openjst.server.mobile.network.NetworkService;
 import org.openjst.server.mobile.rpc.RPCNames;
 
@@ -50,17 +50,15 @@ public class ClientsEventsListener {
     private UpdatesDAO updatesDAO;
 
     public void afterUpdateChanged(@Observes(during = AFTER_COMPLETION) final UpdateChangeEvent event) throws RPCException {
-        final UpdateToSentObj update = updatesDAO.getUpdateToSent(event.getUpdateId());
+        final ApplicationVersion version = new ApplicationVersion(event.getUploadDate().getTime(),
+                event.getMajor(), event.getMinor(), event.getBuild(), event.getDescription());
 
-        final RPCParameters parameters = newParameters().add(update.getId()).add(update.getOS());
-        if (!event.isRemove()) {
-            parameters.add(update.getVersion()).add(update.getUploadDate()).add(update.getDescription());
-        }
+        final RPCParameters parameters = newParameters().add(event.getOS()).add(version);
 
         final RPCRequest request = newRequest(uniqueRequestId(),
                 RPCNames.OBJECT_CORE_UPDATES, event.getAction().name().toLowerCase(), parameters);
 
-        networkService.clientRPCForwardBroadcast(update.getAccountId(), BINARY,
+        networkService.clientRPCForwardBroadcast(event.getAccountId(), BINARY,
                 BINARY.newFormatter(true).write(request), true);
     }
 }

@@ -20,15 +20,16 @@ package org.openjst.client.android.activity.status;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.widget.ExpandableListView;
 import org.openjst.client.android.R;
 import org.openjst.client.android.activity.generic.AbstractActivity;
-import org.openjst.client.android.commons.inject.annotations.AndroidLayout;
-import org.openjst.client.android.commons.inject.annotations.AndroidView;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Inject;
+import org.openjst.client.android.commons.inject.annotations.android.ALayout;
+import org.openjst.client.android.commons.inject.annotations.android.AView;
 import org.openjst.client.android.commons.managers.ApplicationManager;
 import org.openjst.client.android.commons.widgets.PropertiesView;
-import org.openjst.client.android.dao.SessionDAO;
+import org.openjst.client.android.dao.VersionDAO;
+import org.openjst.client.android.events.annotations.OnClientUpdate;
+import org.openjst.client.android.events.types.ClientUpdateEvent;
 import org.openjst.commons.dto.ApplicationVersion;
 import org.openjst.commons.dto.tuples.Pair;
 import org.openjst.commons.dto.tuples.Tuples;
@@ -40,16 +41,16 @@ import java.util.List;
 /**
  * @author Sergey Grachev
  */
-@AndroidLayout(R.layout.activity_status_application)
+@ALayout(R.layout.activity_status_application)
 public class StatusApplicationActivity extends AbstractActivity {
 
-    @AndroidView(R.id.list)
-    private ExpandableListView listView;
+    @AView(R.id.list)
+    private PropertiesView pvList;
 
-    @JSTInject
-    private SessionDAO sessionDAO;
+    @Inject
+    private VersionDAO versionDAO;
 
-    @JSTInject
+    @Inject
     private ApplicationManager applicationManager;
 
     @Override
@@ -60,9 +61,13 @@ public class StatusApplicationActivity extends AbstractActivity {
         addVersion(properties);
         addNewVersion(properties);
 
-        final PropertiesView view = (PropertiesView) findViewById(R.id.list);
-        view.setPreventCollapse(true);
-        view.setProperties(properties);
+        pvList.setPreventCollapse(true);
+        pvList.setProperties(properties);
+    }
+
+    @OnClientUpdate
+    private void OnClientUpdate(final ClientUpdateEvent event) {
+        System.out.println(event);
     }
 
     private void addVersion(final List<Pair<String, List<PropertiesView.Property>>> properties) {
@@ -82,7 +87,7 @@ public class StatusApplicationActivity extends AbstractActivity {
         final List<PropertiesView.Property> list = new ArrayList<PropertiesView.Property>();
 
         final ApplicationVersion currentVersion = applicationManager.getVersion();
-        final ApplicationVersion version = sessionDAO.getLatestVersion();
+        final ApplicationVersion version = versionDAO.getLatestVersion();
         if (version != null && version.isGreater(currentVersion)) {
             list.add(PropertiesView.Property.newHorizontal(getString(R.string.version), version.toString()));
             list.add(PropertiesView.Property.newHorizontal(getString(R.string.published), new Date(version.getTimestamp()).toLocaleString()));

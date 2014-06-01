@@ -17,37 +17,12 @@
 
 package org.openjst.client.android.dao;
 
-import org.jetbrains.annotations.Nullable;
-import org.openjst.client.android.commons.database.DataAccessObject;
 import org.openjst.client.android.dto.TrafficSummary;
-import org.openjst.commons.dto.ApplicationVersion;
-import org.openjst.commons.rpc.RPCMessageFormat;
 
 /**
  * @author Sergey Grachev
  */
-public interface SessionDAO extends DataAccessObject {
-
-    void outPersist(String uuid, RPCMessageFormat format, byte[] data);
-
-    void outStatus(String uuid, PacketStatus sent);
-
-    void inPersist(String uuid, RPCMessageFormat format, byte[] data);
-
-    void inStatus(String uuid, PacketStatus status);
-
-    void inResponse(String uuid);
-
-    void persistVersion(ApplicationVersion version);
-
-    @Nullable
-    Long findVersionId(int major, int minor, int build);
-
-    ApplicationVersion getLatestVersion();
+public interface TrafficDAO {
 
     TrafficSummary getTrafficSummary();
-
-    enum PacketStatus {
-        IDLE, ERROR, SENT, RECEIVED, PRECESSED
-    }
 }

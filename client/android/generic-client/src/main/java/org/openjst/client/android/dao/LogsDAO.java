@@ -17,12 +17,10 @@
 
 package org.openjst.client.android.dao;
 
-import org.openjst.client.android.commons.database.DataAccessObject;
-
 /**
  * @author Sergey Grachev
  */
-public interface LogsDAO extends DataAccessObject {
+public interface LogsDAO {
 
     void errorSendRPC(String host, Integer port, String accountId, String clientId, String message);
 }

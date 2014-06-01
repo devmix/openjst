@@ -17,37 +17,32 @@
 
 package org.openjst.client.android.commons.managers.impl;
 
-import android.app.Application;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import org.jetbrains.annotations.Nullable;
-import org.openjst.client.android.commons.inject.annotations.JSTInject;
+import org.openjst.client.android.commons.inject.annotations.Singleton;
 import org.openjst.client.android.commons.managers.ApplicationManager;
 import org.openjst.commons.dto.ApplicationVersion;
+
+import static org.openjst.client.android.commons.GlobalContext.context;
 
 /**
  * @author Sergey Grachev
  */
-@JSTInject(ApplicationManager.class)
+@Singleton
 public class DefaultApplicationManager implements ApplicationManager {
 
     private static final ApplicationVersion UNKNOWN_VERSION = new ApplicationVersion(0, 0, 0, 0, null);
 
-    protected final Application application;
-    protected final PackageManager packageManager;
-
-    public DefaultApplicationManager(final Application application) {
-        this.application = application;
-        this.packageManager = application.getPackageManager();
-    }
-
     public ApplicationVersion getVersion() {
+        final Context ctx = context();
         final PackageInfo packageInfo;
         try {
-            packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+            packageInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
             return ApplicationVersion.parse(packageInfo.versionName);
-        } catch (PackageManager.NameNotFoundException ignore) {
+        } catch (final PackageManager.NameNotFoundException ignore) {
         }
         return UNKNOWN_VERSION;
     }
@@ -55,7 +50,8 @@ public class DefaultApplicationManager implements ApplicationManager {
     @Nullable
     public String getName() {
         try {
-            final ApplicationInfo applicationInfo = packageManager.getApplicationInfo(application.getPackageName(), 0);
+            final PackageManager packageManager = context().getPackageManager();
+            final ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context().getPackageName(), 0);
             return (String) packageManager.getApplicationLabel(applicationInfo);
         } catch (final PackageManager.NameNotFoundException ignore) {
         }
