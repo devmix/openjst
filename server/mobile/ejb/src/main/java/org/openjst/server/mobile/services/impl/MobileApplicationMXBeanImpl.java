@@ -17,8 +17,8 @@
 
 package org.openjst.server.mobile.services.impl;
 
-import org.openjst.commons.encodings.Base64;
-import org.openjst.commons.protocols.auth.SecretKeys;
+import org.openjst.commons.conversion.encodings.Base64;
+import org.openjst.commons.security.auth.SecretKeys;
 import org.openjst.server.commons.AbstractMBean;
 import org.openjst.server.commons.model.types.LanguageCode;
 import org.openjst.server.commons.model.types.RoleType;

@@ -85,12 +85,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.openjst</groupId>
-            <artifactId>commons</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.openjst.server</groupId>
             <artifactId>server-mobile-model</artifactId>
             <version>${project.version}</version>
@@ -196,12 +190,5 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--Code validation-->
-
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 </project>

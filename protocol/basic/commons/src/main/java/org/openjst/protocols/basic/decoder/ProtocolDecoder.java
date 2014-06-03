@@ -21,7 +21,7 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.replay.ReplayingDecoder;
-import org.openjst.commons.checksum.CRC16;
+import org.openjst.commons.security.checksum.CRC16;
 import org.openjst.protocols.basic.constants.ProtocolBasicConstants;
 import org.openjst.protocols.basic.exceptions.CorruptedPacketException;
 import org.openjst.protocols.basic.exceptions.UnsupportedProtocolVersionException;

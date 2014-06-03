@@ -34,7 +34,7 @@ import static javax.enterprise.event.TransactionPhase.AFTER_COMPLETION;
 import static org.openjst.commons.rpc.RPCMessageFormat.BINARY;
 import static org.openjst.commons.rpc.objects.RPCObjectsFactory.newParameters;
 import static org.openjst.commons.rpc.objects.RPCObjectsFactory.newRequest;
-import static org.openjst.commons.utils.RPCUtils.uniqueRequestId;
+import static org.openjst.commons.rpc.utils.RPCUtils.uniqueRequestId;
 
 /**
  * @author Sergey Grachev

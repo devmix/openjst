@@ -34,7 +34,7 @@
     <dependencies>
         <dependency>
             <groupId>org.openjst</groupId>
-            <artifactId>commons</artifactId>
+            <artifactId>commons-database</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>

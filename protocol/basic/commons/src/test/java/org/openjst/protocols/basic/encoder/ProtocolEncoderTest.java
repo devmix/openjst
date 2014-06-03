@@ -18,7 +18,7 @@
 package org.openjst.protocols.basic.encoder;
 
 import org.jboss.netty.buffer.ChannelBuffer;
-import org.openjst.commons.checksum.CRC16;
+import org.openjst.commons.security.checksum.CRC16;
 import org.openjst.protocols.basic.constants.ProtocolBasicConstants;
 import org.openjst.protocols.basic.pdu.packets.DateTimeSyncPacket;
 import org.openjst.protocols.basic.pdu.packets.PacketsFactory;

@@ -18,11 +18,11 @@
 package org.openjst.server.mobile.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openjst.commons.conversion.encodings.Base64;
 import org.openjst.commons.dto.tuples.Pair;
 import org.openjst.commons.dto.tuples.Tuples;
-import org.openjst.commons.encodings.Base64;
-import org.openjst.commons.protocols.auth.SecretKey;
-import org.openjst.commons.protocols.auth.SecretKeys;
+import org.openjst.commons.security.auth.SecretKey;
+import org.openjst.commons.security.auth.SecretKeys;
 
 import java.text.ParseException;
 

@@ -18,7 +18,7 @@
 package org.openjst.protocols.basic.pdu.packets;
 
 import org.openjst.commons.io.buffer.DataBufferException;
-import org.openjst.commons.protocols.auth.SecretKeys;
+import org.openjst.commons.security.auth.SecretKeys;
 import org.openjst.protocols.basic.pdu.beans.Parameter;
 import org.testng.annotations.Test;
 

@@ -17,8 +17,8 @@
 
 package org.openjst.protocols.basic.test;
 
-import org.openjst.commons.protocols.auth.SecretKeys;
 import org.openjst.commons.rpc.RPCMessageFormat;
+import org.openjst.commons.security.auth.SecretKeys;
 import org.openjst.protocols.basic.client.Client;
 import org.openjst.protocols.basic.client.ClientEventsListener;
 import org.openjst.protocols.basic.constants.ProtocolBasicConstants;

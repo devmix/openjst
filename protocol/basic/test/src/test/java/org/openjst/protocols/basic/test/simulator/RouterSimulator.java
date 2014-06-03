@@ -17,10 +17,10 @@
 
 package org.openjst.protocols.basic.test.simulator;
 
-import org.openjst.commons.encodings.Base64;
-import org.openjst.commons.protocols.auth.SecretKey;
-import org.openjst.commons.protocols.auth.SecretKeys;
+import org.openjst.commons.conversion.encodings.Base64;
 import org.openjst.commons.rpc.exceptions.RPCException;
+import org.openjst.commons.security.auth.SecretKey;
+import org.openjst.commons.security.auth.SecretKeys;
 import org.openjst.protocols.basic.events.*;
 import org.openjst.protocols.basic.exceptions.ClientNotConnectedException;
 import org.openjst.protocols.basic.pdu.beans.Parameter;

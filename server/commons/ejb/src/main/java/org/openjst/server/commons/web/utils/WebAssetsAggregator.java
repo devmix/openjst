@@ -18,7 +18,7 @@
 package org.openjst.server.commons.web.utils;
 
 import org.apache.commons.io.IOUtils;
-import org.openjst.commons.utils.Constants;
+import org.openjst.commons.dto.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

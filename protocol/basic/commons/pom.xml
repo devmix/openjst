@@ -33,7 +33,17 @@
     <dependencies>
         <dependency>
             <groupId>org.openjst</groupId>
-            <artifactId>commons</artifactId>
+            <artifactId>commons-io</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst</groupId>
+            <artifactId>commons-rpc</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst</groupId>
+            <artifactId>commons-security</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 

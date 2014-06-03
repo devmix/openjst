@@ -17,8 +17,8 @@
 
 package org.openjst.server.mobile.web.rest.impl;
 
-import org.openjst.commons.checksum.MD5;
-import org.openjst.commons.encodings.Base64;
+import org.openjst.commons.conversion.encodings.Base64;
+import org.openjst.commons.security.checksum.MD5;
 import org.openjst.server.commons.mq.IOrder;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.QueryListParams;

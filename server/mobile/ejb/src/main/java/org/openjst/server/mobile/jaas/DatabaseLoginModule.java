@@ -18,9 +18,9 @@
 package org.openjst.server.mobile.jaas;
 
 import org.jboss.resteasy.plugins.server.embedded.SimplePrincipal;
+import org.openjst.commons.dto.constants.Constants;
 import org.openjst.commons.dto.tuples.Pair;
-import org.openjst.commons.protocols.auth.SecretKey;
-import org.openjst.commons.utils.Constants;
+import org.openjst.commons.security.auth.SecretKey;
 import org.openjst.server.commons.model.types.RoleType;
 import org.openjst.server.commons.utils.EjbLocator;
 import org.openjst.server.mobile.dao.UserDAO;

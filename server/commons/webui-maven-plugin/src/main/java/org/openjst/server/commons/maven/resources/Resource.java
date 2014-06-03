@@ -18,7 +18,7 @@
 package org.openjst.server.commons.maven.resources;
 
 import org.codehaus.plexus.util.FileUtils;
-import org.openjst.commons.utils.Constants;
+import org.openjst.commons.dto.constants.Constants;
 import org.openjst.server.commons.maven.utils.ManifestUtils;
 
 import java.io.File;

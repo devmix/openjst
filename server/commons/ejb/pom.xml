@@ -34,7 +34,17 @@
     <dependencies>
         <dependency>
             <groupId>org.openjst</groupId>
-            <artifactId>commons</artifactId>
+            <artifactId>commons-dto</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst</groupId>
+            <artifactId>commons-cache</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst</groupId>
+            <artifactId>commons-rpc</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -105,13 +115,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <!--Code validation-->
-
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
         </dependency>
 
         <dependency>

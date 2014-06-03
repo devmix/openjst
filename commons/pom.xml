@@ -26,47 +26,29 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>commons</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>Commons</name>
 
+    <modules>
+        <module>conversion</module>
+        <module>dto</module>
+        <module>database</module>
+        <module>workflow</module>
+        <module>tools</module>
+        <module>rpc</module>
+        <module>io</module>
+        <module>security</module>
+        <module>cache</module>
+        <module>concurrent</module>
+    </modules>
+
     <dependencies>
-        <dependency>
-            <groupId>be.cyberelf.nanoxml</groupId>
-            <artifactId>nanoxml</artifactId>
-            <version>2.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-
-        <!--logging-->
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
         <!-- Apache Commons -->
-
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <!--Code validation-->
-
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
         </dependency>
     </dependencies>
 

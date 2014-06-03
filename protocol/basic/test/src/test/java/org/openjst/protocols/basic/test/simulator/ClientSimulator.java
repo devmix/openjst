@@ -17,11 +17,11 @@
 
 package org.openjst.protocols.basic.test.simulator;
 
-import org.openjst.commons.protocols.auth.SecretKey;
-import org.openjst.commons.protocols.auth.SecretKeys;
 import org.openjst.commons.rpc.RPCMessageFormat;
 import org.openjst.commons.rpc.exceptions.RPCException;
 import org.openjst.commons.rpc.objects.RPCObjectsFactory;
+import org.openjst.commons.security.auth.SecretKey;
+import org.openjst.commons.security.auth.SecretKeys;
 import org.openjst.protocols.basic.client.Client;
 import org.openjst.protocols.basic.client.ClientEventsListener;
 import org.openjst.protocols.basic.constants.ProtocolBasicConstants;

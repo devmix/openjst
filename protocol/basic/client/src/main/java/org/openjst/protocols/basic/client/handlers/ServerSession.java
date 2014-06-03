@@ -17,7 +17,7 @@
 
 package org.openjst.protocols.basic.client.handlers;
 
-import org.openjst.commons.encodings.Base64;
+import org.openjst.commons.conversion.encodings.Base64;
 import org.openjst.protocols.basic.pdu.packets.AuthServerRequestPacket;
 import org.openjst.protocols.basic.session.Session;
 

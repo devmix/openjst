@@ -305,5 +305,11 @@
             <scope>test</scope>
         </dependency>
 
+        <!--Code validation-->
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+        </dependency>
     </dependencies>
 </project>

@@ -22,8 +22,8 @@ import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
-import org.openjst.commons.checksum.CRC16;
 import org.openjst.commons.io.buffer.DataBufferException;
+import org.openjst.commons.security.checksum.CRC16;
 import org.openjst.protocols.basic.constants.ProtocolBasicConstants;
 import org.openjst.protocols.basic.pdu.PDU;
 

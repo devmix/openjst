@@ -18,7 +18,7 @@
 package org.openjst.server.mobile.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openjst.commons.protocols.auth.SecretKeys;
+import org.openjst.commons.security.auth.SecretKeys;
 import org.openjst.server.commons.AbstractEJB;
 import org.openjst.server.commons.model.types.RoleType;
 import org.openjst.server.commons.mq.ModelQuery;

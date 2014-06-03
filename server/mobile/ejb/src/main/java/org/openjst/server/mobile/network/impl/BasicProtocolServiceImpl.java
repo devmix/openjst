@@ -17,8 +17,8 @@
 
 package org.openjst.server.mobile.network.impl;
 
-import org.openjst.commons.encodings.Base64;
-import org.openjst.commons.protocols.auth.SecretKey;
+import org.openjst.commons.conversion.encodings.Base64;
+import org.openjst.commons.security.auth.SecretKey;
 import org.openjst.protocols.basic.constants.ProtocolResponseStatus;
 import org.openjst.protocols.basic.context.SendFuture;
 import org.openjst.protocols.basic.events.*;

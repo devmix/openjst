@@ -33,11 +33,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.openjst</groupId>
-            <artifactId>commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.openjst.server</groupId>
             <artifactId>server-commons-ejb</artifactId>
             <version>${project.version}</version>

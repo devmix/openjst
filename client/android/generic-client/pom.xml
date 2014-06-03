@@ -33,6 +33,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.openjst</groupId>
+            <artifactId>commons-security</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.openjst.client.android</groupId>
             <artifactId>client-android-commons</artifactId>
             <version>${project.parent.version}</version>
