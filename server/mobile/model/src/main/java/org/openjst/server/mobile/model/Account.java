@@ -17,11 +17,11 @@
 
 package org.openjst.server.mobile.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.openjst.server.commons.model.AbstractIdEntity;
 import org.openjst.server.commons.model.types.ProtocolType;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Collection;
@@ -93,13 +93,13 @@ public class Account extends AbstractIdEntity {
     public static final String COLUMN_LAST_ONLINE_TIME = "last_online_time";
     public static final String COLUMN_LAST_REMOTE_HOST = "last_remote_host";
 
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 255)
     @Pattern(regexp = "[A-Za-z0-9\\-_]*")
     @Column(name = COLUMN_AUTH_ID, unique = true, length = 255, nullable = false)
     private String authId;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 255)
     @Column(name = COLUMN_NAME, length = 255, nullable = false)
     private String name;

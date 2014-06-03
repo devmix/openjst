@@ -17,7 +17,6 @@
 
 package org.openjst.server.mobile.dao;
 
-import org.openjst.commons.dto.tuples.Triple;
 import org.openjst.server.commons.model.types.RoleType;
 import org.openjst.server.commons.mq.ModelQuery;
 import org.openjst.server.commons.mq.queries.VoidQuery;
@@ -33,6 +32,8 @@ import java.util.List;
  */
 public interface UserDAO {
 
+    String NAME = "UserDAO";
+
     @Nullable
     User findById(Long id);
 
@@ -43,7 +44,7 @@ public interface UserDAO {
     User findByAccountAndName(String accountAuthId, String clientAuthId);
 
     @Nullable
-    Triple<Long, String, byte[]> findSecretKeyOf(String account, String user);
+    User.AuthorizationData findAuthorizationDataOf(String account, String user);
 
     @Nullable
     RoleType findUserRole(Long userId);

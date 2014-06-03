@@ -36,11 +36,17 @@ public class MobileSessionImpl extends AbstractGlobalSession implements MobileSe
 
     private static final long serialVersionUID = -4401358883640148661L;
 
+    private boolean initialized = false;
     private Locale locale = null;
     private UserModel user = UserModel.GUEST;
     private RoleType role = RoleType.UNKNOWN;
     private long userId = -1;
     private long accountId = -1;
+
+    @Override
+    public boolean isInitialized() {
+        return initialized;
+    }
 
     @Override
     public void initialization(final User user) {
@@ -49,6 +55,7 @@ public class MobileSessionImpl extends AbstractGlobalSession implements MobileSe
         this.userId = user.getId();
         this.accountId = user.getAccount().getId();
         this.user = UserModel.USER_TO_MODEL.map(user);
+        this.initialized = true;
     }
 
     @Override

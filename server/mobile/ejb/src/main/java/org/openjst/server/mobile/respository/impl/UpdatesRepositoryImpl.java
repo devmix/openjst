@@ -23,6 +23,7 @@ import org.openjst.server.commons.respository.AbstractRepository;
 import org.openjst.server.mobile.Environment;
 import org.openjst.server.mobile.respository.UpdatesRepository;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jcr.Binary;
@@ -34,10 +35,9 @@ import java.util.Calendar;
 /**
  * @author Sergey Grachev
  */
-@Stateless(name = UpdatesRepositoryImpl.NAME)
+@Stateless
+@PermitAll
 public class UpdatesRepositoryImpl extends AbstractRepository implements UpdatesRepository {
-
-    public static final String NAME = "UpdatesRepository";
 
     @Inject
     private FilesManager filesManager;
@@ -49,59 +49,41 @@ public class UpdatesRepositoryImpl extends AbstractRepository implements Updates
 
     @Override
     public boolean isExists() {
-        System.out.println("isExists");
-        return execute(new OperationWithResult<Boolean>() {
-            @Override
-            public Boolean execute(final Session session) throws Exception {
-                return session.getRootNode().hasNode("client/updates");
-            }
-        });
+        return execute((Session session) -> session.getRootNode().hasNode("client/updates"));
     }
 
     @Override
     public void initialize() {
-        System.out.println("initialize");
-        execute(new Operation() {
-            @Override
-            public void execute(final Session session) throws Exception {
-                makeFoldersPath(session.getRootNode(), "client", "updates");
-            }
-        });
+        execute((Session session) -> makeFoldersPath(session.getRootNode(), "client", "updates"));
     }
 
     @Override
     public void store(final Long accountId, final Long updateId, final String uploadId, final MobileClientOS os) {
-        execute(new Operation() {
-            @Override
-            public void execute(final Session session) throws Exception {
-                final InputStream stream = filesManager.getTemporaryFileStream(uploadId);
+        execute((Operation) session -> {
+            final InputStream stream = filesManager.getTemporaryFileStream(uploadId);
 
-                final Node folder = makeFoldersPath(session.getNode("/client/updates"),
-                        os.name().toLowerCase(), String.valueOf(accountId));
+            final Node folder = makeFoldersPath(session.getNode("/client/updates"),
+                    os.name().toLowerCase(), String.valueOf(accountId));
 
-                final String fileName = String.valueOf(updateId);
-                final Node file = folder.hasNode(fileName) ? folder.getNode(fileName) : folder.addNode(fileName, "nt:file");
+            final String fileName = String.valueOf(updateId);
+            final Node file = folder.hasNode(fileName) ? folder.getNode(fileName) : folder.addNode(fileName, "nt:file");
 
-                final Node contentNode = file.hasNode("jcr:content")
-                        ? file.getNode("jcr:content") : file.addNode("jcr:content", "nt:resource");
-                final Binary binary = session.getValueFactory().createBinary(stream);
-                contentNode.setProperty("jcr:data", binary);
-                contentNode.setProperty("jcr:mimeType", "application/octet-stream");
-                contentNode.setProperty("jcr:lastModified", Calendar.getInstance());
-                // TODO checksum
-            }
+            final Node contentNode = file.hasNode("jcr:content")
+                    ? file.getNode("jcr:content") : file.addNode("jcr:content", "nt:resource");
+            final Binary binary = session.getValueFactory().createBinary(stream);
+            contentNode.setProperty("jcr:data", binary);
+            contentNode.setProperty("jcr:mimeType", "application/octet-stream");
+            contentNode.setProperty("jcr:lastModified", Calendar.getInstance());
+            // TODO checksum
         });
     }
 
     @Override
     public void remove(final Long accountId, final Long updateId, final MobileClientOS os) {
-        execute(new Operation() {
-            @Override
-            public void execute(final Session session) throws Exception {
-                final String path = "/client/updates/" + os.name().toLowerCase() + "/" + accountId + "/" + updateId;
-                if (session.nodeExists(path)) {
-                    session.removeItem(path);
-                }
+        execute((Session session) -> {
+            final String path = "/client/updates/" + os.name().toLowerCase() + "/" + accountId + "/" + updateId;
+            if (session.nodeExists(path)) {
+                session.removeItem(path);
             }
         });
     }

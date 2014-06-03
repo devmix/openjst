@@ -66,6 +66,7 @@
         <web-resource-collection>
             <web-resource-name>Public JAX-RS API</web-resource-name>
             <url-pattern>/api/*</url-pattern>
+            <url-pattern>/ui-api/*</url-pattern>
             <!--<http-method>DELETE</http-method>-->
             <!--<http-method>PUT</http-method>-->
             <!--<http-method>HEAD</http-method>-->

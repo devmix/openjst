@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.security.PermitAll;
 import javax.ejb.*;
 import java.util.Set;
 
@@ -61,6 +62,7 @@ import java.util.Set;
 @Startup
 @Singleton(name = BasicProtocolServiceImpl.NAME)
 @TransactionManagement(TransactionManagementType.BEAN)
+@PermitAll
 public class BasicProtocolServiceImpl implements BasicProtocolService<Actor<Long>, RPCMessageObj> {
 
     public static final String NAME = "BasicProtocolService";

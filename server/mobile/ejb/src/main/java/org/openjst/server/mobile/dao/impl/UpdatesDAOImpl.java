@@ -34,6 +34,7 @@ import org.openjst.server.mobile.respository.UpdatesRepository;
 import org.openjst.server.mobile.session.MobileSession;
 
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -47,10 +48,9 @@ import static org.openjst.server.mobile.model.Queries.Update.*;
 /**
  * @author Sergey Grachev
  */
-@Stateless(name = UpdatesDAOImpl.NAME)
+@Stateless
+@PermitAll
 public class UpdatesDAOImpl extends AbstractEJB implements UpdatesDAO {
-
-    public static final String NAME = "UpdatesDAO";
 
     @Inject
     private MobileSession session;

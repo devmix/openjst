@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (C) 2013 OpenJST Project
+  ~ Copyright (C) 2014 OpenJST Project
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as published by
@@ -20,29 +20,25 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>server-commons</artifactId>
-        <groupId>org.openjst.server</groupId>
+        <artifactId>openjst</artifactId>
+        <groupId>org.openjst</groupId>
         <version>0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>server-commons-model</artifactId>
-    <packaging>jar</packaging>
+    <groupId>org.openjst.configuration</groupId>
+    <artifactId>configuration</artifactId>
+    <packaging>pom</packaging>
 
-    <name>Server: Commons - Model</name>
+    <name>Configuration</name>
 
-    <dependencies>
-        <!--WildFly-->
+    <profiles>
+        <profile>
+            <id>update-server-as</id>
+            <modules>
+                <module>server-as</module>
+            </modules>
+        </profile>
+    </profiles>
 
-        <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.1-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 </project>

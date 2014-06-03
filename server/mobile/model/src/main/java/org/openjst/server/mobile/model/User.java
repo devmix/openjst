@@ -17,11 +17,11 @@
 
 package org.openjst.server.mobile.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.openjst.server.commons.model.types.LanguageCode;
 import org.openjst.server.commons.model.types.RoleType;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Arrays;
@@ -43,8 +43,11 @@ import java.util.Arrays;
         @NamedQuery(name = Queries.User.FIND_SYSTEM,
                 query = "select e from User e where e.system = true"),
 
-        @NamedQuery(name = Queries.User.FIND_SECRET_KEY_OF,
-                query = "select e.id, e.password, e.passwordSalt from User e where e.authId = :user and e.account.authId = :account"),
+        @NamedQuery(name = Queries.User.FIND_AUTHORIZATION_DATA_OF,
+                query = "select new org.openjst.server.mobile.model.User$AuthorizationData(" +
+                        "   e.id, e.authId, a.authId, e.role, e.password, e.passwordSalt" +
+                        ")from User e join e.account a" +
+                        " where e.authId = :user and a.authId = :account"),
 
         @NamedQuery(name = Queries.User.FIND_USER_ROLE,
                 query = "select e.role from User e where e.id = :userId"),
@@ -72,13 +75,13 @@ public class User extends AbstractAccountEntity {
 
     public static final int DEFAULT_SALT_SIZE = 32;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 255)
     @Pattern(regexp = "[A-Za-z0-9\\-_]*")
     @Column(name = COLUMN_AUTH_ID, length = 255, nullable = false)
     private String authId;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 255)
     @Column(name = COLUMN_NAME, length = 255, nullable = false)
     private String name;
@@ -86,12 +89,12 @@ public class User extends AbstractAccountEntity {
     @Column(name = COLUMN_SYSTEM, nullable = false)
     private boolean system = false;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 255)
     @Column(name = COLUMN_PASSWORD, length = 255, nullable = false)
     private String password;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 8, max = DEFAULT_SALT_SIZE)
     @Column(name = COLUMN_PASSWORD_SALT, length = 32, nullable = false)
     private byte[] passwordSalt;
@@ -158,5 +161,23 @@ public class User extends AbstractAccountEntity {
 
     public void setPasswordSalt(final byte[] passwordSalt) {
         this.passwordSalt = Arrays.copyOf(passwordSalt, passwordSalt.length);
+    }
+
+    public static final class AuthorizationData {
+        public final long userId;
+        public final String user;
+        public final String account;
+        public final RoleType role;
+        public String password;
+        public byte[] passwordSalt;
+
+        public AuthorizationData(final long userId, final String user, final String account, final RoleType role, final String password, final byte[] passwordSalt) {
+            this.userId = userId;
+            this.user = user;
+            this.account = account;
+            this.role = role;
+            this.password = password;
+            this.passwordSalt = passwordSalt;
+        }
     }
 }

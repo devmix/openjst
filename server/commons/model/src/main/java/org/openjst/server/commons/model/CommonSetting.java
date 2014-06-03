@@ -17,10 +17,10 @@
 
 package org.openjst.server.commons.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.openjst.server.commons.model.types.SettingValueType;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -46,7 +46,7 @@ public class CommonSetting {
     public static final String COLUMN_VALUE = "value";
     public static final String COLUMN_TYPE = "type";
 
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 255)
     @Pattern(regexp = "[A-Za-z0-9\\-_\\.]*")
     @Id

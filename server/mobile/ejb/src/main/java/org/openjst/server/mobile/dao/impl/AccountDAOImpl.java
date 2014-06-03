@@ -29,6 +29,7 @@ import org.openjst.server.mobile.mq.model.AccountModel;
 import org.openjst.server.mobile.mq.queries.AccountQuery;
 
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
@@ -40,10 +41,9 @@ import static org.openjst.server.mobile.model.Queries.Account.*;
 /**
  * @author Sergey Grachev
  */
-@Stateless(name = AccountDAOImpl.NAME)
+@Stateless
+@PermitAll
 public class AccountDAOImpl extends AbstractEJB implements AccountDAO {
-
-    static final String NAME = "AccountDAO";
 
     @Nullable
     @Override

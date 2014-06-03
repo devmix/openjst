@@ -1,17 +1,18 @@
 Installation notes
 --------------------------
 
-Before starting the application, you must configure the JBoss AS7.
+Before starting the application, you must configure the WildFly.
 
 Profile
 -------
 
-Profile with the settings located in the directory "assets/jboss", its contents must be copied to the server directory.
-To start the server, you must use the script "bin/standalone-openjst.sh"
+Profile with the settings located in the directory "/configuration/server-as/jboss", its contents must be copied to the
+server directory. To start the server, you must use the script "bin/standalone-openjst.sh"
 
 ModeShape
 ---------
 
-Additionally you need to download and install ModeShape 3.1.3.Final (http://www.jboss.org/modeshape/downloads).
-From the downloaded archive "ModeShape subsystem for AS7.1" (modeshape-3.1.3.Final-jbossas-71-dist.zip) requires only
-two directories: docs, modules. These directories must be copied to JBoss, overwriting existing files.
+Additionally you need to download and install 4.0.0.Alpha3 (http://www.jboss.org/modeshape/downloads).
+From the downloaded archive "ModeShape subsystem for Wildfly 8.0" (modeshape-4.0.0.Alpha3-jboss-wf8-dist.zip) requires
+only two directories: docs, modules (modules/system/layers/base). These directories must be copied to JBoss, overwriting
+existing files.

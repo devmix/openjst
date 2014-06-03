@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
@@ -35,6 +36,7 @@ import javax.ejb.Startup;
  */
 @Startup
 @Singleton
+@PermitAll
 public class RpcHandlerImpl implements RpcHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(RpcHandler.class);

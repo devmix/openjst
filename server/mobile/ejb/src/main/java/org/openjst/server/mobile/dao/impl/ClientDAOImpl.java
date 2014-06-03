@@ -33,6 +33,7 @@ import org.openjst.server.mobile.model.dto.ClientConnectionObj;
 import org.openjst.server.mobile.utils.UserUtils;
 
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -46,10 +47,9 @@ import static org.openjst.server.mobile.model.Queries.Client.*;
 /**
  * @author Sergey Grachev
  */
-@Stateless(name = ClientDAOImpl.NAME)
+@Stateless
+@PermitAll
 public class ClientDAOImpl extends AbstractEJB implements ClientDAO {
-
-    static final String NAME = "ClientDAO";
 
     @EJB
     private AccountDAO accountDAO;

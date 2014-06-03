@@ -24,6 +24,7 @@ import org.openjst.server.mobile.Settings;
 import org.openjst.server.mobile.model.dto.RPCMessageObj;
 import org.openjst.server.mobile.network.BasicProtocolService;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.*;
 import javax.enterprise.event.Observes;
 import java.util.Arrays;
@@ -38,6 +39,7 @@ import static javax.enterprise.event.TransactionPhase.AFTER_COMPLETION;
 @Singleton
 @Asynchronous
 @Lock(LockType.READ)
+@PermitAll
 public class SettingsEventsListener {
 
     private static final Set<Setting> BASIC_PROTOCOL_SETTINGS = new HashSet<Setting>(Arrays.asList(Settings.APIBasic.values()));

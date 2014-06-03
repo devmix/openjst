@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.security.PermitAll;
 import javax.ejb.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,7 @@ import java.util.Set;
 @Startup
 @Singleton(name = NetworkServiceImpl.NAME)
 @TransactionManagement(TransactionManagementType.BEAN)
+@PermitAll
 public class NetworkServiceImpl implements NetworkService {
 
     public static final String NAME = "NetworkService";

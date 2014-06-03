@@ -20,10 +20,7 @@ package org.openjst.server.commons.respository;
 import org.openjst.server.commons.respository.exceptions.ContentRepositoryException;
 
 import javax.annotation.Resource;
-import javax.jcr.Node;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
+import javax.jcr.*;
 
 /**
  * @author Sergey Grachev
@@ -76,7 +73,7 @@ public abstract class AbstractRepository implements ContentRepository {
     }
 
     private Session getSession() throws Exception {
-        return repository.login(getWorkspaceName());
+        return repository.login(new SimpleCredentials("admin", "admin".toCharArray()), getWorkspaceName());
     }
 
     public interface OperationWithResult<R> {

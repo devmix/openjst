@@ -34,6 +34,7 @@
         <dependency>
             <groupId>org.openjst</groupId>
             <artifactId>commons</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>

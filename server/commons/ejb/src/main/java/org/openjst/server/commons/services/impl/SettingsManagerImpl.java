@@ -28,6 +28,7 @@ import org.openjst.server.commons.settings.SettingChangeEvent;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.security.PermitAll;
 import javax.ejb.*;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -40,6 +41,7 @@ import java.util.*;
 @Startup
 @Singleton
 @TransactionManagement(TransactionManagementType.BEAN)
+@PermitAll
 public class SettingsManagerImpl implements SettingsManager, Serializable {
 
     private static final long serialVersionUID = -4185189570168420033L;

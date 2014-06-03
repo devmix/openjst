@@ -55,7 +55,7 @@ public final class Queries {
         public static final String FIND_BY_AUTH_ID = PREFIX + "findByAuthId";
         public static final String FIND_BY_ID = PREFIX + "findById";
         public static final String FIND_SYSTEM = PREFIX + "findSystem";
-        public static final String FIND_SECRET_KEY_OF = PREFIX + "findSecretKeyOf";
+        public static final String FIND_AUTHORIZATION_DATA_OF = PREFIX + "findAuthorizationDataOf";
         public static final String FIND_USER_ROLE = PREFIX + "findUserRole";
         public static final String GET_LIST_OF = PREFIX + "getListOf";
         public static final String GET_COUNT_OF = PREFIX + "getCountOf";

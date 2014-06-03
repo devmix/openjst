@@ -32,32 +32,32 @@
     <name>Server: Mobile - Model</name>
 
     <dependencies>
-
-        <!--OpenJST-->
-
         <dependency>
             <groupId>org.openjst</groupId>
             <artifactId>commons</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjst.server</groupId>
             <artifactId>server-commons-ejb</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjst.server</groupId>
             <artifactId>server-commons-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
-        <!--JBoss-->
+        <!--WildFly-->
 
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

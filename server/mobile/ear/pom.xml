@@ -34,32 +34,33 @@
     <dependencies>
         <dependency>
             <groupId>org.openjst.server</groupId>
+            <artifactId>server-commons-ejb</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjst.server</groupId>
             <artifactId>server-mobile-model</artifactId>
+            <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.openjst.server</groupId>
             <artifactId>server-mobile-ejb</artifactId>
+            <version>${project.version}</version>
             <type>ejb</type>
         </dependency>
         <dependency>
             <groupId>org.openjst.server</groupId>
             <artifactId>server-mobile-war</artifactId>
+            <version>${project.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.openjst.protocol</groupId>
             <artifactId>protocol-basic-server</artifactId>
+            <version>${project.version}</version>
             <type>jar</type>
-        </dependency>
-
-        <!--Commons-->
-
-        <dependency>
-            <groupId>org.openjst.server</groupId>
-            <artifactId>server-commons-ejb</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <type>ejb</type>
         </dependency>
 
         <!--Apache Commons-->
@@ -119,24 +120,31 @@
                     </archive>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-jar-plugin</artifactId>-->
-            <!--<configuration>-->
-            <!--<archive>-->
-            <!--<manifestEntries>-->
-            <!--<Dependencies>javax.jcr, org.modeshape.jcr.api export services, org.modeshape export services</Dependencies>-->
-            <!--</manifestEntries>-->
-            <!--</archive>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
-            <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>server-mobile-deploy</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

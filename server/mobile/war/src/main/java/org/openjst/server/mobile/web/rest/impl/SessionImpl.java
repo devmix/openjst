@@ -15,20 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.server.commons.web.rest;
+package org.openjst.server.mobile.web.rest.impl;
 
+import org.openjst.server.mobile.web.rest.Session;
+
+import javax.annotation.security.PermitAll;
+import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
 
 /**
  * @author Sergey Grachev
  */
-@Path("/session")
-public interface Session {
+@Stateless
+@PermitAll
+public class SessionImpl implements Session {
 
-    @Path("/logout")
-    @POST
-    void logout(@Context HttpServletRequest request);
+    @Override
+    public void logout(final HttpServletRequest request) {
+        try {
+            request.getSession(false).invalidate();
+            request.logout();
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -19,15 +19,12 @@ package org.openjst.server.mobile.jaas;
 
 import org.jboss.resteasy.plugins.server.embedded.SimplePrincipal;
 import org.openjst.commons.dto.tuples.Pair;
-import org.openjst.commons.dto.tuples.Triple;
 import org.openjst.commons.protocols.auth.SecretKey;
 import org.openjst.commons.utils.Constants;
 import org.openjst.server.commons.model.types.RoleType;
-import org.openjst.server.commons.utils.CdiLocator;
 import org.openjst.server.commons.utils.EjbLocator;
 import org.openjst.server.mobile.dao.UserDAO;
 import org.openjst.server.mobile.model.User;
-import org.openjst.server.mobile.session.MobileSession;
 import org.openjst.server.mobile.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +55,7 @@ public final class DatabaseLoginModule implements LoginModule {
     private static final String ERROR_NO_USER = "No user with name %s";
     private static final String ERROR_USER_DAO_NOT_FOUND = "UserDAO not found";
     private static final String ERROR_MOBILE_SESSION_NOT_FOUND = "MobileSession not found";
-    private static final String ERROR_USER_WITH_ID_D_NOT_FOUND = "User with ID %d not found";
+//    private static final String ERROR_USER_WITH_ID_D_NOT_FOUND = "User with ID %d not found";
     private static final String CALLBACK_NAME = "OJST ID: ";
     private static final String CALLBACK_PASSWORD = "Password: ";
 
@@ -101,31 +98,31 @@ public final class DatabaseLoginModule implements LoginModule {
             final char[] passwordChars = ((PasswordCallback) callbacks[1]).getPassword();
             password = passwordChars == null ? Constants.stringsEmpty() : new String(passwordChars);
             ((PasswordCallback) callbacks[1]).clearPassword();
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             throw new LoginException(ioe.toString());
-        } catch (UnsupportedCallbackException uce) {
+        } catch (final UnsupportedCallbackException uce) {
             throw new LoginException(String.format(ERROR_NO_AUTHENTICATION_INFORMATION, uce.getCallback().toString()));
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             throw new LoginException(ERROR_INCORRECT_FORMAT_OF_USER_NAME);
         }
 
         final UserDAO userDAO = getUserDAO();
 
-        final Triple<Long, String, byte[]> secretKey = userDAO.findSecretKeyOf(authId.second(), authId.first());
-        if (secretKey == null) {
+        final User.AuthorizationData data = userDAO.findAuthorizationDataOf(authId.second(), authId.first());
+        if (data == null) {
             throw new FailedLoginException(String.format(ERROR_NO_USER, authId.first()));
         }
 
-        final SecretKey correctPassword = UserUtils.parseSecretKey(secretKey.second());
-        final SecretKey encodedPassword = correctPassword.getType().encode(password, secretKey.third());
+        final SecretKey correctPassword = UserUtils.parseSecretKey(data.password);
+        final SecretKey encodedPassword = correctPassword.getType().encode(password, data.passwordSalt);
         if (!encodedPassword.equals(correctPassword)) {
             throw new FailedLoginException(ERROR_PASSWORD_INCORRECT);
         }
 
-        id.userId = secretKey.first();
-        id.name = name;
-        id.user = authId.second();
-        id.account = authId.first();
+        id.userId = data.userId;
+        id.user = data.user;
+        id.account = data.account;
+        id.role = data.role;
 
         sharedState.put("javax.security.auth.login.name", name);
         sharedState.put("javax.security.auth.login.password", password);
@@ -141,29 +138,29 @@ public final class DatabaseLoginModule implements LoginModule {
             return false;
         }
 
-        final UserDAO userDAO = getUserDAO();
+//        final UserDAO userDAO = getUserDAO();
+//
+//        final User user = userDAO.findById(id.userId);
+//        if (user == null) {
+//            throw new LoginException(String.format(ERROR_USER_WITH_ID_D_NOT_FOUND, id.userId));
+//        }
 
-        final User user = userDAO.findById(id.userId);
-        if (user == null) {
-            throw new LoginException(String.format(ERROR_USER_WITH_ID_D_NOT_FOUND, id.userId));
-        }
-
-        final RoleType role = user.getRole();
+        final RoleType role = id.role;
         final Group roles = new MobileGroup("Roles");
         if (role != null) {
             roles.addMember(new SimplePrincipal(role.name()));
         }
 
-        principal = new MobilePrincipal(id.name, id.account, id.user, id.userId);
+        principal = new MobilePrincipal(id.user, id.account, id.user, id.userId);
 
         addPrincipal(subject, principal);
         addPrincipal(subject, roles);
 
-        final MobileSession session = getMobileSession();
+//        final MobileSession session = getMobileSession();
+//
+//        session.initialization(user);
 
-        session.initialization(user);
-
-        LOG.trace("User authorized {}", session.getUser());
+        LOG.trace("User authorized {}", id);
 
         commitSucceeded = true;
         id.clear();
@@ -205,21 +202,17 @@ public final class DatabaseLoginModule implements LoginModule {
     @SuppressWarnings("unchecked")
     private static void addPrincipal(final Subject subject, final Principal principal) {
         final Set<Principal> principals = subject.getPrincipals();
-        java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
-            public Object run() {
-                principals.add(principal);
-                return null;
-            }
+        java.security.AccessController.doPrivileged((java.security.PrivilegedAction) () -> {
+            principals.add(principal);
+            return null;
         });
     }
 
     @SuppressWarnings("unchecked")
     private static void removePrincipal(final Subject subject, final Principal principal) {
-        java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
-            public Object run() {
-                subject.getPrincipals().remove(principal);
-                return null;
-            }
+        java.security.AccessController.doPrivileged((java.security.PrivilegedAction) () -> {
+            subject.getPrincipals().remove(principal);
+            return null;
         });
     }
 
@@ -231,23 +224,33 @@ public final class DatabaseLoginModule implements LoginModule {
         return userDAO;
     }
 
-    private static MobileSession getMobileSession() throws LoginException {
-        final MobileSession ctx = CdiLocator.lookup(MobileSession.class);
-        if (ctx == null) {
-            throw new LoginException(ERROR_MOBILE_SESSION_NOT_FOUND);
-        }
-        return ctx;
-    }
+//    private static MobileSession getMobileSession() throws LoginException {
+//        final MobileSession ctx = CdiLocator.lookup(MobileSession.class);
+//        if (ctx == null) {
+//            throw new LoginException(ERROR_MOBILE_SESSION_NOT_FOUND);
+//        }
+//        return ctx;
+//    }
 
     private static final class Identification {
         private Long userId;
         private String user;
         private String account;
-        private String name;
+        public RoleType role;
 
         public void clear() {
             userId = null;
-            user = account = name = null;
+            user = account = null;
+        }
+
+        @Override
+        public String toString() {
+            return "Identification{" +
+                    "userId=" + userId +
+                    ", user='" + user + '\'' +
+                    ", account='" + account + '\'' +
+                    ", role=" + role +
+                    '}';
         }
     }
 }

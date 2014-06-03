@@ -18,8 +18,6 @@
 package org.openjst.server.mobile.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openjst.commons.dto.tuples.Triple;
-import org.openjst.commons.dto.tuples.Tuples;
 import org.openjst.commons.protocols.auth.SecretKeys;
 import org.openjst.server.commons.AbstractEJB;
 import org.openjst.server.commons.model.types.RoleType;
@@ -35,6 +33,7 @@ import org.openjst.server.mobile.session.MobileSession;
 import org.openjst.server.mobile.utils.UserUtils;
 
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.LockModeType;
@@ -44,10 +43,9 @@ import java.util.List;
 /**
  * @author Sergey Grachev
  */
-@Stateless(name = UserDAOImpl.NAME)
+@Stateless(name = UserDAO.NAME)
+@PermitAll
 public class UserDAOImpl extends AbstractEJB implements UserDAO {
-
-    static final String NAME = "UserDAO";
 
     @Inject
     private MobileSession session;
@@ -86,14 +84,12 @@ public class UserDAOImpl extends AbstractEJB implements UserDAO {
 
     @Override
     @Nullable
-    public Triple<Long, String, byte[]> findSecretKeyOf(final String account, final String user) {
+    public User.AuthorizationData findAuthorizationDataOf(final String account, final String user) {
         try {
-            final Object[] key = (Object[]) em.createNamedQuery(Queries.User.FIND_SECRET_KEY_OF)
+            return (User.AuthorizationData) em.createNamedQuery(Queries.User.FIND_AUTHORIZATION_DATA_OF)
                     .setParameter("account", account)
                     .setParameter("user", user)
                     .getSingleResult();
-
-            return Tuples.newTriple((Long) key[0], (String) key[1], (byte[]) key[2]);
         } catch (NoResultException e) {
             return null;
         }

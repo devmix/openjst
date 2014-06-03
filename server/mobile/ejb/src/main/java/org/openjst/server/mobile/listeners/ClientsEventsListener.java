@@ -26,6 +26,7 @@ import org.openjst.server.mobile.events.UpdateChangeEvent;
 import org.openjst.server.mobile.network.NetworkService;
 import org.openjst.server.mobile.rpc.RPCNames;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.*;
 import javax.enterprise.event.Observes;
 
@@ -41,6 +42,7 @@ import static org.openjst.commons.utils.RPCUtils.uniqueRequestId;
 @Singleton
 @Asynchronous
 @Lock(LockType.READ)
+@PermitAll
 public class ClientsEventsListener {
 
     @EJB

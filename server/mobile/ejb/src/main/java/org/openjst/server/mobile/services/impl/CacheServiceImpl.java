@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.naming.InitialContext;
@@ -35,6 +36,7 @@ import javax.naming.NamingException;
  */
 @Singleton
 @Startup
+@PermitAll
 public class CacheServiceImpl implements CacheService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheService.class);

@@ -21,6 +21,7 @@ import org.openjst.server.commons.respository.ContentRepository;
 import org.openjst.server.commons.respository.RepositoriesStartupService;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.enterprise.inject.Any;
@@ -31,10 +32,9 @@ import javax.inject.Inject;
  * @author Sergey Grachev
  */
 @Startup
-@Singleton(name = RepositoriesStartupServiceImpl.NAME)
+@Singleton
+@PermitAll
 public class RepositoriesStartupServiceImpl implements RepositoriesStartupService {
-
-    static final String NAME = "RepositoriesStartupService";
 
     @Inject
     @Any

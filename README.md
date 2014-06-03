@@ -3,13 +3,13 @@
 **OpenJST** (Open Job Scheduling & Tracking) it is an open source project created to provide highly customized system for tracking and fleet management works in real time.
 
 ## Requirements
- * JDK 1.6 or later
- * JBoss AS 7.1.1.Final
+ * JDK 1.8 or later
+ * JBoss AS 8.1.0.Final
 
 ### Development:
  * Maven 3 (3.0.5)
  * Android SDK (Platform 8)
- * Any Java EE 6 compliant IDE
+ * Any Java EE 7 compliant IDE
 
 ## Quick Start
  
@@ -40,7 +40,7 @@ mvn clean install -Pserver-mobile,client-android,protocol
 If you are running jboss, you can deploy application using this command
 
 ```bash
-mvn jboss-as:deploy -Pserver-mobile
+mvn package -Pserver-mobile,server-mobile-deploy
 ```
 
 #### Sing in

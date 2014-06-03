@@ -24,6 +24,7 @@ import org.openjst.server.commons.settings.Setting;
 import org.openjst.server.commons.settings.SettingChangeEvent;
 
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import java.util.*;
@@ -34,6 +35,7 @@ import static org.openjst.server.commons.model.CommonQueries.CommonSetting.*;
  * @author Sergey Grachev
  */
 @Stateless
+@PermitAll
 public class CommonSettingDAOImpl extends AbstractEJB implements CommonSettingDAO {
 
     @Override

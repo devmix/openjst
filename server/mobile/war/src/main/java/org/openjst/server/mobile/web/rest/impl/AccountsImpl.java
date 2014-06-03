@@ -39,6 +39,7 @@ import org.openjst.server.mobile.mq.queries.AccountQuery;
 import org.openjst.server.mobile.session.MobileSession;
 import org.openjst.server.mobile.web.rest.Accounts;
 
+import javax.ejb.EJB;
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -51,13 +52,13 @@ public class AccountsImpl implements Accounts {
 
     private static final AtomicLong API_KEY_COUNTER = new AtomicLong(0);
 
-    @Inject
+    @EJB
     private AccountDAO accountDAO;
 
-    @Inject
+    @EJB
     private RPCMessagesDAO rpcMessagesDAO;
 
-    @Inject
+    @EJB
     private UpdatesDAO updatesDAO;
 
     @Inject

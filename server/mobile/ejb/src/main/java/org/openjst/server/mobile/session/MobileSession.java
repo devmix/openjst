@@ -26,6 +26,8 @@ import org.openjst.server.mobile.mq.model.UserModel;
  */
 public interface MobileSession extends GlobalSession {
 
+    boolean isInitialized();
+
     void initialization(User user);
 
     UserModel getUser();

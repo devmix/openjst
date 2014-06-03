@@ -48,6 +48,7 @@
 
     <modules>
         <module>commons</module>
+        <module>configuration</module>
     </modules>
 
     <profiles>
@@ -75,6 +76,23 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
+
+        <!--application server-->
+        <app-server.home>/mnt/sys/work/server/wildfly-8.1.0.Final</app-server.home>
+        <!--<app-server.home>${env.JBOSS_HOME}</app-server.home>-->
+
+        <!--plugins versions-->
+        <version.resources.plugin>2.6</version.resources.plugin>
+        <version.compiler.plugin>3.1</version.compiler.plugin>
+        <version.surefire.plugin>2.17</version.surefire.plugin>
+        <version.source.plugin>2.2.1</version.source.plugin>
+        <version.javadoc.plugin>2.9.1</version.javadoc.plugin>
+        <version.checkstyle.plugin>2.12.1</version.checkstyle.plugin>
+        <version.jar.plugin>2.4</version.jar.plugin>
+        <version.ear.plugin>2.9</version.ear.plugin>
+        <version.war.plugin>2.4</version.war.plugin>
+        <version.ejb.plugin>2.3</version.ejb.plugin>
+        <version.wildfly.plugin>1.0.1.Final</version.wildfly.plugin>
     </properties>
 
     <build>
@@ -82,15 +100,16 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.0</version>
+                    <version>${version.compiler.plugin}</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.13</version>
+                    <version>${version.surefire.plugin}</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.2.1</version>
+                    <version>${version.source.plugin}</version>
+                    <inherited>true</inherited>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -101,20 +120,57 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${version.resources.plugin}</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9</version>
+                    <version>${version.javadoc.plugin}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.9.1</version>
+                    <version>${version.checkstyle.plugin}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>${version.jar.plugin}</version>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-ear-plugin</artifactId>
+                    <version>${version.ear.plugin}</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <version>7</version>
+                        <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${version.war.plugin}</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <version>${version.ejb.plugin}</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <ejbVersion>3.2</ejbVersion>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>${version.wildfly.plugin}</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+
                 <plugin>
                     <groupId>org.openjst.server</groupId>
                     <artifactId>webui-maven-plugin</artifactId>
@@ -136,32 +192,6 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <!--OpenJST-->
-
-            <dependency>
-                <groupId>org.openjst</groupId>
-                <artifactId>commons</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.openjst.protocol</groupId>
-                <artifactId>protocol-basic-client</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openjst.protocol</groupId>
-                <artifactId>protocol-basic-server</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.openjst.server</groupId>
-                <artifactId>webui-maven-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
             <!--log4j2-->
 
             <dependency>
@@ -189,32 +219,6 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>2.2.2</version>
-            </dependency>
-
-            <!--JBoss-->
-
-            <dependency>
-                <groupId>javax.enterprise</groupId>
-                <artifactId>cdi-api</artifactId>
-                <version>1.0-SP4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jsapi</artifactId>
-                <version>2.3.2.Final</version>
-            </dependency>
-
-            <!-- Infinispan -->
-
-            <dependency>
-                <groupId>org.infinispan</groupId>
-                <artifactId>infinispan-core</artifactId>
-                <version>5.1.2.FINAL</version>
-            </dependency>
-            <dependency>
-                <groupId>org.infinispan</groupId>
-                <artifactId>infinispan-cdi</artifactId>
-                <version>5.1.2.FINAL</version>
             </dependency>
 
             <!-- Tests -->

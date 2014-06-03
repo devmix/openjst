@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -46,6 +47,7 @@ import javax.ejb.Startup;
  */
 @Startup
 @Singleton
+@PermitAll
 public class MobileApplicationMXBeanImpl extends AbstractMBean implements MobileApplicationMXBean {
 
     public static final Logger LOG = LoggerFactory.getLogger(MobileApplicationMXBean.class);

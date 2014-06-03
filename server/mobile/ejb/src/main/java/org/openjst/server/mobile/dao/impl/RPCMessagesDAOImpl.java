@@ -28,6 +28,7 @@ import org.openjst.server.mobile.model.RPCMessageForwardToClient;
 import org.openjst.server.mobile.model.RPCMessageForwardToServer;
 import org.openjst.server.mobile.model.dto.RPCMessageObj;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -38,10 +39,9 @@ import static org.openjst.server.mobile.model.Queries.RPCMessage.*;
 /**
  * @author Sergey Grachev
  */
-@Stateless(name = RPCMessagesDAOImpl.NAME)
+@Stateless
+@PermitAll
 public class RPCMessagesDAOImpl extends AbstractEJB implements RPCMessagesDAO<Actor<Long>, RPCMessageObj> {
-
-    public static final String NAME = "RPCForwardRequestsDAO";
 
     private static final List<MessageDeliveryState> COMPLETED_STATES = Arrays.asList(
             MessageDeliveryState.OK,

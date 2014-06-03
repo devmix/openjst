@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.openjst.client.android</groupId>
             <artifactId>client-android-commons</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
             <type>apklib</type>
         </dependency>
 

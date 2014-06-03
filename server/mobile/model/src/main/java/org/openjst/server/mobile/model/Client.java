@@ -17,10 +17,10 @@
 
 package org.openjst.server.mobile.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.openjst.server.commons.model.types.ProtocolType;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Date;
@@ -96,7 +96,7 @@ public class Client extends AbstractAccountEntity {
 
     public static final int DEFAULT_SALT_SIZE = 255;
 
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 255)
     @Column(name = COLUMN_AUTH_ID, length = 255, nullable = false)
     private String authId;

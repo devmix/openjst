@@ -17,5 +17,5 @@
   -->
 
 <jboss-web>
-    <security-domain>java:/jaas/OpenJSTServerMobileRealm</security-domain>
+    <security-domain flushOnSessionInvalidation="true">java:/jaas/OpenJSTServerMobileRealm</security-domain>
 </jboss-web>
