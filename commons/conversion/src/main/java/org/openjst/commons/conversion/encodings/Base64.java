@@ -8,41 +8,41 @@ import java.util.Arrays;
  * On Windows XP sp1 with 1.4.2_04 and later ;), this encoder and decoder is about 10 times faster
  * on small arrays (10 - 1000 bytes) and 2-3 times as fast on larger arrays (10000 - 1000000 bytes)
  * compared to <code>sun.misc.Encoder()/Decoder()</code>.<br><br>
- * <p/>
+ * <p>
  * On byte arrays the encoder is about 20% faster than Jakarta Commons Base64 Codec for encode and
  * about 50% faster for decoding large arrays. This implementation is about twice as fast on very small
  * arrays (&lt 30 bytes). If source/destination is a <code>String</code> this
  * version is about three times as fast due to the fact that the Commons Codec result has to be recoded
  * to a <code>String</code> from <code>byte[]</code>, which is very expensive.<br><br>
- * <p/>
+ * <p>
  * This encode/decode algorithm doesn't create any temporary arrays as many other codecs do, it only
  * allocates the resulting array. This produces less garbage and it is possible to handle arrays twice
  * as large as algorithms that create a temporary array. (E.g. Jakarta Commons Codec). It is unknown
  * whether Sun's <code>sun.misc.Encoder()/Decoder()</code> produce temporary arrays but since performance
  * is quite low it probably does.<br><br>
- * <p/>
+ * <p>
  * The encoder produces the same output as the Sun one except that the Sun's encoder appends
  * a trailing line separator if the last character isn't a pad. Unclear why but it only adds to the
  * length and is probably a side effect. Both are in conformance with RFC 2045 though.<br>
  * Commons codec seem to always att a trailing line separator.<br><br>
- * <p/>
+ * <p>
  * <b>Note!</b>
  * The encode/decode method pairs (types) come in three versions with the <b>exact</b> same algorithm and
  * thus a lot of code redundancy. This is to not create any temporary arrays for transcoding to/from different
  * format types. The methods not used can simply be commented out.<br><br>
- * <p/>
+ * <p>
  * There is also a "fast" version of all decode methods that works the same way as the normal ones, but
  * har a few demands on the decoded input. Normally though, these fast verions should be used if the source if
  * the input is known and it hasn't bee tampered with.<br><br>
- * <p/>
+ * <p>
  * If you find the code useful or you find a bug, please send me a note at base64 @ miginfocom . com.
- * <p/>
+ * <p>
  * Licence (BSD):
  * ==============
- * <p/>
+ * <p>
  * Copyright (c) 2004, Mikael Grev, MiG InfoCom AB. (base64 @ miginfocom . com)
  * All rights reserved.
- * <p/>
+ * <p>
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this list
@@ -53,7 +53,7 @@ import java.util.Arrays;
  * Neither the name of the MiG InfoCom AB nor the names of its contributors may be
  * used to endorse or promote products derived from this software without specific
  * prior written permission.
- * <p/>
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -146,7 +146,7 @@ public final class Base64 {
      *
      * @param sArr The source array. <code>null</code> or length 0 will return an empty array.
      * @return The decoded array of bytes. May be of length 0. Will be <code>null</code> if the legal characters
-     *         (including '=') isn't divideable by 4.  (I.e. definitely corrupted).
+     * (including '=') isn't divideable by 4.  (I.e. definitely corrupted).
      */
     public final static byte[] decode(char[] sArr) {
         // Check special case
@@ -339,7 +339,7 @@ public final class Base64 {
      *
      * @param sArr The source array. Length 0 will return an empty array. <code>null</code> will throw an exception.
      * @return The decoded array of bytes. May be of length 0. Will be <code>null</code> if the legal characters
-     *         (including '=') isn't divideable by 4. (I.e. definitely corrupted).
+     * (including '=') isn't divideable by 4. (I.e. definitely corrupted).
      */
     public final static byte[] decode(byte[] sArr) {
         return decode(sArr, 0, sArr.length);
@@ -353,7 +353,7 @@ public final class Base64 {
      * @param sOff The starting position in the source array.
      * @param sLen The number of bytes to decode from the source array. Length 0 will return an empty array.
      * @return The decoded array of bytes. May be of length 0. Will be <code>null</code> if the legal characters
-     *         (including '=') isn't divideable by 4. (I.e. definitely corrupted).
+     * (including '=') isn't divideable by 4. (I.e. definitely corrupted).
      */
     public final static byte[] decode(byte[] sArr, int sOff, int sLen) {
         // Count illegal characters (including '\r', '\n') to know what size the returned array will be,
@@ -492,7 +492,7 @@ public final class Base64 {
      *
      * @param str The source string. <code>null</code> or length 0 will return an empty array.
      * @return The decoded array of bytes. May be of length 0. Will be <code>null</code> if the legal characters
-     *         (including '=') isn't divideable by 4.  (I.e. definitely corrupted).
+     * (including '=') isn't divideable by 4.  (I.e. definitely corrupted).
      */
     public final static byte[] decode(String str) {
         // Check special case

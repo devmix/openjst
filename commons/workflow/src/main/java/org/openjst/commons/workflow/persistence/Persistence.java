@@ -47,7 +47,7 @@ public interface Persistence extends Serializable {
 
     /**
      * Create a new task.
-     * <p/>
+     * <p>
      * <b>Tasks MUST be stored in the same order in which they are created.</b>
      *
      * @param task data of task
@@ -57,7 +57,7 @@ public interface Persistence extends Serializable {
 
     /**
      * Create a new event.
-     * <p/>
+     * <p>
      * <b>Event MUST be stored in the same order in which they are created.</b>
      *
      * @param event data of event
@@ -114,7 +114,7 @@ public interface Persistence extends Serializable {
 
     /**
      * Get list of workflow tasks
-     * <p/>
+     * <p>
      * <b>Tasks MUST be loaded in the same order in which they are created.</b>
      */
     @Nullable
@@ -122,7 +122,7 @@ public interface Persistence extends Serializable {
 
     /**
      * Get list of workflow events
-     * <p/>
+     * <p>
      * <b>Events MUST be loaded in the same order in which they are created.</b>
      */
     @Nullable

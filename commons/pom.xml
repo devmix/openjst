@@ -41,6 +41,7 @@
         <module>security</module>
         <module>cache</module>
         <module>concurrent</module>
+        <module>properties</module>
     </modules>
 
     <dependencies>
