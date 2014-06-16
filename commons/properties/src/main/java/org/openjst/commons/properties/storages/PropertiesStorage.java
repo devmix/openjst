@@ -50,9 +50,9 @@ public interface PropertiesStorage {
 
     void put(Property property, @Nullable Object value);
 
-    void put(int level, Property property, @Nullable Object value);
+    void put(Property property, @Nullable Object value, int level);
 
-    void put(int level, Map<Property, Object> values);
+    void putAll(Map<Property, Object> values, int level);
 
     interface Persistence {
 

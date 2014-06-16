@@ -15,21 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.commons.properties.storages;
+package org.openjst.commons.properties.validators;
+
+import org.openjst.commons.properties.restrictions.Validator;
 
 /**
  * @author Sergey Grachev
  */
-public final class StorageBuilder {
+public final class Validators {
 
-    private StorageBuilder() {
+    public static final Validator DEFAULT = Validators.newStandard();
+
+    private Validators() {
     }
 
-    public static PropertiesStorage newMemory(final PropertiesStorage.Persistence persistence, final boolean lazyFetch) {
-        return new MemoryStorage(persistence, lazyFetch);
+    /**
+     * @return instance of global validator
+     */
+    public static Validator standard() {
+        return DEFAULT;
     }
 
-    public static PropertiesStorage newMemory(final PropertiesStorage.Persistence persistence) {
-        return newMemory(persistence, false);
+    public static Validator newStandard() {
+        return new StandardValidator();
     }
 }

@@ -24,12 +24,12 @@ import org.openjst.commons.properties.Property;
  */
 public final class Converters {
 
-    private static final Property.Converter STANDARD = new BasicConverter();
+    private static final Property.Converter BASIC = new BasicConverter();
 
     private Converters() {
     }
 
-    public static Property.Converter standard() {
-        return STANDARD;
+    public static Property.Converter basic() {
+        return BASIC;
     }
 }

@@ -96,4 +96,9 @@ final class NullValue implements Property.Immutable {
     public LocalTime asTime() {
         return null;
     }
+
+    @Override
+    public <T extends Enum<T>> T asEnum(final Class<T> clazz) {
+        return null;
+    }
 }

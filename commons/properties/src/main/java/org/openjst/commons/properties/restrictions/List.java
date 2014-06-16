@@ -15,21 +15,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.commons.properties.storages;
+package org.openjst.commons.properties.restrictions;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Sergey Grachev
  */
-public final class StorageBuilder {
+public interface List {
 
-    private StorageBuilder() {
+    @Retention(RUNTIME)
+    @Target({TYPE, FIELD})
+    @Restriction
+    @interface String {
+        java.lang.String[] value();
     }
 
-    public static PropertiesStorage newMemory(final PropertiesStorage.Persistence persistence, final boolean lazyFetch) {
-        return new MemoryStorage(persistence, lazyFetch);
+    @Retention(RUNTIME)
+    @Target({TYPE, FIELD})
+    @Restriction
+    @interface Number {
+        double[] value();
     }
 
-    public static PropertiesStorage newMemory(final PropertiesStorage.Persistence persistence) {
-        return newMemory(persistence, false);
+    @Retention(RUNTIME)
+    @Target({TYPE, FIELD})
+    @Restriction
+    @interface Enum {
+        Class<? extends java.lang.Enum> value();
     }
 }

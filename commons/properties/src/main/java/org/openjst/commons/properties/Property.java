@@ -18,7 +18,6 @@
 package org.openjst.commons.properties;
 
 import org.joda.time.LocalTime;
-import org.openjst.commons.properties.restrictions.Restriction;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -34,8 +33,6 @@ public interface Property {
 
     Type type();
 
-    Restriction restriction();
-
     Property[] requires();
 
     @Nullable
@@ -46,9 +43,9 @@ public interface Property {
         /**
          * @return value of parameter,
          * {@link org.openjst.commons.properties.values.ValuesBuilder#nullValue() nullValue} or new parameter with
-         * value by default ({@link org.openjst.commons.properties.values.ValuesBuilder#values(boolean) values})
+         * value by default ({@link org.openjst.commons.properties.values.ValuesBuilder#newValues(boolean) newValues})
          */
-        Immutable of(Property property);
+        Immutable get(Property property);
 
         Values put(Property property, @Nullable Object value);
 
@@ -91,6 +88,8 @@ public interface Property {
 
         @Nullable
         LocalTime asTime();
+
+        <T extends Enum<T>> T asEnum(Class<T> clazz);
     }
 
     interface Mutable extends Immutable {
@@ -124,6 +123,9 @@ public interface Property {
 
         @Nullable
         LocalTime asTime(Type type, @Nullable Object value);
+
+        @Nullable
+        <T extends Enum<T>> T asEnum(Type type, @Nullable Object value, Class<T> clazz);
     }
 
     enum Type {
@@ -137,6 +139,10 @@ public interface Property {
         DOUBLE,
         CHAR,
         STRING,
-        TIME
+        TIME,
+
+        // virtual types
+
+        ENUM // asEnum(STRING)
     }
 }

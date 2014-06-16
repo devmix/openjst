@@ -21,8 +21,6 @@ import org.fest.assertions.Assertions;
 import org.joda.time.LocalTime;
 import org.openjst.commons.properties.Property;
 import org.openjst.commons.properties.annotations.Group;
-import org.openjst.commons.properties.restrictions.Restriction;
-import org.openjst.commons.properties.restrictions.RestrictionBuilder;
 import org.openjst.commons.properties.utils.PropertiesUtils;
 import org.testng.annotations.Test;
 
@@ -31,10 +29,10 @@ import javax.annotation.Nullable;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static org.openjst.commons.properties.Property.Immutable;
-import static org.openjst.commons.properties.Property.Mutable;
 import static org.openjst.commons.properties.Property.Values;
 import static org.openjst.commons.properties.values.PropertyValuesTest.TestProperties.*;
-import static org.openjst.commons.properties.values.ValuesBuilder.*;
+import static org.openjst.commons.properties.values.ValuesBuilder.newImmutable;
+import static org.openjst.commons.properties.values.ValuesBuilder.nullValue;
 
 /**
  * @author Sergey Grachev
@@ -43,8 +41,8 @@ public final class PropertyValuesTest {
 
     @Test(groups = "unit")
     public void testNulls() {
-        assertThat(ValuesBuilder.values().of(NULL)).isEqualTo(nullValue());
-        assertThat(ValuesBuilder.values(true).of(NULL_WITH_DEFAULT).get()).isEqualTo("test");
+        assertThat(ValuesBuilder.newValues().get(NULL)).isEqualTo(nullValue());
+        assertThat(ValuesBuilder.newValues(true).get(NULL_WITH_DEFAULT).get()).isEqualTo("test");
     }
 
     @Test(groups = "unit")
@@ -55,7 +53,7 @@ public final class PropertyValuesTest {
 
     @Test(groups = "unit")
     public void testValues() {
-        final Values values = ValuesBuilder.values()
+        final Values values = ValuesBuilder.newValues()
                 .put(NULL, "1")
                 .put(BOOLEAN, true)
                 .put(BYTE, 11)
@@ -68,25 +66,25 @@ public final class PropertyValuesTest {
                 .put(STRING, "88")
                 .put(TIME, new LocalTime(99));
 
-        assertThat(values.of(NULL).get()).isEqualTo("1");
+        assertThat(values.get(NULL).get()).isEqualTo("1");
         values.clear(NULL);
-        assertThat(values.of(NULL)).isEqualTo(nullValue());
+        assertThat(values.get(NULL)).isEqualTo(nullValue());
 
-        assertThat(values.of(BOOLEAN).asBoolean()).isEqualTo(true);
-        assertThat(values.of(BYTE).asByte()).isEqualTo((byte) 11);
-        assertThat(values.of(SHORT).asShort()).isEqualTo((short) 22);
-        assertThat(values.of(INT).asInt()).isEqualTo(33);
-        assertThat(values.of(LONG).asLong()).isEqualTo(44);
-        assertThat(values.of(FLOAT).asFloat()).isEqualTo(55);
-        assertThat(values.of(DOUBLE).asDouble()).isEqualTo(66);
-        assertThat(values.of(CHAR).asChar()).isEqualTo((char) 77);
-        assertThat(values.of(STRING).asString()).isEqualTo("88");
-        assertThat(values.of(TIME).asTime()).isEqualTo(new LocalTime(99));
+        assertThat(values.get(BOOLEAN).asBoolean()).isEqualTo(true);
+        assertThat(values.get(BYTE).asByte()).isEqualTo((byte) 11);
+        assertThat(values.get(SHORT).asShort()).isEqualTo((short) 22);
+        assertThat(values.get(INT).asInt()).isEqualTo(33);
+        assertThat(values.get(LONG).asLong()).isEqualTo(44);
+        assertThat(values.get(FLOAT).asFloat()).isEqualTo(55);
+        assertThat(values.get(DOUBLE).asDouble()).isEqualTo(66);
+        assertThat(values.get(CHAR).asChar()).isEqualTo((char) 77);
+        assertThat(values.get(STRING).asString()).isEqualTo("88");
+        assertThat(values.get(TIME).asTime()).isEqualTo(new LocalTime(99));
     }
 
     @Test(groups = "unit")
     public void testBoolean() {
-        final Immutable value = immutable(BOOLEAN, true);
+        final Immutable value = newImmutable(BOOLEAN, true);
 
         assertThat(value.asBoolean()).isTrue();
         assertThat(value.asByte()).isEqualTo((byte) 1);
@@ -106,7 +104,7 @@ public final class PropertyValuesTest {
 
     @Test(groups = "unit")
     public void testByte() {
-        final Immutable value = immutable(BYTE, Byte.MAX_VALUE);
+        final Immutable value = newImmutable(BYTE, Byte.MAX_VALUE);
 
         assertThat(value.asBoolean()).isTrue();
         assertThat(value.asByte()).isEqualTo(Byte.MAX_VALUE);
@@ -116,13 +114,13 @@ public final class PropertyValuesTest {
         assertThat(value.asFloat()).isEqualTo(Byte.MAX_VALUE);
         assertThat(value.asDouble()).isEqualTo(Byte.MAX_VALUE);
         assertThat(value.asChar()).isEqualTo((char) Byte.MAX_VALUE);
-        assertThat(value.asString()).isEqualTo(String.valueOf(Byte.MAX_VALUE));
+        assertThat(value.asString()).isEqualTo(java.lang.String.valueOf(Byte.MAX_VALUE));
         assertThat(value.asTime()).isEqualTo(LocalTime.fromMillisOfDay(Byte.MAX_VALUE));
     }
 
     @Test(groups = "unit")
     public void testShort() {
-        final Immutable value = immutable(SHORT, Short.MAX_VALUE);
+        final Immutable value = newImmutable(SHORT, Short.MAX_VALUE);
 
         assertThat(value.asBoolean()).isTrue();
         assertThat(value.asByte()).isEqualTo((byte) Short.MAX_VALUE);
@@ -132,13 +130,13 @@ public final class PropertyValuesTest {
         assertThat(value.asFloat()).isEqualTo(Short.MAX_VALUE);
         assertThat(value.asDouble()).isEqualTo(Short.MAX_VALUE);
         assertThat(value.asChar()).isEqualTo((char) Short.MAX_VALUE);
-        assertThat(value.asString()).isEqualTo(String.valueOf(Short.MAX_VALUE));
+        assertThat(value.asString()).isEqualTo(java.lang.String.valueOf(Short.MAX_VALUE));
         assertThat(value.asTime()).isEqualTo(LocalTime.fromMillisOfDay(Short.MAX_VALUE));
     }
 
     @Test(groups = "unit")
     public void testInt() {
-        final Immutable value = immutable(INT, Integer.MAX_VALUE);
+        final Immutable value = newImmutable(INT, Integer.MAX_VALUE);
 
         assertThat(value.asBoolean()).isTrue();
         assertThat(value.asByte()).isEqualTo((byte) Integer.MAX_VALUE);
@@ -148,13 +146,13 @@ public final class PropertyValuesTest {
         assertThat(value.asFloat()).isEqualTo(Integer.MAX_VALUE);
         assertThat(value.asDouble()).isEqualTo(Integer.MAX_VALUE);
         assertThat(value.asChar()).isEqualTo((char) Integer.MAX_VALUE);
-        assertThat(value.asString()).isEqualTo(String.valueOf(Integer.MAX_VALUE));
+        assertThat(value.asString()).isEqualTo(java.lang.String.valueOf(Integer.MAX_VALUE));
         assertThat(value.asTime()).isEqualTo(LocalTime.fromMillisOfDay(Integer.MAX_VALUE));
     }
 
     @Test(groups = "unit")
     public void testLong() {
-        final Immutable value = immutable(LONG, Long.MAX_VALUE);
+        final Immutable value = newImmutable(LONG, Long.MAX_VALUE);
 
         assertThat(value.asBoolean()).isTrue();
         assertThat(value.asByte()).isEqualTo((byte) Long.MAX_VALUE);
@@ -164,13 +162,13 @@ public final class PropertyValuesTest {
         assertThat(value.asFloat()).isEqualTo(Long.MAX_VALUE);
         assertThat(value.asDouble()).isEqualTo(Long.MAX_VALUE);
         assertThat(value.asChar()).isEqualTo((char) Long.MAX_VALUE);
-        assertThat(value.asString()).isEqualTo(String.valueOf(Long.MAX_VALUE));
+        assertThat(value.asString()).isEqualTo(java.lang.String.valueOf(Long.MAX_VALUE));
         assertThat(value.asTime()).isEqualTo(LocalTime.fromMillisOfDay(Long.MAX_VALUE));
     }
 
     @Test(groups = "unit")
     public void testFloat() {
-        final Immutable value = immutable(FLOAT, Float.MAX_VALUE);
+        final Immutable value = newImmutable(FLOAT, Float.MAX_VALUE);
 
         assertThat(value.asBoolean()).isTrue();
         assertThat(value.asByte()).isEqualTo((byte) Float.MAX_VALUE);
@@ -180,13 +178,13 @@ public final class PropertyValuesTest {
         assertThat(value.asFloat()).isEqualTo(Float.MAX_VALUE);
         assertThat(value.asDouble()).isEqualTo(Float.MAX_VALUE);
         assertThat(value.asChar()).isEqualTo((char) Float.MAX_VALUE);
-        assertThat(value.asString()).isEqualTo(String.valueOf(Float.MAX_VALUE));
+        assertThat(value.asString()).isEqualTo(java.lang.String.valueOf(Float.MAX_VALUE));
         assertThat(value.asTime()).isEqualTo(LocalTime.fromMillisOfDay((long) Float.MAX_VALUE));
     }
 
     @Test(groups = "unit")
     public void testDouble() {
-        final Immutable value = immutable(DOUBLE, Double.MAX_VALUE);
+        final Immutable value = newImmutable(DOUBLE, Double.MAX_VALUE);
 
         assertThat(value.asBoolean()).isTrue();
         assertThat(value.asByte()).isEqualTo((byte) Double.MAX_VALUE);
@@ -196,13 +194,13 @@ public final class PropertyValuesTest {
         assertThat(value.asFloat()).isEqualTo((float) Double.MAX_VALUE);
         assertThat(value.asDouble()).isEqualTo(Double.MAX_VALUE);
         assertThat(value.asChar()).isEqualTo((char) Double.MAX_VALUE);
-        assertThat(value.asString()).isEqualTo(String.valueOf(Double.MAX_VALUE));
+        assertThat(value.asString()).isEqualTo(java.lang.String.valueOf(Double.MAX_VALUE));
         assertThat(value.asTime()).isEqualTo(LocalTime.fromMillisOfDay((long) Double.MAX_VALUE));
     }
 
     @Test(groups = "unit")
     public void testChar() {
-        final Immutable value = immutable(CHAR, 'Y');
+        final Immutable value = newImmutable(CHAR, 'Y');
 
         assertThat(value.asBoolean()).isTrue();
         assertThat(value.asByte()).isEqualTo((byte) 'Y');
@@ -212,7 +210,7 @@ public final class PropertyValuesTest {
         assertThat(value.asFloat()).isEqualTo((float) 'Y');
         assertThat(value.asDouble()).isEqualTo('Y');
         assertThat(value.asChar()).isEqualTo('Y');
-        assertThat(value.asString()).isEqualTo(String.valueOf('Y'));
+        assertThat(value.asString()).isEqualTo(java.lang.String.valueOf('Y'));
         try {
             value.asTime();
             fail();
@@ -222,7 +220,7 @@ public final class PropertyValuesTest {
 
     @Test(groups = "unit")
     public void testTime() {
-        final Immutable value = immutable(TIME, new LocalTime(10, 11, 12, 13));
+        final Immutable value = newImmutable(TIME, new LocalTime(10, 11, 12, 13));
 
         assertThat(value.asInt()).isEqualTo(36672013);
         assertThat(value.asLong()).isEqualTo(36672013);
@@ -252,12 +250,17 @@ public final class PropertyValuesTest {
     }
 
     @Test(groups = "unit")
-    public void testModified() {
-        final Mutable value = mutable(INT, 1);
-
-        assertThat(value.asInt()).isEqualTo(1);
-        value.set(2);
-        assertThat(value.asInt()).isEqualTo(2);
+    public void testString() {
+        assertThat(newImmutable(STRING, "true").asBoolean()).isTrue();
+        assertThat(newImmutable(STRING, "1").asByte()).isEqualTo((byte) 1);
+        assertThat(newImmutable(STRING, "2").asShort()).isEqualTo((short) 2);
+        assertThat(newImmutable(STRING, "3").asInt()).isEqualTo(3);
+        assertThat(newImmutable(STRING, "4").asLong()).isEqualTo((long) 4);
+        assertThat(newImmutable(STRING, "5.5").asFloat()).isEqualTo((float) 5.5);
+        assertThat(newImmutable(STRING, "6.6").asDouble()).isEqualTo(6.6);
+        assertThat(newImmutable(STRING, "7").asChar()).isEqualTo('7');
+        assertThat(newImmutable(STRING, "8").asString()).isEqualTo("8");
+        assertThat(newImmutable(STRING, "NULL").asEnum(TestProperties.class)).isEqualTo(NULL);
     }
 
     @Group(first = "G1", second = "sg1")
@@ -297,11 +300,6 @@ public final class PropertyValuesTest {
         @Override
         public Type type() {
             return type;
-        }
-
-        @Override
-        public Restriction restriction() {
-            return RestrictionBuilder.none();
         }
 
         @Override

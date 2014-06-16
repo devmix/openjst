@@ -209,7 +209,7 @@ final class BasicConverter implements Converter {
             case STRING:
                 return Boolean.parseBoolean((String) value);
         }
-        throw new PropertyConversionException(type, Type.BOOLEAN);
+        throw new PropertyConversionException(type, Type.BOOLEAN, value);
     }
 
     @Override
@@ -233,7 +233,7 @@ final class BasicConverter implements Converter {
             case STRING:
                 return Byte.parseByte((String) value);
         }
-        throw new PropertyConversionException(type, Type.BYTE);
+        throw new PropertyConversionException(type, Type.BYTE, value);
     }
 
     @Override
@@ -257,7 +257,7 @@ final class BasicConverter implements Converter {
             case STRING:
                 return Short.parseShort((String) value);
         }
-        throw new PropertyConversionException(type, Type.SHORT);
+        throw new PropertyConversionException(type, Type.SHORT, value);
     }
 
     @Override
@@ -283,7 +283,7 @@ final class BasicConverter implements Converter {
             case TIME:
                 return ((LocalTime) value).getMillisOfDay();
         }
-        throw new PropertyConversionException(type, Type.INT);
+        throw new PropertyConversionException(type, Type.INT, value);
     }
 
     @Override
@@ -309,7 +309,7 @@ final class BasicConverter implements Converter {
             case TIME:
                 return ((LocalTime) value).getMillisOfDay();
         }
-        throw new PropertyConversionException(type, Type.LONG);
+        throw new PropertyConversionException(type, Type.LONG, value);
     }
 
     @Override
@@ -335,7 +335,7 @@ final class BasicConverter implements Converter {
             case TIME:
                 return ((LocalTime) value).getMillisOfDay();
         }
-        throw new PropertyConversionException(type, Type.FLOAT);
+        throw new PropertyConversionException(type, Type.FLOAT, value);
     }
 
     @Override
@@ -361,7 +361,7 @@ final class BasicConverter implements Converter {
             case TIME:
                 return ((LocalTime) value).getMillisOfDay();
         }
-        throw new PropertyConversionException(type, Type.DOUBLE);
+        throw new PropertyConversionException(type, Type.DOUBLE, value);
     }
 
     @Override
@@ -388,7 +388,7 @@ final class BasicConverter implements Converter {
                 return s.length() > 0 ? s.charAt(0) : 0;
             }
         }
-        throw new PropertyConversionException(type, Type.CHAR);
+        throw new PropertyConversionException(type, Type.CHAR, value);
     }
 
     @Nullable
@@ -435,6 +435,25 @@ final class BasicConverter implements Converter {
             case TIME:
                 return (LocalTime) value;
         }
-        throw new PropertyConversionException(type, Type.TIME);
+        throw new PropertyConversionException(type, Type.TIME, value);
+    }
+
+    @Nullable
+    @Override
+    public <T extends Enum<T>> T asEnum(final Type type, @Nullable final Object value, final Class<T> clazz) {
+        if (value == null) {
+            return null;
+        }
+
+        switch (type) {
+            case STRING:
+                try {
+                    return Enum.valueOf(clazz, (String) value);
+                } catch (final IllegalArgumentException e) {
+                    throw new PropertyConversionException(type, Type.ENUM, value);
+                }
+        }
+
+        throw new PropertyConversionException(type, Type.ENUM, value);
     }
 }

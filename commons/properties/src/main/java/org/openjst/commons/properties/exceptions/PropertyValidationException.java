@@ -20,45 +20,32 @@ package org.openjst.commons.properties.exceptions;
 import org.openjst.commons.properties.Property;
 
 import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
 
 /**
  * @author Sergey Grachev
  */
-public final class PropertyConversionException extends PropertyException {
+public final class PropertyValidationException extends PropertyException {
 
-    private static final long serialVersionUID = -204359682433777102L;
+    private static final long serialVersionUID = -6665350566406308337L;
 
-    private final Property.Type from;
-    private final Property.Type to;
+    private final Annotation restriction;
+    private final Property.Type type;
     private final Object value;
-    private final Class clazz;
 
-    public PropertyConversionException(final Property.Type from, final Property.Type to, @Nullable final Object value) {
-        this.from = from;
-        this.to = to;
+    public PropertyValidationException(final Property.Type type, @Nullable final Object value, final Annotation restriction) {
+        this.type = type;
         this.value = value;
-        this.clazz = null;
+        this.restriction = restriction;
     }
 
-    public PropertyConversionException(final Class clazz, final Property.Type to) {
-        this.from = null;
-        this.to = to;
-        this.value = null;
-        this.clazz = clazz;
+    @SuppressWarnings("unchecked")
+    public <T extends Annotation> T getRestriction() {
+        return (T) restriction;
     }
 
-    @Nullable
-    public Property.Type getFrom() {
-        return from;
-    }
-
-    public Property.Type getTo() {
-        return to;
-    }
-
-    @Nullable
-    public Class getClazz() {
-        return clazz;
+    public Property.Type getType() {
+        return type;
     }
 
     @Nullable
@@ -68,11 +55,10 @@ public final class PropertyConversionException extends PropertyException {
 
     @Override
     public String toString() {
-        return "PropertyConversionException{" +
-                "from=" + from +
-                ", to=" + to +
+        return "PropertyValidationException{" +
+                "restriction=" + restriction +
+                ", type=" + type +
                 ", value=" + value +
-                ", clazz=" + clazz +
                 '}';
     }
 }

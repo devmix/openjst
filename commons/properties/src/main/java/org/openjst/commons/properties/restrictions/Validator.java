@@ -15,21 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.commons.properties.storages;
+package org.openjst.commons.properties.restrictions;
+
+import org.openjst.commons.properties.Property;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Grachev
  */
-public final class StorageBuilder {
+public interface Validator {
 
-    private StorageBuilder() {
-    }
-
-    public static PropertiesStorage newMemory(final PropertiesStorage.Persistence persistence, final boolean lazyFetch) {
-        return new MemoryStorage(persistence, lazyFetch);
-    }
-
-    public static PropertiesStorage newMemory(final PropertiesStorage.Persistence persistence) {
-        return newMemory(persistence, false);
-    }
+    /**
+     * @throws org.openjst.commons.properties.exceptions.PropertyValidationException
+     */
+    void validate(Property property, @Nullable Object value);
 }

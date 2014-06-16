@@ -31,7 +31,7 @@ final class NullValues implements Property.Values {
 
     @Nullable
     @Override
-    public Property.Immutable of(final Property property) {
+    public Property.Immutable get(final Property property) {
         return ValuesBuilder.nullValue();
     }
 

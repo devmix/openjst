@@ -32,7 +32,7 @@ public final class BasicConverterTest {
 
     @Test(groups = "unit")
     public void testTime() {
-        final Property.Converter converter = Converters.standard();
+        final Property.Converter converter = Converters.basic();
         assertThat(converter.asString(TIME, new LocalTime(10, 10, 10, 10))).isEqualTo("10:10:10:010");
         assertThat(converter.asString(TIME, new LocalTime(10, 10, 10))).isEqualTo("10:10:10");
         assertThat(converter.asString(TIME, new LocalTime(10, 10))).isEqualTo("10:10");

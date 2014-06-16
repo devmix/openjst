@@ -17,8 +17,17 @@
 
 package org.openjst.commons.properties.restrictions;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
  * @author Sergey Grachev
  */
-public interface Restriction {
+@Retention(RUNTIME)
+@Target({ANNOTATION_TYPE})
+public @interface Restriction {
+
 }

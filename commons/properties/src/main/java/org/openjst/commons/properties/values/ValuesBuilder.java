@@ -19,6 +19,8 @@ package org.openjst.commons.properties.values;
 
 import org.openjst.commons.properties.Property;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Sergey Grachev
  */
@@ -38,23 +40,31 @@ public final class ValuesBuilder {
         return NULL_VALUES;
     }
 
-    public static Property.Values values() {
+    public static Property.Values newValues() {
         return new DefaultValues(false);
     }
 
     /**
      * @param autoCreate if true and parameter doesn't exist then new parameter with value by default will be added
      */
-    public static Property.Values values(final boolean autoCreate) {
+    public static Property.Values newValues(final boolean autoCreate) {
         return new DefaultValues(autoCreate);
     }
 
-    public static Property.Immutable immutable(final Property property, final Object value) {
-        return new DefaultImmutable(property, value);
+    public static Property.Immutable newImmutable(final Property property, @Nullable final Object initialValue) {
+        return new DefaultImmutable(property, initialValue);
     }
 
-    public static Property.Mutable mutable(final Property property, final Object value) {
-        return new DefaultMutable(property, value);
+    public static Property.Immutable newImmutable(final Property property) {
+        return newImmutable(property, null);
+    }
+
+    public static Property.Mutable newMutable(final Property property, @Nullable final Object initialValue) {
+        return new DefaultMutable(property, initialValue);
+    }
+
+    public static Property.Mutable newMutable(final Property property) {
+        return newMutable(property, null);
     }
 
     public static boolean isNullValue(final Property.Immutable value) {

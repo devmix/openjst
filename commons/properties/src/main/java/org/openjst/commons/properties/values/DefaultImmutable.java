@@ -19,18 +19,19 @@ package org.openjst.commons.properties.values;
 
 import org.joda.time.LocalTime;
 import org.openjst.commons.properties.Property;
+import org.openjst.commons.properties.validators.Validators;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
 
-import static org.openjst.commons.properties.converters.Converters.standard;
+import static org.openjst.commons.properties.converters.Converters.basic;
 
 /**
  * Only for internal use, don't override this class
  *
  * @author Sergey Grachev
  */
-class DefaultImmutable implements Property.Immutable, Serializable {
+public class DefaultImmutable implements Property.Immutable, Serializable {
 
     private static final long serialVersionUID = -5649676429384442223L;
 
@@ -40,8 +41,15 @@ class DefaultImmutable implements Property.Immutable, Serializable {
 
     public DefaultImmutable(final Property property, @Nullable final Object value) {
         this.property = property;
-        value(value);
+        value(validateAndNormalize(value));
         initialized = true;
+    }
+
+    @Nullable
+    protected Object validateAndNormalize(final Object value) {
+        final Object normalized = value == null ? null : basic().asOf(property.type(), value);
+        Validators.standard().validate(property, normalized);
+        return normalized;
     }
 
     @Nullable
@@ -50,11 +58,7 @@ class DefaultImmutable implements Property.Immutable, Serializable {
     }
 
     protected void value(@Nullable final Object value) {
-        if (value == null) {
-            this.value = null;
-        } else {
-            this.value = standard().asOf(property.type(), value);
-        }
+        this.value = value;
     }
 
     @Override
@@ -75,54 +79,59 @@ class DefaultImmutable implements Property.Immutable, Serializable {
 
     @Override
     public boolean asBoolean() {
-        return standard().asBoolean(property.type(), value());
+        return basic().asBoolean(property.type(), value());
     }
 
     @Override
     public byte asByte() {
-        return standard().asByte(property.type(), value());
+        return basic().asByte(property.type(), value());
     }
 
     @Override
     public short asShort() {
-        return standard().asShort(property.type(), value());
+        return basic().asShort(property.type(), value());
     }
 
     @Override
     public int asInt() {
-        return standard().asInt(property.type(), value());
+        return basic().asInt(property.type(), value());
     }
 
     @Override
     public long asLong() {
-        return standard().asLong(property.type(), value());
+        return basic().asLong(property.type(), value());
     }
 
     @Override
     public float asFloat() {
-        return standard().asFloat(property.type(), value());
+        return basic().asFloat(property.type(), value());
     }
 
     @Override
     public double asDouble() {
-        return standard().asDouble(property.type(), value());
+        return basic().asDouble(property.type(), value());
     }
 
     @Override
     public char asChar() {
-        return standard().asChar(property.type(), value());
+        return basic().asChar(property.type(), value());
     }
 
     @Nullable
     @Override
     public String asString() {
-        return standard().asString(property.type(), value());
+        return basic().asString(property.type(), value());
     }
 
     @Nullable
     @Override
     public LocalTime asTime() {
-        return standard().asTime(property.type(), value());
+        return basic().asTime(property.type(), value());
+    }
+
+    @Override
+    public <T extends Enum<T>> T asEnum(final Class<T> clazz) {
+        return basic().asEnum(property.type(), value(), clazz);
     }
 
     @Override

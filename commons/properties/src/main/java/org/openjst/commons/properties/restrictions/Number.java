@@ -17,18 +17,42 @@
 
 package org.openjst.commons.properties.restrictions;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
  * @author Sergey Grachev
  */
-public final class RestrictionBuilder {
+public interface Number {
 
-    private static final Restriction NONE = new Restriction() {
-    };
-
-    private RestrictionBuilder() {
+    @Retention(RUNTIME)
+    @Target({TYPE, FIELD})
+    @Restriction
+    @interface Max {
+        double value();
     }
 
-    public static Restriction none() {
-        return NONE;
+    @Retention(RUNTIME)
+    @Target({TYPE, FIELD})
+    @Restriction
+    @interface Min {
+        double value();
+    }
+
+    /**
+     * Examples:<br>
+     * [min_1]<br>
+     * [min_1, max_1, min_2]<br>
+     * [min_1, max_1[,..., min_N, max_N]]
+     */
+    @Retention(RUNTIME)
+    @Target({TYPE, FIELD})
+    @Restriction
+    @interface Range {
+        double[] value();
     }
 }

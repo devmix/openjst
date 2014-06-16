@@ -36,7 +36,7 @@ public class DefaultMutable extends DefaultImmutable implements Property.Mutable
 
     @Override
     public Property.Mutable set(@Nullable final Object value) {
-        value(value);
+        value(validateAndNormalize(value));
         return this;
     }
 }

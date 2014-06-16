@@ -20,7 +20,9 @@ package org.openjst.commons.properties.storages;
 import org.openjst.commons.properties.Property;
 import org.openjst.commons.properties.annotations.Levels;
 import org.openjst.commons.properties.exceptions.PropertyLevelViolationException;
-import org.openjst.commons.properties.values.DefaultMutable;
+import org.openjst.commons.properties.exceptions.PropertyValidationException;
+import org.openjst.commons.properties.validators.Validators;
+import org.openjst.commons.properties.values.DefaultImmutable;
 import org.openjst.commons.properties.values.ValuesBuilder;
 
 import javax.annotation.Nullable;
@@ -29,7 +31,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static org.openjst.commons.properties.utils.PropertiesUtils.levelOf;
+import static org.openjst.commons.properties.Caches.levelOf;
+import static org.openjst.commons.properties.converters.Converters.basic;
 
 /**
  * @author Sergey Grachev
@@ -38,7 +41,6 @@ final class MemoryStorage implements PropertiesStorage {
 
     private static final int COUNT_OF_LEVELS = 0xFF;
 
-    private final Map<String, Levels> cacheLevels = new ConcurrentHashMap<String, Levels>();
     private final Map<Integer, Values> cacheValues = new ConcurrentHashMap<Integer, Values>();
     private final Map<String, State> states = new ConcurrentHashMap<String, State>();
 
@@ -52,14 +54,13 @@ final class MemoryStorage implements PropertiesStorage {
 
     @Override
     public Property.Immutable get(final Property property) {
-        final Levels defaultLevel = defaultLevelOf(property);
+        final Levels defaultLevel = levelOf(property);
         return get(defaultLevel, defaultLevel.min(), property);
     }
 
     @Override
     public Property.Immutable get(final int level, final Property property) {
-        final Levels defaultLevel = defaultLevelOf(property);
-        return get(defaultLevel, level, property);
+        return get(levelOf(property), level, property);
     }
 
     @Override
@@ -74,18 +75,17 @@ final class MemoryStorage implements PropertiesStorage {
 
     @Override
     public void put(final Property property, @Nullable final Object value) {
-        final Levels defaultLevel = defaultLevelOf(property);
+        final Levels defaultLevel = levelOf(property);
         put(defaultLevel, defaultLevel.min(), property, value);
     }
 
     @Override
-    public void put(final int level, final Property property, @Nullable final Object value) {
-        final Levels defaultLevel = defaultLevelOf(property);
-        put(defaultLevel, level, property, value);
+    public void put(final Property property, @Nullable final Object value, final int level) {
+        put(levelOf(property), level, property, value);
     }
 
     @Override
-    public void put(final int level, final Map<Property, Object> data) {
+    public void putAll(final Map<Property, Object> data, final int level) {
         checkLevel(level, data);
         valuesOf(level).put(data);
     }
@@ -97,7 +97,7 @@ final class MemoryStorage implements PropertiesStorage {
 
     private Property.Immutable get(final Levels levels, final int level, final Property property) {
         checkLevel(levels, level);
-        return valuesOf(level).of(property);
+        return valuesOf(level).get(property);
     }
 
     private State stateOf(final Property property) {
@@ -126,18 +126,6 @@ final class MemoryStorage implements PropertiesStorage {
         }
     }
 
-    private Levels defaultLevelOf(final Property property) {
-        if (cacheLevels.containsKey(property.key())) {
-            return cacheLevels.get(property.key());
-        }
-
-        final Levels level = levelOf(property);
-
-        cacheLevels.putIfAbsent(property.key(), level);
-
-        return level;
-    }
-
     private void checkLevel(final Levels levels, final int level) {
         if (levels.max() > 0xFF) {
             throw new PropertyLevelViolationException(levels, levels.max());
@@ -158,7 +146,7 @@ final class MemoryStorage implements PropertiesStorage {
 
     private void checkLevel(final int level, final Map<Property, Object> data) {
         for (final Property property : data.keySet()) {
-            checkLevel(defaultLevelOf(property), level);
+            checkLevel(levelOf(property), level);
         }
     }
 
@@ -200,7 +188,7 @@ final class MemoryStorage implements PropertiesStorage {
         }
 
         @Override
-        public Property.Mutable of(final Property property) {
+        public Property.Mutable get(final Property property) {
             final String key = property.key();
             final State state = stateOf(property);
             state.mutex.lock();
@@ -218,7 +206,7 @@ final class MemoryStorage implements PropertiesStorage {
 
         @Override
         public Property.Values put(final Property property, @Nullable final Object value) {
-            final Object oldValue = of(property).get();
+            final Object oldValue = get(property).get();
             if (value == null ? oldValue == null : value.equals(oldValue)) {
                 return this;
             }
@@ -226,9 +214,10 @@ final class MemoryStorage implements PropertiesStorage {
             final State state = stateOf(property);
             state.mutex.lock();
             try {
-                persistence.put(level, value);
-                state.update(level, value != null);
-                of(property).set(value);
+                final Object normalized = validateAndNormalize(property, value);
+                persistence.put(level, normalized);
+                state.update(level, normalized != null);
+                get(property).set(normalized);
             } finally {
                 state.mutex.unlock();
             }
@@ -252,7 +241,7 @@ final class MemoryStorage implements PropertiesStorage {
                     if (state != null) {
                         final Object value = values.get(property);
                         state.update(level, value != null);
-                        of(property).set(value);
+                        get(property).set(value);
                     }
                 }
             } finally {
@@ -264,7 +253,7 @@ final class MemoryStorage implements PropertiesStorage {
 
         @Override
         public Property.Values clear(final Property property) {
-            valuesOf(level).of(property).set(null);
+            valuesOf(level).clear(property);
             return this;
         }
 
@@ -289,7 +278,7 @@ final class MemoryStorage implements PropertiesStorage {
 
             final Map<String, Object> result = new HashMap<String, Object>(unique.size());
             for (final Property property : unique) {
-                result.put(property.key(), of(property).get());
+                result.put(property.key(), get(property).get());
             }
 
             return result;
@@ -317,7 +306,8 @@ final class MemoryStorage implements PropertiesStorage {
                     final Map<Property, Object> fetched = persistence.get(level, notFetched);
                     if (!fetched.isEmpty()) {
                         for (final Map.Entry<Property, Object> entry : fetched.entrySet()) {
-                            of(entry.getKey()).set(entry.getValue());
+                            final Property property = entry.getKey();
+                            get(property).set(validateAndNormalize(property, entry.getValue()));
                         }
                     }
                 }
@@ -345,7 +335,7 @@ final class MemoryStorage implements PropertiesStorage {
             final Map<String, State> states = new HashMap<String, State>(properties.size());
             try {
                 for (final Property property : properties) {
-                    final Value value = (Value) of(property);
+                    final Value value = (Value) get(property);
                     lockNotFetched(states, property, value);
                 }
             } catch (final Exception ignore) {
@@ -368,8 +358,8 @@ final class MemoryStorage implements PropertiesStorage {
             try {
                 for (final Map.Entry<Property, Object> entry : values.entrySet()) {
                     final Property property = entry.getKey();
-                    final Object value = entry.getValue();
-                    final Object oldValue = of(property).get();
+                    final Object value = validateAndNormalize(property, entry.getValue());
+                    final Object oldValue = get(property).get();
                     if (value == null ? oldValue == null : value.equals(oldValue)) {
                         continue;
                     }
@@ -381,6 +371,9 @@ final class MemoryStorage implements PropertiesStorage {
             } catch (final Exception ignore) {
                 unlockProperties(states.values());
                 modified.clear();
+                if (ignore instanceof PropertyValidationException) {
+                    throw (PropertyValidationException) ignore;
+                }
                 ignore.printStackTrace();
             }
             return states;
@@ -396,13 +389,26 @@ final class MemoryStorage implements PropertiesStorage {
             }
         }
 
-        private final class Value extends DefaultMutable {
+        private Object validateAndNormalize(final Property property, @Nullable final Object value) {
+            final Object normalized = value == null ? null : basic().asOf(property.type(), value);
+            Validators.standard().validate(property, normalized);
+            return normalized;
+        }
+
+        private final class Value extends DefaultImmutable implements Property.Mutable {
 
             private static final long serialVersionUID = 6932215138332366181L;
             private boolean fetched;
 
             public Value(final Property property) {
-                super(property, null);
+                super(property, property.defaultValue());
+                this.value = null; // clear default value
+            }
+
+            @Override
+            public Property.Mutable set(@Nullable final Object value) {
+                value(value);
+                return this;
             }
 
             @Nullable
@@ -423,9 +429,9 @@ final class MemoryStorage implements PropertiesStorage {
                     if (state.isEmptyAt(level)) { // find 'super' property
                         final int existsOnLevel = state.previousExists(level);
                         if (existsOnLevel != -1 && existsOnLevel >= levelOf(property).min()) {
-                            return valuesOf(existsOnLevel).of(property).get();
+                            return valuesOf(existsOnLevel).get(property).get();
                         }
-                        return null;
+                        return property.defaultValue();
                     }
 
                 } finally {
@@ -464,8 +470,8 @@ final class MemoryStorage implements PropertiesStorage {
         }
 
         @Override
-        public Property.Immutable of(final Property property) {
-            return properties.contains(property) ? valuesOf(level).of(property) : ValuesBuilder.nullValue();
+        public Property.Immutable get(final Property property) {
+            return properties.contains(property) ? valuesOf(level).get(property) : ValuesBuilder.nullValue();
         }
 
         @Override

@@ -20,15 +20,11 @@ package org.openjst.commons.properties.utils;
 import org.apache.commons.lang3.StringUtils;
 import org.openjst.commons.properties.Property;
 import org.openjst.commons.properties.annotations.Group;
-import org.openjst.commons.properties.annotations.Levels;
 
 /**
  * @author Sergey Grachev
  */
-@Levels // default
 public final class PropertiesUtils {
-
-    private static final Levels DEFAULT_LEVEL = PropertiesUtils.class.getAnnotation(Levels.class);
 
     private PropertiesUtils() {
     }
@@ -69,23 +65,5 @@ public final class PropertiesUtils {
 
     public static String createKeyByAnnotations(final Property property) {
         return createKeyByAnnotations(property, ".");
-    }
-
-    public static Levels levelOf(final Property property) {
-        final Class clazz = property.getClass();
-        Levels level = null;
-        if (clazz.isEnum()) {
-            try {
-                level = clazz.getField(((Enum) property).name()).getAnnotation(Levels.class);
-            } catch (final NoSuchFieldException ignore) {
-            }
-        } else {
-            level = (Levels) clazz.getAnnotation(Levels.class);
-        }
-        return level == null ? DEFAULT_LEVEL : level;
-    }
-
-    public static int unsigned(final int level) {
-        return (level >= 0 ? 0x80 : -0x80) + (level & 0xFF);
     }
 }

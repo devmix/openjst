@@ -18,8 +18,6 @@
 package org.openjst.commons.properties.values;
 
 import org.openjst.commons.properties.Property;
-import org.openjst.commons.properties.restrictions.Restriction;
-import org.openjst.commons.properties.restrictions.RestrictionBuilder;
 
 import javax.annotation.Nullable;
 
@@ -36,11 +34,6 @@ final class NullProperty implements Property {
     @Override
     public Type type() {
         return Type.NULL;
-    }
-
-    @Override
-    public Restriction restriction() {
-        return RestrictionBuilder.none();
     }
 
     @Override

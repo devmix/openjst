@@ -20,8 +20,6 @@ package org.openjst.commons.properties.storages;
 import org.openjst.commons.properties.Property;
 import org.openjst.commons.properties.annotations.Group;
 import org.openjst.commons.properties.annotations.Levels;
-import org.openjst.commons.properties.restrictions.Restriction;
-import org.openjst.commons.properties.restrictions.RestrictionBuilder;
 import org.openjst.commons.properties.utils.PropertiesUtils;
 import org.testng.annotations.Test;
 
@@ -36,38 +34,36 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.openjst.commons.properties.storages.PropertiesStorageTest.TestProperties.*;
 
 /**
- * минимальный уровень - ниже него
- *
  * @author Sergey Grachev
  */
 public final class PropertiesStorageTest {
 
     @Test(groups = "unit")
     public void testInheritance() {
-        final PropertiesStorage storage = StorageBuilder.memory(new TestPersistence());
+        final PropertiesStorage storage = StorageBuilder.newMemory(new TestPersistence());
 
         assertThat(storage.get(LEVEL_0_1).asInt()).isEqualTo(0); // level 0
         storage.put(LEVEL_0_1, 1); // level 0
         assertThat(storage.get(LEVEL_0_1).asInt()).isEqualTo(1); // level 0
 
-        storage.put(1, LEVEL_0_1, 2);
+        storage.put(LEVEL_0_1, 2, 1);
         assertThat(storage.get(1, LEVEL_0_1).asInt()).isEqualTo(2);
         assertThat(storage.get(2, LEVEL_0_1).asInt()).isEqualTo(2);
         assertThat(storage.get(3, LEVEL_0_1).asInt()).isEqualTo(2);
         assertThat(storage.get(4, LEVEL_0_1).asInt()).isEqualTo(2);
 
-        storage.put(3, LEVEL_0_1, 3);
+        storage.put(LEVEL_0_1, 3, 3);
         assertThat(storage.get(2, LEVEL_0_1).asInt()).isEqualTo(2);
         assertThat(storage.get(3, LEVEL_0_1).asInt()).isEqualTo(3);
         assertThat(storage.get(4, LEVEL_0_1).asInt()).isEqualTo(3);
 
-        storage.put(3, LEVEL_0_1, null);
+        storage.put(LEVEL_0_1, null, 3);
         assertThat(storage.get(4, LEVEL_0_1).asInt()).isEqualTo(2);
     }
 
     @Test(groups = "unit")
     public void testBatchGet() {
-        final PropertiesStorage storage = StorageBuilder.memory(new TestPersistence() {
+        final PropertiesStorage storage = StorageBuilder.newMemory(new TestPersistence() {
             @Override
             public Map<Property, Object> get(final int level, final Set<Property> properties) {
                 super.get(level, properties);
@@ -93,9 +89,9 @@ public final class PropertiesStorageTest {
         assertThat(storage.get(1, LEVEL_1_2).asInt()).isEqualTo(0);
         assertThat(storage.get(1, LEVEL_1_3).asInt()).isEqualTo(0);
 
-        assertThat(values.of(LEVEL_1_1).asInt()).isEqualTo(1);
-        assertThat(values.of(LEVEL_1_2).asInt()).isEqualTo(2);
-        assertThat(values.of(LEVEL_1_3).asInt()).isEqualTo(3);
+        assertThat(values.get(LEVEL_1_1).asInt()).isEqualTo(1);
+        assertThat(values.get(LEVEL_1_2).asInt()).isEqualTo(2);
+        assertThat(values.get(LEVEL_1_3).asInt()).isEqualTo(3);
 
         assertThat(storage.get(2, LEVEL_1_1).asInt()).isEqualTo(1);
         assertThat(storage.get(2, LEVEL_1_2).asInt()).isEqualTo(2);
@@ -104,12 +100,12 @@ public final class PropertiesStorageTest {
 
     @Test(groups = "unit")
     public void testBatchPut() {
-        final PropertiesStorage storage = StorageBuilder.memory(new TestPersistence());
+        final PropertiesStorage storage = StorageBuilder.newMemory(new TestPersistence());
         final Map<Property, Object> data = new LinkedHashMap<Property, Object>();
         data.put(LEVEL_1_1, 1);
         data.put(LEVEL_1_2, 2);
         data.put(LEVEL_1_3, 3);
-        storage.put(2, data);
+        storage.putAll(data, 2);
 
         assertThat(storage.get(1, LEVEL_1_1).asInt()).isEqualTo(0);
         assertThat(storage.get(1, LEVEL_1_2).asInt()).isEqualTo(0);
@@ -133,15 +129,15 @@ public final class PropertiesStorageTest {
                 return result;
             }
         };
-        final PropertiesStorage storage = StorageBuilder.memory(persistence);
+        final PropertiesStorage storage = StorageBuilder.newMemory(persistence);
 
         final Property.Values values =
                 storage.get(1, LEVEL_1_1, LEVEL_1_2);
 
-        // check subset of values
-        assertThat(values.of(LEVEL_1_1).asInt()).isEqualTo(0);
+        // check subset of newValues
+        assertThat(values.get(LEVEL_1_1).asInt()).isEqualTo(0);
         values.put(LEVEL_1_1, 1);
-        assertThat(values.of(LEVEL_1_1).asInt()).isEqualTo(1);
+        assertThat(values.get(LEVEL_1_1).asInt()).isEqualTo(1);
 
         // check storage
         assertThat(storage.get(1, LEVEL_1_1).asInt()).isEqualTo(1);
@@ -154,18 +150,27 @@ public final class PropertiesStorageTest {
         data.put(LEVEL_1_3, 3);
         values.put(data);
 
-        assertThat(values.of(LEVEL_1_1).asInt()).isEqualTo(1);
-        assertThat(values.of(LEVEL_1_2).asInt()).isEqualTo(2);
-        assertThat(values.of(LEVEL_1_3).asInt()).isEqualTo(0); // out of subset
+        assertThat(values.get(LEVEL_1_1).asInt()).isEqualTo(1);
+        assertThat(values.get(LEVEL_1_2).asInt()).isEqualTo(2);
+        assertThat(values.get(LEVEL_1_3).asInt()).isEqualTo(0); // out of subset
 
         persistence.printCounters();
     }
 
+    @Test(groups = "unit")
+    public void testDefaultValues() {
+        PropertiesStorage storage = StorageBuilder.newMemory(new TestPersistence());
+
+        assertThat(storage.get(LEVEL_1_1).get()).isEqualTo(0);
+
+        storage = StorageBuilder.newMemory(new TestPersistence());
+        assertThat(storage.get(1, new Property[]{LEVEL_1_1}).get(LEVEL_1_1).get()).isEqualTo(0);
+    }
 
     @Test(groups = "unit", enabled = false)
     public void testMT() throws InterruptedException {
         final TestPersistence persistence = new TestPersistence();
-        final PropertiesStorage storage = StorageBuilder.memory(persistence);
+        final PropertiesStorage storage = StorageBuilder.newMemory(persistence);
         final Map<Property, Object> data = new LinkedHashMap<Property, Object>();
         data.put(LEVEL_1_1, 1);
         data.put(LEVEL_1_3, 3);
@@ -182,9 +187,9 @@ public final class PropertiesStorageTest {
                                 .put(LEVEL_1_1, 2)
                                 .put(data)
                                 .asRaw();
-                        storage.put(1, LEVEL_1_1, 4);
-                        storage.put(1, LEVEL_1_3, 4);
-                        storage.put(2, LEVEL_1_1, 5);
+                        storage.put(LEVEL_1_1, 4, 1);
+                        storage.put(LEVEL_1_3, 4, 1);
+                        storage.put(LEVEL_1_1, 5, 2);
                         storage.get(3, LEVEL_1_1);
                         storage.get(4, LEVEL_1_2);
                         Thread.yield();
@@ -252,40 +257,13 @@ public final class PropertiesStorageTest {
 
         @Levels(min = 0)
         LEVEL_0_1,
-        @Levels(min = 0)
-        LEVEL_0_2,
-        @Levels(min = 0)
-        LEVEL_0_3,
 
         @Levels(min = 1)
         LEVEL_1_1,
         @Levels(min = 1)
         LEVEL_1_2,
         @Levels(min = 1)
-        LEVEL_1_3,
-
-        @Levels(min = 2)
-        LEVEL_2_1,
-        @Levels(min = 2)
-        LEVEL_2_2,
-        @Levels(min = 2)
-        LEVEL_2_3,
-
-        @Levels(min = 3)
-        LEVEL_3_1,
-        @Levels(min = 3)
-        LEVEL_3_2,
-        @Levels(min = 3)
-        LEVEL_3_3,
-
-        @Levels(min = 1, max = 1)
-        LEVEL_RANGE_1_1,
-        @Levels(min = 1, max = 2)
-        LEVEL_RANGE_1_2,
-        @Levels(min = 2, max = 3)
-        LEVEL_RANGE_2_3,
-        @Levels(max = 2)
-        LEVEL_RANGE_M_2,
+        LEVEL_1_3
         //
         ;
 
@@ -303,11 +281,6 @@ public final class PropertiesStorageTest {
         @Override
         public Type type() {
             return Type.INT;
-        }
-
-        @Override
-        public Restriction restriction() {
-            return RestrictionBuilder.none();
         }
 
         @Override

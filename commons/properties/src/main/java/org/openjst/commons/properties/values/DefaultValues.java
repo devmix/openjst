@@ -40,7 +40,7 @@ final class DefaultValues implements Property.Values, Serializable {
     }
 
     @Override
-    public Property.Immutable of(final Property property) {
+    public Property.Immutable get(final Property property) {
         final String key = property.key();
         Property.Mutable value;
         synchronized (storage) {
@@ -48,7 +48,7 @@ final class DefaultValues implements Property.Values, Serializable {
             if (value == null) {
                 if (autoCreate) {
                     final Object defaultValue = property.defaultValue();
-                    value = ValuesBuilder.mutable(property, defaultValue);
+                    value = ValuesBuilder.newMutable(property, defaultValue);
                     storage.put(key, value);
                 } else {
                     return ValuesBuilder.nullValue();
@@ -69,7 +69,7 @@ final class DefaultValues implements Property.Values, Serializable {
                 if (exists != null) {
                     exists.set(value);
                 } else {
-                    storage.put(key, ValuesBuilder.mutable(property, value));
+                    storage.put(key, ValuesBuilder.newMutable(property, value));
                 }
             }
         }
@@ -121,7 +121,7 @@ final class DefaultValues implements Property.Values, Serializable {
         synchronized (storage) {
             final Map<String, Object> result = new HashMap<String, Object>(properties.length);
             for (final Property property : properties) {
-                result.put(property.key(), of(property).get());
+                result.put(property.key(), get(property).get());
             }
             return result;
         }
