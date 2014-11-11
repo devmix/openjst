@@ -55,7 +55,7 @@ public final class DatabaseLoginModule implements LoginModule {
     private static final String ERROR_NO_USER = "No user with name %s";
     private static final String ERROR_USER_DAO_NOT_FOUND = "UserDAO not found";
     private static final String ERROR_MOBILE_SESSION_NOT_FOUND = "MobileSession not found";
-//    private static final String ERROR_USER_WITH_ID_D_NOT_FOUND = "User with ID %d not found";
+    //    private static final String ERROR_USER_WITH_ID_D_NOT_FOUND = "User with ID %d not found";
     private static final String CALLBACK_NAME = "OJST ID: ";
     private static final String CALLBACK_PASSWORD = "Password: ";
 
@@ -151,7 +151,7 @@ public final class DatabaseLoginModule implements LoginModule {
             roles.addMember(new SimplePrincipal(role.name()));
         }
 
-        principal = new MobilePrincipal(id.user, id.account, id.user, id.userId);
+        principal = new MobilePrincipal(id.user + '@' + id.account, id.account, id.user, id.userId);
 
         addPrincipal(subject, principal);
         addPrincipal(subject, roles);

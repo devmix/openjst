@@ -15,28 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.commons.properties.validators;
+package org.openjst.commons.properties.storages.annotations;
 
-import org.openjst.commons.properties.restrictions.Validator;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Sergey Grachev
  */
-public final class Validators {
+@Retention(RUNTIME)
+@Target({ElementType.FIELD})
+public @interface Requires {
 
-    public static final Validator DEFAULT = Validators.newStandard();
+    Field[] value() default {};
 
-    private Validators() {
-    }
+    @Retention(RUNTIME)
+    @Target({})
+    public @interface Field {
 
-    /**
-     * @return instance of global validator
-     */
-    public static Validator standard() {
-        return DEFAULT;
-    }
+        Class of() default Void.class;
 
-    public static Validator newStandard() {
-        return new StandardValidator();
+        String[] value();
     }
 }

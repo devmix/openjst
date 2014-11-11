@@ -17,6 +17,7 @@
 
 package org.openjst.commons.properties.restrictions;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -27,6 +28,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * @author Sergey Grachev
  */
+@SuppressWarnings("ClassExplicitlyAnnotation")
 public interface Number {
 
     @Retention(RUNTIME)
@@ -34,6 +36,24 @@ public interface Number {
     @Restriction
     @interface Max {
         double value();
+
+        static final class Instance implements Max {
+            private final double value;
+
+            public Instance(final double value) {
+                this.value = value;
+            }
+
+            @Override
+            public double value() {
+                return value;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Max.class;
+            }
+        }
     }
 
     @Retention(RUNTIME)
@@ -41,6 +61,24 @@ public interface Number {
     @Restriction
     @interface Min {
         double value();
+
+        static final class Instance implements Min {
+            private final double value;
+
+            public Instance(final double value) {
+                this.value = value;
+            }
+
+            @Override
+            public double value() {
+                return value;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Min.class;
+            }
+        }
     }
 
     /**
@@ -54,5 +92,23 @@ public interface Number {
     @Restriction
     @interface Range {
         double[] value();
+
+        static final class Instance implements Range {
+            private final double[] value;
+
+            public Instance(final double... value) {
+                this.value = value;
+            }
+
+            @Override
+            public double[] value() {
+                return value;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Range.class;
+            }
+        }
     }
 }

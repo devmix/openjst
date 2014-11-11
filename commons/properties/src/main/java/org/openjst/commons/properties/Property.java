@@ -18,8 +18,10 @@
 package org.openjst.commons.properties;
 
 import org.joda.time.LocalTime;
+import org.openjst.commons.properties.storages.annotations.Levels;
 
 import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
 /**
@@ -27,16 +29,21 @@ import java.util.Map;
  */
 public interface Property {
 
-    Property[] NO_DEPENDENCIES = new Property[0];
-
     String key();
 
-    Type type();
+    interface Wrapper extends Property {
 
-    Property[] requires();
+        Type type();
 
-    @Nullable
-    Object defaultValue();
+        @Nullable
+        String nullAs();
+
+        @Nullable
+        Levels levels();
+
+        @Nullable
+        Annotation[] restrictions();
+    }
 
     interface Values {
 
@@ -129,7 +136,6 @@ public interface Property {
     }
 
     enum Type {
-        NULL,
         BOOLEAN,
         BYTE,
         SHORT,
@@ -143,6 +149,7 @@ public interface Property {
 
         // virtual types
 
+        NULL,
         ENUM // asEnum(STRING)
     }
 }

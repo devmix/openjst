@@ -17,6 +17,7 @@
 
 package org.openjst.commons.properties.restrictions;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -27,6 +28,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * @author Sergey Grachev
  */
+@SuppressWarnings("ClassExplicitlyAnnotation")
 public interface List {
 
     @Retention(RUNTIME)
@@ -34,6 +36,24 @@ public interface List {
     @Restriction
     @interface String {
         java.lang.String[] value();
+
+        static final class Instance implements String {
+            private final java.lang.String[] value;
+
+            public Instance(final java.lang.String... value) {
+                this.value = value;
+            }
+
+            @Override
+            public java.lang.String[] value() {
+                return value;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return String.class;
+            }
+        }
     }
 
     @Retention(RUNTIME)
@@ -41,6 +61,24 @@ public interface List {
     @Restriction
     @interface Number {
         double[] value();
+
+        static final class Instance implements Number {
+            private final double[] value;
+
+            public Instance(final double... value) {
+                this.value = value;
+            }
+
+            @Override
+            public double[] value() {
+                return value;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Number.class;
+            }
+        }
     }
 
     @Retention(RUNTIME)
@@ -48,5 +86,23 @@ public interface List {
     @Restriction
     @interface Enum {
         Class<? extends java.lang.Enum> value();
+
+        static final class Instance implements Enum {
+            private final Class<? extends java.lang.Enum> value;
+
+            public Instance(final Class<? extends java.lang.Enum> value) {
+                this.value = value;
+            }
+
+            @Override
+            public Class<? extends java.lang.Enum> value() {
+                return value;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Enum.class;
+            }
+        }
     }
 }

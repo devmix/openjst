@@ -26,13 +26,13 @@ import java.util.Set;
 /**
  * @author Sergey Grachev
  */
-public interface PropertiesStorage {
+public interface Storage {
 
     /**
      * By default, the minimum level is 0 or by value of @Level if it's defined on the property
      *
      * @throws org.openjst.commons.properties.exceptions.PropertyLevelViolationException
-     * @see PropertiesStorage#get(int, org.openjst.commons.properties.Property)
+     * @see Storage#get(int, org.openjst.commons.properties.Property)
      */
     Property.Immutable get(Property property);
 

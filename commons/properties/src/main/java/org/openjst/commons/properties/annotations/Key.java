@@ -27,10 +27,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author Sergey Grachev
  */
 @Retention(RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD})
-public @interface Access {
+@Target({ElementType.TYPE})
+public @interface Key {
 
-    boolean hidden() default false;
+    String group() default "";
 
-    boolean secure() default false;
+    String subGroup() default "";
+
+    String separator() default ".";
 }

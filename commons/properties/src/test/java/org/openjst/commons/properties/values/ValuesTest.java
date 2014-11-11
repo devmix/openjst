@@ -19,25 +19,24 @@ package org.openjst.commons.properties.values;
 
 import org.fest.assertions.Assertions;
 import org.joda.time.LocalTime;
+import org.openjst.commons.properties.Caches;
 import org.openjst.commons.properties.Property;
-import org.openjst.commons.properties.annotations.Group;
-import org.openjst.commons.properties.utils.PropertiesUtils;
+import org.openjst.commons.properties.annotations.Key;
+import org.openjst.commons.properties.annotations.Value;
 import org.testng.annotations.Test;
-
-import javax.annotation.Nullable;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import static org.openjst.commons.properties.Property.Immutable;
 import static org.openjst.commons.properties.Property.Values;
-import static org.openjst.commons.properties.values.PropertyValuesTest.TestProperties.*;
 import static org.openjst.commons.properties.values.ValuesBuilder.newImmutable;
 import static org.openjst.commons.properties.values.ValuesBuilder.nullValue;
+import static org.openjst.commons.properties.values.ValuesTest.TestProperties.*;
 
 /**
  * @author Sergey Grachev
  */
-public final class PropertyValuesTest {
+public final class ValuesTest {
 
     @Test(groups = "unit")
     public void testNulls() {
@@ -263,54 +262,51 @@ public final class PropertyValuesTest {
         assertThat(newImmutable(STRING, "NULL").asEnum(TestProperties.class)).isEqualTo(NULL);
     }
 
-    @Group(first = "G1", second = "sg1")
+    @Key(group = "G1", subGroup = "sg1")
     static enum TestProperties implements Property {
 
-        NULL(null, Type.STRING),
-        NULL_WITH_DEFAULT("test", Type.STRING),
+        NULL,
 
-        BOOLEAN(false, Type.BOOLEAN),
-        BYTE(1, Type.BYTE),
-        SHORT(2, Type.SHORT),
-        INT(3, Type.INT),
-        LONG(4, Type.LONG),
-        FLOAT(5, Type.FLOAT),
-        DOUBLE(6, Type.DOUBLE),
-        CHAR(7, Type.CHAR),
-        STRING("8", Type.STRING),
-        TIME(new LocalTime(9), Type.TIME),
+        @Value(nullAs = "test")
+        NULL_WITH_DEFAULT,
+
+        @Value(type = Type.BOOLEAN, nullAs = "false")
+        BOOLEAN,
+
+        @Value(type = Type.BYTE, nullAs = "1")
+        BYTE,
+
+        @Value(type = Type.SHORT, nullAs = "2")
+        SHORT,
+
+        @Value(type = Type.INT, nullAs = "3")
+        INT,
+
+        @Value(type = Type.LONG, nullAs = "4")
+        LONG,
+
+        @Value(type = Type.FLOAT, nullAs = "5")
+        FLOAT,
+
+        @Value(type = Type.DOUBLE, nullAs = "6")
+        DOUBLE,
+
+        @Value(type = Type.CHAR, nullAs = "7")
+        CHAR,
+
+        @Value(nullAs = "8")
+        STRING,
+
+        @Value(type = Type.TIME, nullAs = "00:00:00:009")
+        TIME,
         //
         ;
 
-        private final String key;
-        private final Object defaultValue;
-        private final Type type;
-
-        TestProperties(final Object defaultValue, final Type type) {
-            this.key = PropertiesUtils.createKeyByAnnotations(this);
-            this.defaultValue = defaultValue;
-            this.type = type;
-        }
+        private final String key = Caches.keyOf(this);
 
         @Override
         public String key() {
             return key;
-        }
-
-        @Override
-        public Type type() {
-            return type;
-        }
-
-        @Override
-        public Property[] requires() {
-            return NO_DEPENDENCIES;
-        }
-
-        @Nullable
-        @Override
-        public Object defaultValue() {
-            return defaultValue;
         }
     }
 }

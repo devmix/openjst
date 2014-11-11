@@ -17,6 +17,7 @@
 
 package org.openjst.commons.properties.values;
 
+import org.openjst.commons.properties.Caches;
 import org.openjst.commons.properties.Property;
 
 import javax.annotation.Nullable;
@@ -24,6 +25,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.openjst.commons.properties.converters.Converters.basic;
 
 /**
  * @author Sergey Grachev
@@ -47,7 +50,7 @@ final class DefaultValues implements Property.Values, Serializable {
             value = storage.get(key);
             if (value == null) {
                 if (autoCreate) {
-                    final Object defaultValue = property.defaultValue();
+                    final Object defaultValue = Caches.nullAsOf(basic(), property);
                     value = ValuesBuilder.newMutable(property, defaultValue);
                     storage.put(key, value);
                 } else {

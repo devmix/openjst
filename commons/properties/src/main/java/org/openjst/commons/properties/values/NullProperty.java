@@ -17,14 +17,12 @@
 
 package org.openjst.commons.properties.values;
 
-import org.openjst.commons.properties.Property;
-
-import javax.annotation.Nullable;
+import org.openjst.commons.properties.wrappers.WrapperAdapter;
 
 /**
  * @author Sergey Grachev
  */
-final class NullProperty implements Property {
+final class NullProperty extends WrapperAdapter {
 
     @Override
     public String key() {
@@ -34,16 +32,5 @@ final class NullProperty implements Property {
     @Override
     public Type type() {
         return Type.NULL;
-    }
-
-    @Override
-    public Property[] requires() {
-        return NO_DEPENDENCIES;
-    }
-
-    @Nullable
-    @Override
-    public Object defaultValue() {
-        return null;
     }
 }

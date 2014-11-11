@@ -25,11 +25,11 @@ public final class StorageBuilder {
     private StorageBuilder() {
     }
 
-    public static PropertiesStorage newMemory(final PropertiesStorage.Persistence persistence, final boolean lazyFetch) {
+    public static Storage newMemory(final Storage.Persistence persistence, final boolean lazyFetch) {
         return new MemoryStorage(persistence, lazyFetch);
     }
 
-    public static PropertiesStorage newMemory(final PropertiesStorage.Persistence persistence) {
+    public static Storage newMemory(final Storage.Persistence persistence) {
         return newMemory(persistence, false);
     }
 }

@@ -15,17 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.commons.properties.validators;
+package org.openjst.commons.properties.restrictions.validators;
 
+import org.openjst.commons.properties.Caches;
 import org.openjst.commons.properties.Property;
+import org.openjst.commons.properties.annotations.Value;
 import org.openjst.commons.properties.exceptions.PropertyValidationException;
 import org.openjst.commons.properties.restrictions.List;
 import org.openjst.commons.properties.restrictions.Number;
 import org.openjst.commons.properties.restrictions.Pattern;
 import org.openjst.commons.properties.restrictions.Validator;
-import org.openjst.commons.properties.storages.PropertiesStorage;
+import org.openjst.commons.properties.storages.Storage;
 import org.openjst.commons.properties.storages.StorageBuilder;
-import org.openjst.commons.properties.utils.PropertiesUtils;
 import org.openjst.commons.properties.values.ValuesBuilder;
 import org.testng.annotations.Test;
 
@@ -37,7 +38,7 @@ import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static org.openjst.commons.properties.validators.ValidatorsTest.TestProperties.*;
+import static org.openjst.commons.properties.restrictions.validators.ValidatorsTest.TestProperties.*;
 
 /**
  * @author Sergey Grachev
@@ -46,6 +47,10 @@ public final class ValidatorsTest {
 
     @Test(groups = "unit")
     public void testTypesConversion() {
+        testTypesConversion(NUMBER_MIN_MAX);
+    }
+
+    public static void testTypesConversion(final Property NUMBER_MIN_MAX) {
         final Property.Mutable mutable = ValuesBuilder.newMutable(NUMBER_MIN_MAX, "1");
 
         try {
@@ -200,7 +205,7 @@ public final class ValidatorsTest {
     @Test(groups = "unit")
     public void testValidation() {
         final TestPersistence persistence = new TestPersistence();
-        final PropertiesStorage storage = StorageBuilder.newMemory(persistence);
+        final Storage storage = StorageBuilder.newMemory(persistence);
 
         try {
             storage.put(NUMBER_MIN_MAX, 0);
@@ -227,55 +232,31 @@ public final class ValidatorsTest {
 
     static enum TestProperties implements Property {
 
-        @Number.Min(1) @Number.Max(10)
-        NUMBER_MIN_MAX(1, Type.INT),
+        @Number.Min(1) @Number.Max(10) @Value(type = Type.INT, nullAs = "1")
+        NUMBER_MIN_MAX,
 
-        @Number.Range({1, 5, 8, 10, 20})
-        NUMBER_RANGE(1, Type.INT),
+        @Number.Range({1, 5, 8, 10, 20}) @Value(type = Type.INT, nullAs = "1")
+        NUMBER_RANGE,
 
-        @Pattern.String("\\d{1,2}")
-        PATTERN_STRING(1, Type.STRING),
+        @Pattern.String("\\d{1,2}") @Value(nullAs = "1")
+        PATTERN_STRING,
 
-        @List.String({"1", "2"})
-        LIST_STRING(1, Type.STRING),
+        @List.String({"1", "2"}) @Value(nullAs = "1")
+        LIST_STRING,
 
-        @List.Number({1, 2})
-        LIST_NUMBER(1, Type.INT),
+        @List.Number({1, 2}) @Value(type = Type.INT, nullAs = "1")
+        LIST_NUMBER,
 
-        @List.Enum(EnumList.class)
-        LIST_ENUM("E1", Type.STRING)
+        @List.Enum(EnumList.class) @Value(nullAs = "E1")
+        LIST_ENUM
         //
         ;
 
-        private final String key;
-        private final Object defaultValue;
-        private final Type type;
-
-        TestProperties(final Object defaultValue, final Type type) {
-            this.key = PropertiesUtils.createKeyByAnnotations(this);
-            this.defaultValue = defaultValue;
-            this.type = type;
-        }
+        private final String key = Caches.keyOf(this);
 
         @Override
         public String key() {
             return key;
-        }
-
-        @Override
-        public Type type() {
-            return type;
-        }
-
-        @Override
-        public Property[] requires() {
-            return NO_DEPENDENCIES;
-        }
-
-        @Nullable
-        @Override
-        public Object defaultValue() {
-            return defaultValue;
         }
     }
 
@@ -283,7 +264,7 @@ public final class ValidatorsTest {
         E1, E2
     }
 
-    private static class TestPersistence implements PropertiesStorage.Persistence {
+    private static class TestPersistence implements Storage.Persistence {
         @Nullable
         @Override
         public Object get(final int level, final Property property) {

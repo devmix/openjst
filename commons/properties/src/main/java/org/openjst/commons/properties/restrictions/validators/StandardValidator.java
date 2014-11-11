@@ -15,10 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.commons.properties.validators;
+package org.openjst.commons.properties.restrictions.validators;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openjst.commons.properties.Caches;
 import org.openjst.commons.properties.Property;
 import org.openjst.commons.properties.exceptions.PropertyConversionException;
 import org.openjst.commons.properties.exceptions.PropertyValidationException;
@@ -30,6 +29,7 @@ import org.openjst.commons.properties.restrictions.Validator;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 
+import static org.openjst.commons.properties.Caches.*;
 import static org.openjst.commons.properties.Property.Type;
 import static org.openjst.commons.properties.converters.Converters.basic;
 
@@ -40,33 +40,34 @@ final class StandardValidator implements Validator {
 
     @Override
     public void validate(final Property property, @Nullable final Object value) {
-        final Annotation[] annotations = Caches.restrictionsOf(property);
+        final Annotation[] annotations = restrictionsOf(property);
         if (annotations.length == 0) {
             return;
         }
 
         for (final Annotation annotation : annotations) {
+            final Type type = typeOf(property);
             final boolean valid;
             if (annotation instanceof Number.Min) {
-                valid = validate(property.type(), value, ((Number.Min) annotation));
+                valid = validate(type, value, ((Number.Min) annotation));
             } else if (annotation instanceof Number.Max) {
-                valid = validate(property.type(), value, ((Number.Max) annotation));
+                valid = validate(type, value, ((Number.Max) annotation));
             } else if (annotation instanceof Number.Range) {
-                valid = validate(property.type(), value, ((Number.Range) annotation));
+                valid = validate(type, value, ((Number.Range) annotation));
             } else if (annotation instanceof Pattern.String) {
-                valid = validate(property.type(), value, ((Pattern.String) annotation));
+                valid = validate(type, value, ((Pattern.String) annotation));
             } else if (annotation instanceof List.String) {
-                valid = validate(property.type(), value, ((List.String) annotation));
+                valid = validate(type, value, ((List.String) annotation));
             } else if (annotation instanceof List.Number) {
-                valid = validate(property.type(), value, ((List.Number) annotation));
+                valid = validate(type, value, ((List.Number) annotation));
             } else if (annotation instanceof List.Enum) {
-                valid = validate(property.type(), value, ((List.Enum) annotation));
+                valid = validate(type, value, ((List.Enum) annotation));
             } else {
                 valid = true;
             }
 
             if (!valid) {
-                throw new PropertyValidationException(property.type(), value, annotation);
+                throw new PropertyValidationException(type, value, annotation);
             }
         }
     }
@@ -99,7 +100,7 @@ final class StandardValidator implements Validator {
         final String v = basic().asString(type, value);
         //noinspection ConstantConditions
         return StringUtils.isBlank(v) ?
-                StringUtils.isBlank(restriction.value()) : Caches.patternOf(restriction).matcher(v).matches();
+                StringUtils.isBlank(restriction.value()) : patternOf(restriction).matcher(v).matches();
     }
 
     private static boolean validate(final Type type, @Nullable final Object value, final List.String restriction) {

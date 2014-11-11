@@ -17,53 +17,11 @@
 
 package org.openjst.commons.properties.utils;
 
-import org.apache.commons.lang3.StringUtils;
-import org.openjst.commons.properties.Property;
-import org.openjst.commons.properties.annotations.Group;
-
 /**
  * @author Sergey Grachev
  */
 public final class PropertiesUtils {
 
     private PropertiesUtils() {
-    }
-
-    public static String createKeyByAnnotations(final Property property, final String separator) {
-        final Class clazz = property.getClass();
-
-        final String name;
-        if (clazz.isEnum()) {
-            name = ((Enum) property).name();
-        } else {
-            name = clazz.getSimpleName();
-        }
-
-        final Group group = (Group) clazz.getAnnotation(Group.class);
-        if (group != null) {
-            final StringBuilder sb = new StringBuilder();
-            if (StringUtils.isNotBlank(group.first())) {
-                sb.append(group.first());
-            }
-
-            if (StringUtils.isNotBlank(group.second())) {
-                if (sb.length() > 0) {
-                    sb.append(separator);
-                }
-                sb.append(group.second());
-            }
-
-            if (sb.length() > 0) {
-                sb.append(separator);
-            }
-
-            return sb.append(name).toString().toLowerCase();
-        }
-
-        return name.toLowerCase();
-    }
-
-    public static String createKeyByAnnotations(final Property property) {
-        return createKeyByAnnotations(property, ".");
     }
 }

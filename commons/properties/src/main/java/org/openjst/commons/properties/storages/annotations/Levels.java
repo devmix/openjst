@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.commons.properties.annotations;
+package org.openjst.commons.properties.storages.annotations;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -30,7 +31,34 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ElementType.TYPE, ElementType.FIELD})
 public @interface Levels {
 
-    short min() default 0;
+    int min() default 0;
 
-    short max() default 0xFF;
+    int max() default 0xFF;
+
+    @SuppressWarnings("ClassExplicitlyAnnotation")
+    static final class Instance implements Levels {
+
+        private final int min;
+        private final int max;
+
+        public Instance(final int min, final int max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        @Override
+        public int min() {
+            return min;
+        }
+
+        @Override
+        public int max() {
+            return max;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Levels.class;
+        }
+    }
 }

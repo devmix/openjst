@@ -18,10 +18,9 @@
 package org.openjst.commons.properties.storages;
 
 import org.openjst.commons.properties.Property;
-import org.openjst.commons.properties.annotations.Levels;
 import org.openjst.commons.properties.exceptions.PropertyLevelViolationException;
 import org.openjst.commons.properties.exceptions.PropertyValidationException;
-import org.openjst.commons.properties.validators.Validators;
+import org.openjst.commons.properties.storages.annotations.Levels;
 import org.openjst.commons.properties.values.DefaultImmutable;
 import org.openjst.commons.properties.values.ValuesBuilder;
 
@@ -31,13 +30,14 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static org.openjst.commons.properties.Caches.levelOf;
+import static org.openjst.commons.properties.Caches.*;
 import static org.openjst.commons.properties.converters.Converters.basic;
+import static org.openjst.commons.properties.restrictions.validators.Validators.standard;
 
 /**
  * @author Sergey Grachev
  */
-final class MemoryStorage implements PropertiesStorage {
+final class MemoryStorage implements Storage {
 
     private static final int COUNT_OF_LEVELS = 0xFF;
 
@@ -390,8 +390,8 @@ final class MemoryStorage implements PropertiesStorage {
         }
 
         private Object validateAndNormalize(final Property property, @Nullable final Object value) {
-            final Object normalized = value == null ? null : basic().asOf(property.type(), value);
-            Validators.standard().validate(property, normalized);
+            final Object normalized = value == null ? null : basic().asOf(typeOf(property), value);
+            standard().validate(property, normalized);
             return normalized;
         }
 
@@ -401,7 +401,7 @@ final class MemoryStorage implements PropertiesStorage {
             private boolean fetched;
 
             public Value(final Property property) {
-                super(property, property.defaultValue());
+                super(property, nullAsOf(basic(), property));
                 this.value = null; // clear default value
             }
 
@@ -431,7 +431,7 @@ final class MemoryStorage implements PropertiesStorage {
                         if (existsOnLevel != -1 && existsOnLevel >= levelOf(property).min()) {
                             return valuesOf(existsOnLevel).get(property).get();
                         }
-                        return property.defaultValue();
+                        return nullAsOf(basic(), property);
                     }
 
                 } finally {

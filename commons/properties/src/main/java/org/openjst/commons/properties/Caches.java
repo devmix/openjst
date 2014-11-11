@@ -17,33 +17,37 @@
 
 package org.openjst.commons.properties;
 
-import org.openjst.commons.properties.annotations.Levels;
-import org.openjst.commons.properties.restrictions.Number;
+import org.apache.commons.lang3.StringUtils;
+import org.openjst.commons.properties.annotations.Key;
+import org.openjst.commons.properties.annotations.Value;
 import org.openjst.commons.properties.restrictions.Pattern;
 import org.openjst.commons.properties.restrictions.Restriction;
+import org.openjst.commons.properties.storages.annotations.Levels;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.WeakHashMap;
+
+import static org.openjst.commons.properties.Property.Converter;
+import static org.openjst.commons.properties.Property.Wrapper;
 
 /**
- * Internal caches for properties
  * TODO SoftReference
  *
  * @author Sergey Grachev
  */
-@Levels // default
-@Number.Min(1)
 public final class Caches {
 
-    private static final Levels DEFAULT_LEVEL = Caches.class.getAnnotation(Levels.class);
+    private static final Levels DEFAULT_LEVEL = new Levels.Instance(0, 0xFF);
+    private static final Property.Type DEFAULT_TYPE = Property.Type.STRING;
     private static final Annotation[] DEFAULT_RESTRICTIONS = new Annotation[0];
 
-    private static final WeakHashMap<Class, Levels> CACHE_LEVELS = new WeakHashMap<Class, Levels>();
-    private static final WeakHashMap<Class, Map<String, Levels>> CACHE_ENUM_LEVELS = new WeakHashMap<Class, Map<String, Levels>>();
-
-    private static final WeakHashMap<Class, Annotation[]> CACHE_RESTRICTIONS = new WeakHashMap<Class, Annotation[]>();
-    private static final WeakHashMap<Class, Map<String, Annotation[]>> CACHE_ENUM_RESTRICTIONS = new WeakHashMap<Class, Map<String, Annotation[]>>();
-
+    private static final WeakHashMap<Property, Levels> CACHE_LEVELS = new WeakHashMap<Property, Levels>();
+    private static final WeakHashMap<Property, Annotation[]> CACHE_RESTRICTIONS = new WeakHashMap<Property, Annotation[]>();
+    private static final WeakHashMap<Property, String> CACHE_KEYS = new WeakHashMap<Property, String>();
+    private static final WeakHashMap<Property, Object> CACHE_NULL_AS = new WeakHashMap<Property, Object>();
+    private static final WeakHashMap<Property, Property.Type> CACHE_TYPE = new WeakHashMap<Property, Property.Type>();
     private static final WeakHashMap<Annotation, java.util.regex.Pattern> CACHE_PATTERNS = new WeakHashMap<Annotation, java.util.regex.Pattern>();
 
     private Caches() {
@@ -62,78 +66,191 @@ public final class Caches {
         return pattern;
     }
 
-    public static Levels levelOf(final Property property) {
-        final Class clazz = property.getClass();
-        Levels level = null;
-        if (clazz.isEnum()) {
-            try {
-                final String name = ((Enum) property).name();
-                synchronized (CACHE_ENUM_LEVELS) {
-                    final Map<String, Levels> enumLevels;
-                    if (CACHE_ENUM_LEVELS.containsKey(clazz)) {
-                        enumLevels = CACHE_ENUM_LEVELS.get(clazz);
-                    } else {
-                        enumLevels = new HashMap<String, Levels>(1);
-                        CACHE_ENUM_LEVELS.put(clazz, enumLevels);
-                    }
-
-                    if (enumLevels.containsKey(name)) {
-                        level = enumLevels.get(name);
-                    } else {
-                        level = clazz.getField(name).getAnnotation(Levels.class);
-                        enumLevels.put(name, level);
-                    }
-                }
-            } catch (final NoSuchFieldException ignore) {
-            }
-        } else {
-            synchronized (CACHE_LEVELS) {
-                if (CACHE_LEVELS.containsKey(clazz)) {
-                    level = CACHE_LEVELS.get(clazz);
-                } else {
-                    level = (Levels) clazz.getAnnotation(Levels.class);
-                    CACHE_LEVELS.put(clazz, level);
-                }
+    public static String keyOf(final Property property) {
+        synchronized (CACHE_KEYS) {
+            if (CACHE_KEYS.containsKey(property)) {
+                return CACHE_KEYS.get(property);
             }
         }
-        return level == null ? DEFAULT_LEVEL : level;
+
+        final Class clazz = property.getClass();
+
+        final String name;
+        if (clazz.isEnum()) {
+            name = ((Enum) property).name();
+        } else {
+            name = clazz.getSimpleName();
+        }
+
+        final Key key = (Key) clazz.getAnnotation(Key.class);
+        if (key != null) {
+            final StringBuilder sb = new StringBuilder();
+            if (StringUtils.isNotBlank(key.group())) {
+                sb.append(key.group());
+            }
+
+            if (StringUtils.isNotBlank(key.subGroup())) {
+                if (sb.length() > 0) {
+                    sb.append(key.separator());
+                }
+                sb.append(key.subGroup());
+            }
+
+            if (sb.length() > 0) {
+                sb.append(key.separator());
+            }
+
+            return sb.append(name).toString().toLowerCase();
+        }
+
+        final String result = name.toLowerCase();
+
+        synchronized (CACHE_KEYS) {
+            if (!CACHE_KEYS.containsKey(property)) {
+                CACHE_KEYS.put(property, result);
+            }
+        }
+
+        return result;
+    }
+
+    public static Object nullAsOf(final Converter converter, final Property property) {
+        synchronized (CACHE_NULL_AS) {
+            if (CACHE_NULL_AS.containsKey(property)) {
+                return CACHE_NULL_AS.get(property);
+            }
+        }
+
+        final String nullAs;
+        if (property instanceof Wrapper) {
+            nullAs = ((Wrapper) property).nullAs();
+        } else {
+            final Class clazz = property.getClass();
+            Value value = null;
+            if (clazz.isEnum()) {
+                try {
+                    final String name = ((Enum) property).name();
+                    value = clazz.getField(name).getAnnotation(Value.class);
+                } catch (final NoSuchFieldException ignore) {
+                }
+            } else {
+                value = (Value) clazz.getAnnotation(Value.class);
+            }
+            nullAs = value == null || StringUtils.isBlank(value.nullAs()) ? null : value.nullAs();
+        }
+
+        final Object result = nullAs == null ? null : converter.asOf(Caches.typeOf(property), nullAs);
+        synchronized (CACHE_NULL_AS) {
+            if (!CACHE_NULL_AS.containsKey(property)) {
+                CACHE_NULL_AS.put(property, result);
+            }
+        }
+
+        return result;
+    }
+
+    public static Levels levelOf(final Property property) {
+        synchronized (CACHE_LEVELS) {
+            if (CACHE_LEVELS.containsKey(property)) {
+                return CACHE_LEVELS.get(property);
+            }
+        }
+
+        Levels level = null;
+        if (property instanceof Wrapper) {
+            level = ((Wrapper) property).levels();
+        } else {
+            final Class clazz = property.getClass();
+            if (clazz.isEnum()) {
+                try {
+                    final String name = ((Enum) property).name();
+                    level = clazz.getField(name).getAnnotation(Levels.class);
+                } catch (final NoSuchFieldException ignore) {
+                }
+            } else {
+                level = (Levels) clazz.getAnnotation(Levels.class);
+            }
+        }
+
+        level = level == null ? DEFAULT_LEVEL : level;
+
+        synchronized (CACHE_LEVELS) {
+            if (!CACHE_LEVELS.containsKey(property)) {
+                CACHE_LEVELS.put(property, level);
+            }
+        }
+
+        return level;
+    }
+
+    public static Property.Type typeOf(final Property property) {
+        synchronized (CACHE_TYPE) {
+            if (CACHE_TYPE.containsKey(property)) {
+                return CACHE_TYPE.get(property);
+            }
+        }
+
+        Property.Type type;
+        if (property instanceof Wrapper) {
+            type = ((Wrapper) property).type();
+        } else {
+            final Class clazz = property.getClass();
+            Value value = null;
+            if (clazz.isEnum()) {
+                try {
+                    final String name = ((Enum) property).name();
+                    value = clazz.getField(name).getAnnotation(Value.class);
+                } catch (final NoSuchFieldException ignore) {
+                }
+            } else {
+                value = (Value) clazz.getAnnotation(Value.class);
+            }
+            type = value == null ? null : value.type();
+        }
+
+        type = type == null ? DEFAULT_TYPE : type;
+
+        synchronized (CACHE_TYPE) {
+            if (!CACHE_TYPE.containsKey(property)) {
+                CACHE_TYPE.put(property, type);
+            }
+        }
+
+        return type;
     }
 
     public static Annotation[] restrictionsOf(final Property property) {
-        final Class clazz = property.getClass();
-        Annotation[] result = null;
-        if (clazz.isEnum()) {
-            try {
-                final String name = ((Enum) property).name();
-                synchronized (CACHE_ENUM_RESTRICTIONS) {
-                    final Map<String, Annotation[]> enumLevels;
-                    if (CACHE_ENUM_RESTRICTIONS.containsKey(clazz)) {
-                        enumLevels = CACHE_ENUM_RESTRICTIONS.get(clazz);
-                    } else {
-                        enumLevels = new HashMap<String, Annotation[]>(1);
-                        CACHE_ENUM_RESTRICTIONS.put(clazz, enumLevels);
-                    }
-
-                    if (enumLevels.containsKey(name)) {
-                        result = enumLevels.get(name);
-                    } else {
-                        result = filterRestrictions(clazz.getField(name).getAnnotations());
-                        enumLevels.put(name, result);
-                    }
-                }
-            } catch (final NoSuchFieldException ignore) {
-            }
-        } else {
-            synchronized (CACHE_RESTRICTIONS) {
-                if (CACHE_RESTRICTIONS.containsKey(clazz)) {
-                    result = CACHE_RESTRICTIONS.get(clazz);
-                } else {
-                    result = filterRestrictions(clazz.getAnnotations());
-                    CACHE_RESTRICTIONS.put(clazz, result);
-                }
+        synchronized (CACHE_RESTRICTIONS) {
+            if (CACHE_RESTRICTIONS.containsKey(property)) {
+                return CACHE_RESTRICTIONS.get(property);
             }
         }
-        return result == null ? DEFAULT_RESTRICTIONS : result;
+
+        Annotation[] restrictions = null;
+        if (property instanceof Wrapper) {
+            restrictions = ((Wrapper) property).restrictions();
+        } else {
+            final Class clazz = property.getClass();
+            if (clazz.isEnum()) {
+                try {
+                    final String name = ((Enum) property).name();
+                    restrictions = filterRestrictions(clazz.getField(name).getAnnotations());
+                } catch (final NoSuchFieldException ignore) {
+                }
+            } else {
+                restrictions = filterRestrictions(clazz.getAnnotations());
+            }
+        }
+
+        restrictions = restrictions == null ? DEFAULT_RESTRICTIONS : restrictions;
+
+        synchronized (CACHE_RESTRICTIONS) {
+            if (!CACHE_RESTRICTIONS.containsKey(property)) {
+                CACHE_RESTRICTIONS.put(property, restrictions);
+            }
+        }
+
+        return restrictions;
     }
 
     private static Annotation[] filterRestrictions(final Annotation[] annotations) {

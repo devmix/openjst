@@ -17,6 +17,7 @@
 
 package org.openjst.commons.properties.restrictions;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -27,6 +28,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * @author Sergey Grachev
  */
+@SuppressWarnings("ClassExplicitlyAnnotation")
 public interface Pattern {
 
     @Retention(RUNTIME)
@@ -34,5 +36,23 @@ public interface Pattern {
     @Restriction
     @interface String {
         java.lang.String value();
+
+        static final class Instance implements String {
+            private final java.lang.String value;
+
+            public Instance(final java.lang.String value) {
+                this.value = value;
+            }
+
+            @Override
+            public java.lang.String value() {
+                return value;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return String.class;
+            }
+        }
     }
 }

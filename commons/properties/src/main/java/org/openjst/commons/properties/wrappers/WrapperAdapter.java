@@ -15,38 +15,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.openjst.commons.properties.exceptions;
+package org.openjst.commons.properties.wrappers;
 
+import org.openjst.commons.properties.Caches;
+import org.openjst.commons.properties.Property;
 import org.openjst.commons.properties.storages.annotations.Levels;
+
+import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
 
 /**
  * @author Sergey Grachev
  */
-public final class PropertyLevelViolationException extends PropertyException {
+public abstract class WrapperAdapter implements Property.Wrapper {
 
-    private static final long serialVersionUID = -7731349290779111642L;
-
-    private final Levels levels;
-    private final int level;
-
-    public PropertyLevelViolationException(final Levels levels, final int level) {
-        this.levels = levels;
-        this.level = level;
-    }
-
-    public Levels getLevels() {
-        return levels;
-    }
-
-    public int getLevel() {
-        return level;
+    @Override
+    public String key() {
+        return getClass().toString();
     }
 
     @Override
-    public String toString() {
-        return "PropertyLevelViolationException{" +
-                "levels=" + levels +
-                ", level=" + level +
-                '}';
+    public Type type() {
+        return Type.STRING;
+    }
+
+    @Nullable
+    @Override
+    public String nullAs() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Levels levels() {
+        return Caches.class.getAnnotation(Levels.class);
+    }
+
+    @Nullable
+    @Override
+    public Annotation[] restrictions() {
+        return null;
     }
 }
